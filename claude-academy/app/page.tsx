@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { modules, totalLessons, totalMinutes } from "@/lib/curriculum";
 import { interviewQA } from "@/lib/interview";
+import { technicalQA } from "@/lib/intuitive-prep";
 import { glossary } from "@/lib/glossary";
 import {
   ArrowRight,
@@ -12,6 +13,7 @@ import {
   Database,
   FlaskConical,
   Cpu,
+  Target,
 } from "lucide-react";
 
 const accent: Record<string, { dot: string; ring: string; text: string }> = {
@@ -45,6 +47,7 @@ export default function Home() {
         <nav className="hidden sm:flex items-center gap-6 text-sm text-ink-soft">
           <Link href="/learn" className="hover:text-clay transition-colors">Curriculum</Link>
           <Link href="/interview" className="hover:text-clay transition-colors">Interview Q&amp;A</Link>
+          <Link href="/prep" className="hover:text-clay transition-colors">Intuitive.ai Prep</Link>
           <Link href="/glossary" className="hover:text-clay transition-colors">Glossary</Link>
           <Link
             href={`/learn/${firstLesson}`}
@@ -145,6 +148,38 @@ export default function Home() {
             );
           })}
         </div>
+      </section>
+
+      {/* interview prep spotlight */}
+      <section className="max-w-6xl mx-auto px-6 pb-20">
+        <Link
+          href="/prep"
+          className="group block rounded-3xl border border-clay/30 bg-clay-50/60 p-8 sm:p-10 transition-all hover:border-clay/50 hover:shadow-md"
+        >
+          <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+            <span className="h-14 w-14 rounded-2xl bg-clay text-cream-50 flex items-center justify-center shrink-0">
+              <Target size={26} />
+            </span>
+            <div className="flex-1">
+              <div className="text-clay-dark font-medium text-xs uppercase tracking-wider mb-1">
+                Interview prep · tailored
+              </div>
+              <h2 className="font-serif text-2xl sm:text-3xl font-semibold text-ink">
+                Intuitive.ai — Claude Enterprise Engineer
+              </h2>
+              <p className="text-ink-soft mt-2 max-w-2xl leading-relaxed">
+                A full dossier for your interview: the company, every JD line
+                mapped to a lesson, {technicalQA.length} technical Q&amp;As with
+                model answers, behavioral prep, your pitch, and a readiness
+                checklist.
+              </p>
+            </div>
+            <ArrowRight
+              size={22}
+              className="text-clay shrink-0 group-hover:translate-x-1 transition-transform hidden sm:block"
+            />
+          </div>
+        </Link>
       </section>
 
       {/* learning aids */}
