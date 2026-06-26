@@ -140,6 +140,14 @@ dmypy.json
 tmp_*
 examples/fine-tuned_qa/local_cache/*
 
+# The Python rule `lib/` above (PyInstaller/venv build output) also matches the
+# Next.js apps' source `lib/` folders, which hold the actual curriculum code.
+# Re-include them explicitly so the apps build from a clean clone.
+!claude-academy/lib/
+!claude-academy/lib/**
+!agent-academy/lib/
+!agent-academy/lib/**
+
 # Node / Next.js (claude-academy, agent-academy)
 node_modules/
 .next/
