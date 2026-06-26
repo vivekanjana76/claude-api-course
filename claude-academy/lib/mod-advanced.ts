@@ -249,5 +249,144 @@ else:
         },
       ],
     },
+
+    {
+      slug: "batch-and-cost",
+      title: "Batch processing & cost optimization",
+      summary:
+        "Most of your bill is decisions you can change: which model, how big the prompt, and whether the work has to happen right now. The Message Batches API, prompt caching, and right-sizing the model stack into large, real savings.",
+      minutes: 7,
+      blocks: [
+        { type: "h2", text: "Cost is a design choice, not a fixed cost" },
+        {
+          type: "p",
+          text: "You are billed per token, separately for input (what you send) and output (what Claude generates). Output tokens are several times more expensive than input tokens, and bigger models cost more per token than smaller ones. That means three levers control almost your entire bill: **which model** you pick, **how many tokens** you send and receive, and **how urgently** you need the answer.",
+        },
+        {
+          type: "callout",
+          kind: "key",
+          title: "The three savings levers",
+          text: "Right-size the model (Haiku/Sonnet/Opus per task), shrink and reuse the prompt (caching), and move non-urgent work to the Batch API. These stack — you can apply all three to the same workload.",
+        },
+        { type: "h3", text: "Lever 1 — The Message Batches API" },
+        {
+          type: "p",
+          text: "A huge amount of LLM work is not interactive: classifying a backlog of tickets, generating embeddings-style metadata for thousands of documents, grading an eval set, summarizing a week of logs. For that work you don't need a reply in 800 milliseconds — you need it cheaply and reliably. That is exactly what the **Message Batches API** is for.",
+        },
+        {
+          type: "compare",
+          caption: "Synchronous Messages vs the Batches API",
+          columns: ["", "Synchronous", "Batch"],
+          rows: [
+            { label: "Latency", cells: ["Seconds", "Up to 24h (often far less)"] },
+            { label: "Price", cells: ["Standard", "~50% off input AND output"] },
+            { label: "Shape", cells: ["One request, one reply", "Up to ~100k requests in one job"] },
+            { label: "Best for", cells: ["Chat, anything a user waits on", "Bulk, offline, scheduled jobs"] },
+          ],
+        },
+        {
+          type: "code",
+          lang: "python",
+          caption: "Submitting a batch and polling for results",
+          code: `from anthropic.types.message_create_params import MessageCreateParamsNonStreaming
+from anthropic.types.messages.batch_create_params import Request
+
+batch = client.messages.batches.create(
+    requests=[
+        Request(
+            custom_id=f"ticket-{t['id']}",            # your key to match results back
+            params=MessageCreateParamsNonStreaming(
+                model="claude-haiku-4-5-20251001",     # cheap model for a simple task
+                max_tokens=256,
+                messages=[{"role": "user",
+                           "content": f"Classify this ticket: {t['body']}"}],
+            ),
+        )
+        for t in tickets
+    ]
+)
+
+# Poll until done (status: in_progress -> ended), then stream results.
+batch = client.messages.batches.retrieve(batch.id)
+if batch.processing_status == "ended":
+    for result in client.messages.batches.results(batch.id):
+        print(result.custom_id, result.result.message.content[0].text)`,
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Match results with custom_id",
+          text: "Batches are processed in parallel and results can come back in any order. Always set a custom_id per request so you can join each result back to its source row.",
+        },
+        { type: "h3", text: "Lever 2 — Reuse the prompt with caching" },
+        {
+          type: "p",
+          text: "If every request in a job shares a long, identical prefix — a system prompt, a rulebook, a set of few-shot examples, a big document — you are paying full input price to re-send the same tokens over and over. **Prompt caching** lets Claude store that prefix; later requests that hit it read the cached tokens at roughly a tenth of the normal input price. (Covered in depth in the Prompting module — here the point is that it composes with everything else.)",
+        },
+        { type: "diagram", name: "caching", caption: "A shared prefix is paid for once, then re-read cheaply across many requests." },
+        { type: "h3", text: "Lever 3 — Right-size the model" },
+        {
+          type: "p",
+          text: "Reaching for the most capable model on every call is the most common way teams overspend. Match the model to the difficulty of the task: a small model for extraction and classification, a mid model for everyday generation, and the largest only for genuinely hard reasoning. A cheap, well-evaluated model on a simple task beats an expensive one you never measured.",
+        },
+        {
+          type: "steps",
+          items: [
+            { title: "Start small", text: "Prototype the task on the cheapest model that could plausibly work." },
+            { title: "Measure with an eval", text: "Score it on a real test set (see the Evals module). Only spend more if quality is actually short." },
+            { title: "Escalate deliberately", text: "Move up a tier when the eval — not a hunch — says you need to." },
+          ],
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Output tokens dominate",
+          text: "Because output is the pricey side, capping max_tokens and asking for concise answers (or just the fields you need) often saves more than any input-side trick. Don't generate tokens you'll throw away.",
+        },
+        {
+          type: "callout",
+          kind: "tip",
+          title: "Stack them",
+          text: "An offline classification job can run on the Batch API (–50%), over a cached shared prompt (input ~–90% on hits), with a small model (lower base rate). The discounts multiply — the same workload can cost a fraction of the naive version.",
+        },
+      ],
+      takeaways: [
+        "Your bill is driven by three controllable levers: model size, token count, and urgency.",
+        "The Message Batches API is ~50% cheaper for non-interactive bulk work with up to a 24h turnaround.",
+        "Always set a custom_id per batch request so you can match parallel results back to their source.",
+        "Prompt caching makes a shared prefix cheap to re-read; right-sizing the model lowers the base rate.",
+        "Output tokens cost the most — cap max_tokens and ask only for what you need. The discounts stack.",
+      ],
+      flashcards: [
+        { front: "What does the Message Batches API trade for its ~50% discount?", back: "Latency. Results return within 24h (often sooner) instead of synchronously — ideal for offline/bulk work." },
+        { front: "Why set a custom_id on each batch request?", back: "Batch results come back in arbitrary order; custom_id lets you join each result to its source row." },
+        { front: "Which token type usually dominates cost, and what's the lever?", back: "Output tokens are the expensive side — cap max_tokens and request concise/field-only answers." },
+        { front: "Name the three stacking savings levers.", back: "Batch API (urgency), prompt caching (token reuse), and right-sizing the model (base rate)." },
+      ],
+      quiz: [
+        {
+          q: "You need to classify 50,000 archived support tickets overnight. Cheapest sensible approach?",
+          options: [
+            "Loop synchronous calls to the largest model in real time",
+            "Use the Batch API with a small model and a cached shared prompt",
+            "Send all 50,000 in a single giant prompt",
+            "Use the largest model but lower temperature",
+          ],
+          answer: 1,
+          explain: "Offline bulk work is the Batch API's sweet spot (~50% off); a small right-sized model plus a cached shared prefix stacks the savings.",
+        },
+        {
+          q: "Which change most directly reduces the expensive side of a token bill?",
+          options: [
+            "Sending a longer, more detailed system prompt",
+            "Capping max_tokens and asking for concise, field-only answers",
+            "Increasing temperature",
+            "Switching from the SDK to raw HTTP",
+          ],
+          answer: 1,
+          explain: "Output tokens cost the most, so limiting generated length is the most direct lever on cost.",
+        },
+      ],
+    },
   ],
 };
