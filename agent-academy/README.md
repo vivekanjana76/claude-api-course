@@ -6,12 +6,12 @@ production multi-agent systems.
 
 ## What's inside
 
-Seven modules (~35 lessons), each lesson with custom SVG diagrams, key takeaways,
+Seven modules (35 lessons), each lesson with custom SVG diagrams, key takeaways,
 flashcards, and a quiz:
 
 1. **Agent Foundations** — what an agent is, the agent loop, agents vs. workflows, when to build one
 2. **Reasoning & Planning** — chain-of-thought, ReAct, plan-and-execute, reflection, decomposition & routing
-3. **Tools, Memory & Knowledge** — function calling, tool design, agent memory, RAG, MCP
+3. **Tools, Memory & Knowledge** — function calling, tool design, agent memory, context engineering & compaction, RAG, MCP
 4. **Multi-Agent Orchestration** — why multi-agent, topologies, handoffs, shared state, pitfalls
 5. **CrewAI Deep Dive** — agents/tasks/crews, processes, tools & memory, Flows
 6. **The Framework Landscape** — LangGraph, AutoGen, OpenAI Agents SDK, choosing a framework
