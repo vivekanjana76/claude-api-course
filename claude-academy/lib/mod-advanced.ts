@@ -388,5 +388,132 @@ if batch.processing_status == "ended":
         },
       ],
     },
+
+    {
+      slug: "reliability-and-retries",
+      title: "Reliability: rate limits, retries & errors",
+      summary:
+        "Network calls fail, rate limits bite, and servers occasionally hiccup. Production code treats those as normal events to handle — with the right error taxonomy, backoff, and idempotency — not as crashes.",
+      minutes: 7,
+      blocks: [
+        { type: "h2", text: "Every API call can fail — plan for it" },
+        {
+          type: "p",
+          text: "A request to Claude travels over the network to a shared service. Sometimes you send something malformed, sometimes you're going too fast, sometimes the service is momentarily busy. The difference between a fragile prototype and a production system is not avoiding these — it's **classifying** each failure and responding correctly.",
+        },
+        { type: "h3", text: "The error taxonomy" },
+        {
+          type: "compare",
+          caption: "What each status code means and what to do",
+          columns: ["Status", "Meaning", "Right response"],
+          rows: [
+            { label: "400 / 422", cells: ["Bad request — your fault", "Fix the request; do NOT retry as-is"] },
+            { label: "401 / 403", cells: ["Auth / permission", "Check the API key; don't retry"] },
+            { label: "429", cells: ["Rate limited — too fast", "Back off and retry"] },
+            { label: "500 / 529", cells: ["Server error / overloaded", "Retry transiently with backoff"] },
+          ],
+        },
+        {
+          type: "callout",
+          kind: "key",
+          title: "Retry the transient, not the broken",
+          text: "Only 429 and 5xx/overloaded (529) are worth retrying — they're temporary. Retrying a 400 just sends the same broken request again. Branch on the status before you retry.",
+        },
+        { type: "h3", text: "Exponential backoff with jitter" },
+        {
+          type: "p",
+          text: "When you do retry, don't hammer immediately — wait, and wait longer each attempt: 1s, 2s, 4s, 8s. Add a little randomness (**jitter**) so that many clients recovering from the same blip don't all retry in lockstep and cause a second stampede. Cap the number of attempts so a truly down service doesn't hang your app forever.",
+        },
+        {
+          type: "code",
+          lang: "python",
+          caption: "The SDK retries for you — and you can tune it",
+          code: `import anthropic
+
+# The official SDKs already retry 429/5xx with exponential backoff.
+# Tune how many times, and set a sane timeout so calls can't hang forever.
+client = anthropic.Anthropic(max_retries=4, timeout=30.0)
+
+# Per-request overrides are available too:
+msg = client.with_options(max_retries=2).messages.create(
+    model="claude-opus-4-8",
+    max_tokens=512,
+    messages=[{"role": "user", "content": "Hello"}],
+)`,
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Read the rate-limit headers",
+          text: "Responses include anthropic-ratelimit-* headers (requests and tokens remaining, plus reset times) and 429s carry a retry-after. Honor retry-after when present instead of guessing — it tells you exactly how long to wait.",
+        },
+        { type: "h3", text: "Rate limits: requests and tokens" },
+        {
+          type: "p",
+          text: "Limits are enforced on two axes: requests per minute (RPM) and tokens per minute (TPM, input and output). You can blow the token budget with a few huge prompts or the request budget with many tiny ones. Smooth your traffic — a small concurrency limit and a queue beat bursting straight into a wall of 429s.",
+        },
+        { type: "h3", text: "Idempotency: make a retry safe" },
+        {
+          type: "p",
+          text: "A retry is only safe if doing the work twice is harmless. If a call has side effects in your system — charging a card, sending an email, writing a row — guard it with an **idempotency key** so a duplicated request collapses to a single effect. For a plain text generation there's nothing to dedupe; for an agent taking real-world actions, idempotency is essential.",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Don't blindly read content[0]",
+          text: "A failed or refused call may not have the content you expect. Check the response/stop_reason and handle the error path explicitly — assuming success and indexing into the result is a classic production crash.",
+        },
+      ],
+      takeaways: [
+        "Classify failures before reacting: 4xx are usually your bug; 429 and 5xx/529 are transient and retryable.",
+        "Retry transient errors with exponential backoff plus jitter, and cap the attempts.",
+        "The official SDKs auto-retry 429/5xx — tune max_retries and always set a timeout.",
+        "Honor retry-after and the anthropic-ratelimit-* headers instead of guessing.",
+        "Rate limits apply to both RPM and TPM; smooth traffic with concurrency limits and a queue.",
+        "Make retries safe with idempotency keys whenever a call has real side effects.",
+      ],
+      flashcards: [
+        { front: "Which HTTP statuses are worth retrying?", back: "429 (rate limited) and 5xx/529 (server error/overloaded) — they're transient. 4xx like 400/401 are your bug; retrying as-is won't help." },
+        { front: "Why add jitter to exponential backoff?", back: "So many clients recovering from the same blip don't retry in perfect sync and cause a second stampede." },
+        { front: "What does the Anthropic SDK do about retries by default?", back: "It automatically retries 429/5xx with exponential backoff; you can tune max_retries and set a timeout." },
+        { front: "When do you need an idempotency key?", back: "When a retried call has real side effects (charge, email, write) — the key collapses duplicates into a single effect." },
+        { front: "What two axes do rate limits cover?", back: "Requests per minute (RPM) and tokens per minute (TPM, input + output)." },
+      ],
+      quiz: [
+        {
+          q: "Your app gets a 429 from the API under load. Best response?",
+          options: [
+            "Immediately retry in a tight loop",
+            "Back off (exponential + jitter), honoring retry-after, then retry",
+            "Switch to a bigger model",
+            "Log it and drop the request permanently",
+          ],
+          answer: 1,
+          explain: "429 means slow down — wait with exponential backoff and jitter, respecting retry-after, then retry.",
+        },
+        {
+          q: "Which failure should you NOT retry unchanged?",
+          options: [
+            "529 overloaded",
+            "500 server error",
+            "400 invalid request",
+            "429 rate limited",
+          ],
+          answer: 2,
+          explain: "A 400 means the request itself is malformed; resending it produces the same error. Fix the request instead.",
+        },
+        {
+          q: "An agent call books a hotel as a side effect and may be retried. What makes the retry safe?",
+          options: [
+            "Lowering temperature",
+            "An idempotency key so duplicates collapse to one booking",
+            "A longer timeout",
+            "Streaming the response",
+          ],
+          answer: 1,
+          explain: "Idempotency keys ensure a duplicated request results in a single real-world effect.",
+        },
+      ],
+    },
   ],
 };
