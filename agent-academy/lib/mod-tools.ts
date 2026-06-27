@@ -303,6 +303,111 @@ memory.write(user_id, extract_durable_facts(user_msg, reply))  # remember`,
     },
 
     {
+      slug: "context-engineering",
+      title: "Context engineering & compaction",
+      summary:
+        "An agent's only working memory is the context window. The hardest part of building reliable agents isn't picking a model — it's deciding, turn after turn, what goes into that window and what gets summarized, offloaded, or dropped.",
+      minutes: 8,
+      blocks: [
+        { type: "h2", text: "The context window is the whole game" },
+        {
+          type: "p",
+          text: "A model is stateless: it knows nothing except what's in the context window on this exact call. For an agent that loops — calling tools, reading results, deciding the next step — every turn appends more text: the system prompt, the running history, tool definitions, tool outputs, retrieved documents, and the reasoning so far. **Context engineering** is the discipline of curating that window so the model has exactly what it needs and little else.",
+        },
+        {
+          type: "callout",
+          kind: "key",
+          title: "Why it's 'the real job'",
+          text: "Most agent failures aren't reasoning failures — they're context failures. The model did its best with a window that was missing the key fact, or buried it under thousands of irrelevant tokens. Get the context right and mediocre prompts work; get it wrong and no prompt saves you.",
+        },
+        { type: "h3", text: "Context rot: more is not better" },
+        {
+          type: "p",
+          text: "It's tempting to stuff everything into the window 'just in case.' But long, cluttered contexts actively hurt. Models attend less reliably to the middle of a long window, stale tool outputs contradict newer ones, and every token costs money and latency. As a run grows, accuracy can *degrade* even though you've given the model more information — a failure mode often called **context rot**.",
+        },
+        {
+          type: "compare",
+          caption: "Symptoms of a poorly managed context window",
+          columns: ["Symptom", "Underlying cause"],
+          rows: [
+            { label: "Agent 'forgets' an earlier instruction", cells: ["The key token was pushed out or buried mid-window."] },
+            { label: "Repeats a tool call it already made", cells: ["Prior result was truncated or never summarized."] },
+            { label: "Costs/latency climb every turn", cells: ["History grows unbounded; nothing is compacted."] },
+            { label: "Acts on outdated data", cells: ["Stale tool output still sits in context, conflicting with fresh."] },
+          ],
+        },
+        { type: "h3", text: "Four levers for keeping the window clean" },
+        {
+          type: "list",
+          items: [
+            "**Select** — only include what this step needs. Don't paste a 40-tool catalog when 4 are relevant; don't carry a document past the turn that used it.",
+            "**Summarize / compact** — replace a long stretch of history with a short, faithful synopsis once it's no longer needed verbatim. This is the core move for long runs.",
+            "**Externalize** — write big or durable state out to a file, scratchpad, or store and keep only a pointer in context. Retrieve it again on demand.",
+            "**Structure** — give the agent a running 'notes' or 'plan' artifact it updates, so the important state lives in one compact, authoritative place instead of being re-derived from scattered history.",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Compaction in practice",
+          text: "A common pattern: let history grow until it crosses a token threshold, then ask the model (or a cheaper model) to compress everything older than the last few turns into a 'story so far' summary. Replace the old turns with that summary and continue. The agent keeps its thread without dragging the full transcript along.",
+        },
+        {
+          type: "steps",
+          items: [
+            { title: "Set a budget", text: "Decide how many tokens history may occupy, well below the model's limit, leaving room for tools and the reply." },
+            { title: "Watch the gauge", text: "Track token usage each turn; trigger compaction when history crosses the budget." },
+            { title: "Compact, don't truncate blindly", text: "Summarize old turns into a synopsis rather than hard-cutting the oldest — truncation silently drops facts you may still need." },
+            { title: "Pin the essentials", text: "Keep the system prompt, the current goal, and a compact state/notes artifact unsummarized so they never rot away." },
+          ],
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Context engineering vs. RAG vs. memory",
+          text: "They're complementary. RAG decides what external knowledge to pull in; long-term memory decides what to persist across sessions; context engineering decides what — out of all of that plus the live history — actually occupies the window on this call. You can have great retrieval and still fail if the window is a cluttered mess.",
+        },
+      ],
+      takeaways: [
+        "An agent's only working memory is the context window; curating it is the central reliability skill.",
+        "Bigger context is not better — 'context rot' degrades reasoning and inflates cost and latency.",
+        "Manage the window with four levers: select, summarize/compact, externalize, and structure.",
+        "Compaction (summarize old turns past a token budget) is the core technique for long-running agents.",
+        "Context engineering complements RAG and long-term memory; it governs what actually occupies the window now.",
+      ],
+      flashcards: [
+        { front: "What is 'context rot'?", back: "The degradation in reasoning, plus rising cost/latency, that comes from letting a context window fill with long, stale, or irrelevant tokens." },
+        { front: "Name the four levers of context engineering.", back: "Select (include only what's needed), summarize/compact, externalize to a store/file, and structure state into a compact notes/plan artifact." },
+        { front: "What is compaction?", back: "Replacing a long stretch of older history with a short faithful summary once it crosses a token budget, so the agent keeps its thread without the full transcript." },
+        { front: "How does context engineering differ from RAG?", back: "RAG decides what external knowledge to fetch; context engineering decides what — of everything, including live history — actually occupies the window on this call." },
+      ],
+      quiz: [
+        {
+          q: "An agent's accuracy drops as a long run goes on, even though it has 'seen' more information. Most likely cause?",
+          options: [
+            "The model is overheating",
+            "Context rot — a bloated window buries the relevant tokens",
+            "The temperature is too low",
+            "It needs a bigger max_tokens",
+          ],
+          answer: 1,
+          explain: "Longer, cluttered contexts make models attend less reliably and let stale tokens conflict with fresh ones — accuracy can fall as the window grows.",
+        },
+        {
+          q: "Which is the most robust way to keep a long-running agent within its context budget?",
+          options: [
+            "Hard-truncate the oldest turns whenever the window is full",
+            "Summarize/compact old history into a synopsis and keep essentials pinned",
+            "Switch to a model that 'never forgets'",
+            "Lower the temperature each turn",
+          ],
+          answer: 1,
+          explain: "Compaction preserves the thread by summarizing rather than silently dropping facts; pinning the goal/system/notes keeps the essentials safe.",
+        },
+      ],
+    },
+
+    {
       slug: "rag-for-agents",
       title: "Knowledge & retrieval (RAG)",
       summary:
