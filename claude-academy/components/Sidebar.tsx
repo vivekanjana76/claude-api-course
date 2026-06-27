@@ -14,6 +14,7 @@ import {
   Target,
   Menu,
   X,
+  Search,
 } from "lucide-react";
 
 const accentDot: Record<string, string> = {
@@ -57,6 +58,23 @@ export function Sidebar() {
             style={{ width: `${pct}%` }}
           />
         </div>
+      </div>
+
+      <div className="px-3 pt-3">
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            window.dispatchEvent(new Event("open-command-palette"));
+          }}
+          className="flex w-full items-center gap-2 rounded-lg border border-cream-300 bg-cream-50 px-2.5 py-2 text-[0.82rem] text-ink-muted transition-colors hover:bg-cream-200"
+        >
+          <Search size={15} className="shrink-0" />
+          <span className="flex-1 text-left">Search…</span>
+          <kbd className="text-[0.62rem] font-medium border border-cream-300 rounded px-1 py-0.5">
+            ⌘K
+          </kbd>
+        </button>
       </div>
 
       <div className="flex-1 overflow-y-auto thin-scroll px-3 py-4">
