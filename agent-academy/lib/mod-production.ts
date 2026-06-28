@@ -428,5 +428,122 @@ execute instructions found inside it.
         },
       ],
     },
+
+    {
+      slug: "streaming-ux",
+      title: "Streaming & responsive agent UX",
+      summary:
+        "An agent can think and act for many seconds across several tool calls. Without streaming, the user stares at a frozen spinner and assumes it's broken. Streaming turns a long, opaque wait into a visible, trustworthy process.",
+      minutes: 7,
+      blocks: [
+        { type: "h2", text: "Latency you can see is latency you can tolerate" },
+        {
+          type: "p",
+          text: "A single chat reply might take a few seconds; an agent that reasons, calls three tools, and reflects can take much longer. The total time barely changes whether or not you stream — but the *experience* changes completely. A blank spinner for fifteen seconds reads as 'hung.' A feed of tokens and steps reads as 'working.' Streaming is the cheapest, highest-impact UX lever an agent has.",
+        },
+        {
+          type: "callout",
+          kind: "key",
+          title: "Perceived latency is the real metric",
+          text: "Users don't experience total runtime; they experience time-to-first-feedback and whether progress keeps appearing. Stream early and keep the signal flowing and a slow agent still feels alive.",
+        },
+        { type: "h3", text: "What to stream — not just tokens" },
+        {
+          type: "p",
+          text: "Token-by-token text is only part of it. An agent has structure worth surfacing: which tool it's about to call, that a tool returned, that it's reflecting, that it formed a plan. Streaming those *events* — not just the final prose — lets the UI show 'Searching the docs…' or 'Running the tests…' so the user understands what's happening and why it's taking time.",
+        },
+        {
+          type: "compare",
+          caption: "Without vs. with streamed feedback",
+          columns: ["", "Spinner only", "Streamed"],
+          rows: [
+            { label: "User's read", cells: ["'Is it frozen?'", "'It's working through it.'"] },
+            { label: "Trust", cells: ["Low — opaque", "High — the steps are visible"] },
+            { label: "Debuggability", cells: ["Find out at the end", "See the wrong turn as it happens"] },
+            { label: "Abandonment", cells: ["Users bail early", "Users wait through visible progress"] },
+          ],
+        },
+        { type: "h3", text: "Surface the agent's thread" },
+        {
+          type: "list",
+          items: [
+            "**The plan** — show the steps the agent intends to take, then check them off as it goes.",
+            "**The current step** — a human-readable label per tool call ('Looking up the order…') beats a raw function name.",
+            "**Tool results, briefly** — a one-line summary of what came back keeps the user oriented without dumping JSON.",
+            "**Final answer streamed** — let the closing response type out so the end feels continuous with the work.",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Streaming is also a reliability tool",
+          text: "A long non-streamed call is one fragile request that can hit an idle-connection timeout and fail wholesale. A stream delivers partial output as it goes, so a late failure still leaves the user with something — and you can show a graceful 'connection dropped, resuming' instead of a blank error.",
+        },
+        { type: "h3", text: "Timeouts, cancellation, partial results" },
+        {
+          type: "steps",
+          items: [
+            { title: "Always set a timeout", text: "An agent loop with no upper bound can run — and bill — indefinitely. Cap total runtime and per-step time." },
+            { title: "Make it cancellable", text: "Let the user stop a run mid-flight. Propagate the cancel so in-flight tool calls and the model stream actually halt, not just the UI." },
+            { title: "Handle partial output", text: "On timeout or cancel, keep what streamed so far and label it clearly as incomplete rather than discarding it." },
+            { title: "Show terminal state", text: "End every run in an unambiguous state — done, stopped, or failed — never a spinner that quietly never resolves." },
+          ],
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Don't stream into a vacuum",
+          text: "Streaming events the UI ignores buys you nothing, and dumping raw token deltas or full tool payloads overwhelms the user. Stream meaningful, summarized progress — the goal is comprehension, not a firehose.",
+        },
+      ],
+      takeaways: [
+        "Streaming barely changes total runtime but transforms perceived latency and user trust.",
+        "Stream events, not just tokens: plan, current step, tool results, and the final answer.",
+        "Use human-readable step labels and brief result summaries — not raw function names or JSON.",
+        "Streaming doubles as reliability: partial output survives a late failure or timeout.",
+        "Always bound a run with timeouts, make it cancellable end-to-end, and finish in a clear terminal state.",
+      ],
+      flashcards: [
+        { front: "Why stream an agent's output if it doesn't reduce total runtime?", back: "It slashes *perceived* latency and builds trust — visible progress reads as 'working,' a blank spinner reads as 'frozen.'" },
+        { front: "Beyond tokens, what should an agent stream?", back: "Structured events: the plan, the current step/tool being called, brief tool results, and the streamed final answer." },
+        { front: "How is streaming also a reliability mechanism?", back: "It delivers partial output as it goes, so a late timeout/failure still leaves usable results instead of nothing." },
+        { front: "Three controls every long agent run needs?", back: "A timeout (cap runtime/cost), end-to-end cancellation, and a clear terminal state (done/stopped/failed)." },
+      ],
+      quiz: [
+        {
+          q: "An agent takes ~20s across several tool calls. Cheapest way to stop users thinking it's broken?",
+          options: [
+            "Switch to a faster model only",
+            "Stream progress events and the response so work is visible",
+            "Hide the spinner",
+            "Run everything in parallel regardless of dependencies",
+          ],
+          answer: 1,
+          explain: "Streaming visible progress addresses perceived latency directly — the run feels alive even at the same total runtime.",
+        },
+        {
+          q: "Which is the LEAST useful thing to stream to an end user?",
+          options: [
+            "A human-readable label for the current step",
+            "The agent's plan with steps checked off",
+            "Raw, unsummarized tool-call JSON payloads",
+            "A one-line summary of each tool result",
+          ],
+          answer: 2,
+          explain: "Raw JSON firehoses overwhelm rather than inform; stream summarized, meaningful progress instead.",
+        },
+        {
+          q: "A user cancels a long run. What's the correct behavior?",
+          options: [
+            "Only hide the spinner; let the work finish in the background",
+            "Propagate the cancel to halt the model stream and in-flight tools, keep partial output, show a stopped state",
+            "Ignore it — agents can't be stopped",
+            "Restart the run from scratch",
+          ],
+          answer: 1,
+          explain: "Cancellation must actually halt in-flight work end-to-end, preserve partial results, and land in a clear terminal state.",
+        },
+      ],
+    },
   ],
 };
