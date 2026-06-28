@@ -6,7 +6,7 @@ Built to *understand concepts* (no setup, no running code) and to *prepare you t
 
 ## What's inside
 
-- **6 modules · 30 lessons** — Foundations → Prompt Engineering → Evaluation → Tool Use & Agents → Retrieval (RAG) → Advanced Capabilities.
+- **6 modules · 31 lessons** — Foundations → Prompt Engineering → Evaluation → Tool Use & Agents → Retrieval (RAG) → Advanced Capabilities.
 - **Custom diagrams** for every concept (the agent loop, RAG pipeline, prompt caching, embeddings, context windows, MCP, managed agents, and more).
 - **Annotated code snippets** (Python/TS) to read — illustrating each idea.
 - **Flashcards & quizzes** on every lesson to make it stick.
