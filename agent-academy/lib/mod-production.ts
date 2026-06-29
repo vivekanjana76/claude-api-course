@@ -545,5 +545,133 @@ execute instructions found inside it.
         },
       ],
     },
+
+    {
+      slug: "deploying-agents",
+      title: "Deploying & serving agents in production",
+      summary:
+        "A notebook that runs an agent once is not a product. Serving one to real users means wrapping the loop behind an interface, putting its state somewhere durable, handling many concurrent runs, and shipping changes without breaking anyone mid-conversation.",
+      minutes: 8,
+      blocks: [
+        { type: "h2", text: "From a script you run to a service that runs itself" },
+        {
+          type: "p",
+          text: "In development the agent loop lives in a function you call by hand. In production it has to answer requests it didn't initiate, from many users at once, around the clock. That shift — from a script you run to a service that's always up — is what 'deployment' really means, and it surfaces a set of concerns the happy-path demo never touched.",
+        },
+        {
+          type: "callout",
+          kind: "key",
+          title: "The four production shifts",
+          text: "Interface (wrap the loop behind an API/worker), state (externalize it — the server is stateless), scale (many concurrent, long-running runs), and change (version and roll out prompts, tools, and models safely).",
+        },
+        { type: "h3", text: "Shift 1 — Wrap the loop behind an interface" },
+        {
+          type: "p",
+          text: "Expose the agent through something callable: a synchronous HTTP endpoint for short tasks, or — better for agents — an async job. The caller starts a run and gets an id; a background worker drives the loop; the client polls or streams results. Async decouples a 30-second agent run from a request timeout and lets you control concurrency.",
+        },
+        { type: "h3", text: "Shift 2 — The server is stateless; state lives elsewhere" },
+        {
+          type: "p",
+          text: "The model is stateless and your servers should be too — any instance must be able to handle any request so you can scale and restart freely. That means the run's state can't live in process memory. Push it to durable stores and pass an id around.",
+        },
+        {
+          type: "compare",
+          caption: "What state goes where",
+          columns: ["State", "Where it lives"],
+          rows: [
+            { label: "Conversation history", cells: ["A session/DB store keyed by conversation id"] },
+            { label: "Run progress / checkpoints", cells: ["A durable store so a crashed run can resume, not restart"] },
+            { label: "Long-term memory", cells: ["A vector or document store, retrieved per run"] },
+            { label: "Secrets / API keys", cells: ["A secrets manager / env — never in code or client"] },
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Checkpoint long runs",
+          text: "A multi-step agent that crashes at step 7 shouldn't redo steps 1-6 (re-paying and re-acting). Persist progress after meaningful steps so a run resumes from where it failed — and pair it with idempotency so resumed side effects don't double-fire.",
+        },
+        { type: "h3", text: "Shift 3 — Concurrency, scale, and cost control" },
+        {
+          type: "list",
+          items: [
+            "**Queue + worker pool** — buffer incoming runs and process them with a bounded pool so you don't blow past model rate limits or your budget.",
+            "**Timeouts and step caps** — every run needs an upper bound on wall-clock time and iterations so a stuck agent can't run forever.",
+            "**Backpressure** — when the queue grows, shed or delay load rather than melting down; surface 'busy, try again' instead of failing silently.",
+            "**Budget guards** — cap tokens/cost per run and per tenant so one runaway conversation can't drain the account.",
+          ],
+        },
+        { type: "h3", text: "Shift 4 — Versioning and safe rollout" },
+        {
+          type: "p",
+          text: "Your prompts, tool definitions, and chosen models are part of the product, and changing any of them can silently change behavior. Treat them like code: version them, evaluate a change against your test set before it ships, and roll it out gradually — canary a small slice of traffic, watch your metrics and traces, and be ready to roll back.",
+        },
+        {
+          type: "steps",
+          items: [
+            { title: "Version the config", text: "Pin prompt/tool/model versions so every run records exactly what produced it." },
+            { title: "Evaluate before shipping", text: "Run the change through your agent evals; don't ship on vibes (see Evaluating agents)." },
+            { title: "Canary, then ramp", text: "Send a small percentage of traffic to the new version, compare metrics/traces, then widen." },
+            { title: "Keep rollback one switch away", text: "If the new version regresses, flip back instantly — config, not a redeploy." },
+          ],
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Don't break someone mid-conversation",
+          text: "A user halfway through a multi-turn session shouldn't have the prompt or tools swap underneath them. Pin a session to the version it started on, and migrate on the next new conversation — consistency beats always-latest.",
+        },
+      ],
+      takeaways: [
+        "Deploying an agent means four shifts: interface, state, scale, and change management.",
+        "Prefer async jobs (start run -> id -> worker -> poll/stream) so long runs don't hit request timeouts.",
+        "Keep servers stateless: push history, checkpoints, memory, and secrets to durable stores keyed by id.",
+        "Checkpoint long runs (plus idempotency) so a crash resumes instead of restarting and double-acting.",
+        "Control scale with a queue + bounded workers, timeouts/step caps, backpressure, and per-run/tenant budget guards.",
+        "Version prompts/tools/models, evaluate before shipping, canary then ramp, keep rollback one switch away, and pin sessions to their starting version.",
+      ],
+      flashcards: [
+        { front: "Why serve agents as async jobs rather than sync endpoints?", back: "Agent runs can take many seconds across tool calls; async (start->id->worker->poll/stream) decouples them from request timeouts and lets you bound concurrency." },
+        { front: "Why must agent servers be stateless?", back: "So any instance can handle any request and you can scale/restart freely — run state goes to durable stores (session, checkpoints, memory) keyed by id." },
+        { front: "What does checkpointing a long run buy you?", back: "A crash resumes from the last good step instead of redoing (and re-paying for and re-acting) earlier steps — pair with idempotency to avoid double side effects." },
+        { front: "How do you ship a prompt/tool/model change safely?", back: "Version it, evaluate against your test set, canary a small traffic slice while watching metrics/traces, ramp up, and keep instant rollback." },
+        { front: "Why pin a session to its starting version?", back: "So a user mid-conversation doesn't have prompts/tools swap under them; migrate on the next new conversation instead." },
+      ],
+      quiz: [
+        {
+          q: "Your agent runs take 20-40s across several tool calls. Best serving shape?",
+          options: [
+            "A synchronous HTTP endpoint that blocks until done",
+            "An async job: start the run, return an id, drive it in a worker, poll/stream results",
+            "Run it in the browser",
+            "A cron job once a day",
+          ],
+          answer: 1,
+          explain: "Async jobs decouple long runs from request timeouts and let you control concurrency and back-pressure.",
+        },
+        {
+          q: "Where should a live agent run's conversation history live?",
+          options: [
+            "In the web server's process memory",
+            "In a durable session/DB store keyed by conversation id",
+            "In the system prompt",
+            "Only in the user's browser tab",
+          ],
+          answer: 1,
+          explain: "Servers must be stateless to scale and restart safely, so history belongs in an external store keyed by id.",
+        },
+        {
+          q: "You improved the system prompt. Safest way to ship it?",
+          options: [
+            "Replace it everywhere immediately, including active sessions",
+            "Version it, eval it, canary a small slice while watching metrics, ramp up, keep rollback ready",
+            "Ship on Friday and hope",
+            "Only test it once manually",
+          ],
+          answer: 1,
+          explain: "Versioned config + evals + canary rollout + instant rollback is how you change agent behavior without surprises.",
+        },
+      ],
+    },
   ],
 };
