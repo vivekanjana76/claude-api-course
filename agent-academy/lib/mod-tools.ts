@@ -597,5 +597,126 @@ agent = Agent(
         },
       ],
     },
+
+    {
+      slug: "computer-use",
+      title: "Computer use & browser agents",
+      summary:
+        "Most tools are clean JSON functions. Computer use is different: the agent is handed a screen, a mouse, and a keyboard, and told to operate software the way a person would. It unlocks anything with a UI — and brings the reliability and safety problems of acting blind.",
+      minutes: 8,
+      blocks: [
+        { type: "h2", text: "When the tool is the whole computer" },
+        {
+          type: "p",
+          text: "Function-calling tools assume the thing you want to use has a clean API. Often it doesn't — a legacy internal app, a vendor portal, a desktop program, a website with no API. **Computer use** closes that gap: the agent receives a screenshot, decides where to click and what to type, and emits GUI actions (click at (x,y), type, scroll, keypress). It's the same agent loop you already know, but the observation is pixels and the actions are mouse and keyboard.",
+        },
+        {
+          type: "diagram", name: "agent-loop", caption: "The familiar loop, grounded in a GUI: see the screen → decide an action → act → see the new screen.",
+        },
+        {
+          type: "callout",
+          kind: "key",
+          title: "Perceive → decide → act, on a screen",
+          text: "The model looks at a screenshot (perceive), reasons about the next step toward the goal (decide), and returns a UI action your harness executes (act). You take a fresh screenshot and loop. The intelligence is the same; only the interface changed.",
+        },
+        { type: "h3", text: "When it's the right tool — and when it isn't" },
+        {
+          type: "compare",
+          caption: "Computer use vs. a real API",
+          columns: ["", "Computer use", "API / function tool"],
+          rows: [
+            { label: "Use when", cells: ["No API exists (legacy, vendor UI, desktop app)", "A clean API exists"] },
+            { label: "Speed", cells: ["Slow — screenshots + steps", "Fast — one call"] },
+            { label: "Reliability", cells: ["Brittle — UI changes break it", "Stable — typed contract"] },
+            { label: "Cost", cells: ["High — many vision tokens per step", "Low"] },
+          ],
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "Prefer an API whenever one exists",
+          text: "Computer use is the tool of last resort, not the default. It's slower, pricier, and far more fragile than a function call. Reach for it only when there's genuinely no programmatic path — then keep the GUI portion as small as possible.",
+        },
+        { type: "h3", text: "Why it's hard: acting blind on a moving target" },
+        {
+          type: "list",
+          items: [
+            "**Visual grounding** — clicking the right pixel is harder than choosing a JSON field; a few pixels off hits the wrong control.",
+            "**Non-determinism** — pop-ups, loading spinners, layout shifts, and A/B tests mean the screen is rarely identical twice.",
+            "**Error recovery** — a misclick can land the agent somewhere unexpected; it must notice and recover, not barrel on.",
+            "**Latency & cost** — every step is a screenshot in and a vision-heavy decision out; loops add up fast.",
+          ],
+        },
+        { type: "h3", text: "Safety: it can do anything a user can" },
+        {
+          type: "p",
+          text: "A browser agent isn't sandboxed by a tool schema — it has the same reach as the human at the keyboard. It can navigate to any site, fill any form, click 'delete,' or complete a purchase. Worse, it reads whatever is on screen, which makes it a prime target for **indirect prompt injection**: a malicious web page can carry instructions the agent dutifully follows.",
+        },
+        {
+          type: "steps",
+          items: [
+            { title: "Sandbox the environment", text: "Run it in a disposable VM/container with no access to credentials, secrets, or the production network." },
+            { title: "Allowlist the surface", text: "Restrict which sites/apps it can touch; block payment, admin, and destructive flows by default." },
+            { title: "Gate risky actions", text: "Require human approval before purchases, sends, deletes, or anything irreversible — the agent proposes, a person confirms." },
+            { title: "Watch and cap", text: "Log every screenshot and action for audit, and cap steps/time so a confused agent can't flail indefinitely." },
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "It's still an agent",
+          text: "Everything you know applies: a tight goal, a capped loop, good observations, and human-in-the-loop for high stakes. Computer use just makes the observations visual and the action space huge — which raises the bar on every one of those disciplines.",
+        },
+      ],
+      takeaways: [
+        "Computer use lets an agent operate a GUI (screenshot in, click/type out) to use software that has no API.",
+        "It's the same perceive→decide→act loop, with pixels as observations and mouse/keyboard as actions.",
+        "Prefer a real API whenever one exists — computer use is slower, costlier, and more brittle.",
+        "It's hard because of visual grounding, a non-deterministic screen, error recovery, and per-step latency/cost.",
+        "It has full user-level reach and reads untrusted screens — sandbox it, allowlist the surface, gate risky actions, and keep humans in the loop.",
+      ],
+      flashcards: [
+        { front: "What is computer use?", back: "An agent operating a GUI like a person — taking a screenshot, deciding an action, and emitting mouse/keyboard events — to use software with no API." },
+        { front: "When should you choose computer use over a function tool?", back: "Only when no API exists (legacy/vendor/desktop UIs). It's slower, pricier, and more brittle, so it's a last resort." },
+        { front: "Why is computer use risky from a security standpoint?", back: "It has full user-level reach (can buy/delete/send) and reads untrusted screens, making it a prime indirect-prompt-injection target." },
+        { front: "Name two reasons computer use is unreliable.", back: "Visual grounding (clicking the exact right pixel) and a non-deterministic screen (pop-ups, loading, layout shifts)." },
+        { front: "Key safety controls for a browser agent?", back: "Sandbox the environment, allowlist the sites/actions, gate irreversible actions behind human approval, and log + cap steps." },
+      ],
+      quiz: [
+        {
+          q: "Your agent needs data from an internal app that exposes a REST API. Should you use computer use?",
+          options: [
+            "Yes — computer use is always more flexible",
+            "No — call the API; computer use is a last resort for UIs with no API",
+            "Yes — it's cheaper",
+            "Only if the API is slow",
+          ],
+          answer: 1,
+          explain: "When a clean API exists, use it — it's faster, cheaper, and far more reliable than driving the GUI.",
+        },
+        {
+          q: "Why is a browser agent an especially big security surface?",
+          options: [
+            "It uses more tokens",
+            "It has full user-level reach and reads untrusted pages, inviting indirect prompt injection",
+            "It can't be logged",
+            "It only works on weekends",
+          ],
+          answer: 1,
+          explain: "With the same power as the human at the keyboard plus exposure to malicious page content, it can be hijacked into harmful actions.",
+        },
+        {
+          q: "Which is NOT a sound computer-use safety control?",
+          options: [
+            "Running it in a disposable sandbox with no secrets",
+            "Allowlisting which sites and actions are permitted",
+            "Letting it complete purchases autonomously to save time",
+            "Requiring human approval for irreversible actions",
+          ],
+          answer: 2,
+          explain: "Irreversible/high-stakes actions like purchases should be gated behind human approval, not run autonomously.",
+        },
+      ],
+    },
   ],
 };
