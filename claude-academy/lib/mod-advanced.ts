@@ -639,5 +639,129 @@ user = f"<page>{untrusted_html_text}</page>\\n\\nSummarize the page."
         },
       ],
     },
+
+    {
+      slug: "hallucinations",
+      title: "Hallucinations: why they happen & how to reduce them",
+      summary:
+        "Claude sometimes states false things with total confidence. That's not a bug you can patch away — it's a property of how language models work. You reduce it by grounding answers, giving the model an exit, and verifying what matters.",
+      minutes: 7,
+      blocks: [
+        { type: "h2", text: "A fluent guess is still a guess" },
+        {
+          type: "p",
+          text: "A language model generates the next likely token given everything so far. It is optimized to produce *plausible* text, not *true* text — and most of the time plausible and true coincide, which is why it's so useful. But when the model lacks the fact, the two diverge: it fills the gap with something that reads right and is wrong. We call that a **hallucination** (or confabulation). The dangerous part is the confidence: a fabricated citation or API method looks exactly as authoritative as a real one.",
+        },
+        {
+          type: "callout",
+          kind: "key",
+          title: "Why it can't just 'know what it knows'",
+          text: "The model has no built-in truth check and no native sense of its own uncertainty. Asking 'are you sure?' often just produces another fluent guess. Reducing hallucination is about changing the setup — what's in context and what the model is allowed to say — not about scolding it.",
+        },
+        { type: "h3", text: "Where hallucinations come from" },
+        {
+          type: "list",
+          items: [
+            "**Missing knowledge** — the fact isn't in the model's training or its context, so it improvises.",
+            "**Stale knowledge** — the world changed after training; it answers from an outdated picture.",
+            "**Over-helpfulness** — pushed to answer, it would rather produce *something* than say 'I don't know.'",
+            "**Leading prompts** — a question that presumes a false premise gets an answer that plays along.",
+          ],
+        },
+        { type: "h3", text: "The mitigations that actually work" },
+        {
+          type: "compare",
+          caption: "Reaching for the right lever per cause",
+          columns: ["Lever", "What it does"],
+          rows: [
+            { label: "Ground with retrieval (RAG)", cells: ["Put the real facts in context so the model reads instead of recalls — with citations to verify."] },
+            { label: "Give it an exit", cells: ["Explicitly allow 'I don't know / not in the sources' so honesty beats invention."] },
+            { label: "Constrain the claim", cells: ["Ask only what the context supports; avoid questions with false premises."] },
+            { label: "Verify externally", cells: ["Check facts with a tool/code, or re-ask and compare for consistency."] },
+          ],
+        },
+        {
+          type: "code",
+          lang: "text",
+          caption: "A grounded, exit-friendly prompt shape",
+          code: `Answer the question using ONLY the sources below.
+If the answer is not in the sources, reply exactly:
+"I don't have enough information to answer that."
+Cite the source number after each claim, like [2].
+
+<sources>
+{retrieved_chunks}
+</sources>
+
+Question: {user_question}`,
+        },
+        {
+          type: "callout",
+          kind: "tip",
+          title: "Make 'I don't know' a first-class answer",
+          text: "Most hallucinations are the model refusing to leave a blank. The moment you legitimize abstention — and reward it in your evals — accuracy-when-it-answers climbs sharply. A confident wrong answer is worse than an honest gap.",
+        },
+        { type: "h3", text: "Verification for high-stakes facts" },
+        {
+          type: "p",
+          text: "When a wrong answer is costly — legal, medical, financial, code that runs — don't trust a single generation. Have the model call a tool to look the fact up, run the code it wrote, or generate the answer twice and flag disagreement (self-consistency). And measure it: a **model-graded eval** that checks answers against ground truth tells you your real hallucination rate instead of a vibe.",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "You reduce, not eliminate",
+          text: "No technique drives hallucination to zero. The engineering goal is to push the rate low enough for the stakes, surface uncertainty to the user, and keep a human in the loop where being wrong is expensive.",
+        },
+      ],
+      takeaways: [
+        "Hallucination is intrinsic: models predict plausible tokens and have no built-in truth check or uncertainty sense.",
+        "Main causes: missing or stale knowledge, over-helpfulness, and leading prompts with false premises.",
+        "The strongest fix is grounding answers in retrieved sources with citations (RAG).",
+        "Explicitly permitting 'I don't know' turns confident fabrication into honest abstention.",
+        "For high-stakes facts, verify with tools/code or self-consistency and measure the rate with model-graded evals.",
+      ],
+      flashcards: [
+        { front: "Why do LLMs hallucinate?", back: "They generate the most plausible next token, optimizing for plausibility not truth, with no built-in fact check — so they fill knowledge gaps with confident, fluent guesses." },
+        { front: "Single most effective way to reduce hallucination?", back: "Ground the answer in retrieved sources (RAG) and require citations, so the model reads facts from context instead of recalling them." },
+        { front: "How does allowing 'I don't know' help?", back: "Many hallucinations are the model refusing to leave a blank; legitimizing abstention turns confident wrong answers into honest gaps." },
+        { front: "How do you verify high-stakes facts?", back: "Look them up via a tool/code, run generated code, or use self-consistency (re-ask and compare) — and measure the rate with a model-graded eval." },
+        { front: "Can hallucination be eliminated?", back: "No — only reduced. Push the rate below what the stakes tolerate, surface uncertainty, and keep humans in the loop where errors are costly." },
+      ],
+      quiz: [
+        {
+          q: "Your assistant invents a plausible-but-fake citation. Most effective fix?",
+          options: [
+            "Add 'do not hallucinate' to the system prompt",
+            "Ground answers in retrieved sources and require citations to them",
+            "Raise the temperature",
+            "Ask 'are you sure?' after every answer",
+          ],
+          answer: 1,
+          explain: "Grounding with retrieval + citations gives the model real facts to read and a way to verify, which directly attacks fabricated references.",
+        },
+        {
+          q: "Why does telling the model it may answer 'I don't know' reduce hallucinations?",
+          options: [
+            "It makes the model smarter",
+            "It legitimizes abstention so the model stops filling blanks with confident guesses",
+            "It lowers token cost",
+            "It disables the model's training data",
+          ],
+          answer: 1,
+          explain: "Many hallucinations come from over-helpfulness; an explicit exit lets honesty win over invention.",
+        },
+        {
+          q: "For a legal-fact answer where being wrong is costly, what's the right posture?",
+          options: [
+            "Trust a single confident generation",
+            "Verify via tools/lookup or self-consistency, measure with evals, and keep a human in the loop",
+            "Use the largest model and assume it's correct",
+            "Increase max_tokens so it explains more",
+          ],
+          answer: 1,
+          explain: "High stakes demand external verification, measurement of the real error rate, and human oversight — confidence isn't correctness.",
+        },
+      ],
+    },
   ],
 };
