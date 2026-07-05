@@ -38,7 +38,8 @@ export type DiagramName =
   | "embeddings"
   | "thinking"
   | "server-tools"
-  | "context-management";
+  | "context-management"
+  | "ai-stack";
 
 export interface Flashcard {
   front: string;
