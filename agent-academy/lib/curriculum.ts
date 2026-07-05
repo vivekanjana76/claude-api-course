@@ -6,6 +6,7 @@ import { orchestration } from "./mod-orchestration";
 import { crewai } from "./mod-crewai";
 import { frameworks } from "./mod-frameworks";
 import { production } from "./mod-production";
+import { stack } from "./mod-stack";
 
 export const modules: Module[] = [
   foundations,
@@ -15,6 +16,7 @@ export const modules: Module[] = [
   crewai,
   frameworks,
   production,
+  stack,
 ];
 
 export interface LessonRef {

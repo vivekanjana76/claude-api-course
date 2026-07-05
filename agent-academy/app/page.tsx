@@ -18,6 +18,7 @@ import {
   Workflow,
   MessagesSquare,
   BookOpen,
+  Rocket,
 } from "lucide-react";
 
 const accent: Record<string, { dot: string; ring: string; text: string; chip: string }> = {
@@ -35,6 +36,7 @@ const moduleIcon: Record<string, React.ReactNode> = {
   crewai: <Users size={20} />,
   frameworks: <Library size={20} />,
   production: <ShieldCheck size={20} />,
+  stack: <Rocket size={20} />,
 };
 
 export default function Home() {
@@ -117,7 +119,7 @@ export default function Home() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <h2 className="font-display text-3xl font-semibold text-ink tracking-tight">The curriculum</h2>
-            <p className="text-ink-muted mt-1">Seven modules, fundamentals to frontier.</p>
+            <p className="text-ink-muted mt-1">Eight modules, fundamentals to frontier.</p>
           </div>
           <Link href="/learn" className="text-iris-dark hover:text-iris text-sm font-medium hidden sm:flex items-center gap-1">
             See all <ArrowRight size={15} />
