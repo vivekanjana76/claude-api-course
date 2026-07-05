@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { modules, totalLessons, totalMinutes } from "@/lib/curriculum";
+import { ContinueLearning } from "@/components/ContinueLearning";
 import { interviewQA } from "@/lib/interview";
 import { technicalQA } from "@/lib/intuitive-prep";
 import { glossary } from "@/lib/glossary";
@@ -100,6 +101,11 @@ export default function Home() {
 
           <HeroArt />
         </div>
+      </section>
+
+      {/* resume */}
+      <section className="max-w-6xl mx-auto px-6 pb-10 -mt-6">
+        <ContinueLearning />
       </section>
 
       {/* modules */}
