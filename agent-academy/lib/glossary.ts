@@ -52,4 +52,10 @@ export const glossary: GlossaryTerm[] = [
   { term: "Least privilege", def: "Giving each agent the minimum tools, data scope, and permissions it needs — limiting the blast radius of any failure or injection.", related: ["Guardrails", "Prompt injection"] },
   { term: "Prompt caching", def: "Reusing a stable prompt prefix across requests to cut input cost (often ~90%) and latency.", related: ["Context window", "Token"] },
   { term: "Stateless", def: "A model remembers nothing between calls; the app must resend context each time. The reason memory must be engineered.", related: ["Memory (agent)", "Context window"] },
+  { term: "Agentic stack", def: "The layers around a production agent: models, model access, tools/MCP, memory, orchestration, observability & evals, guardrails & HITL." },
+  { term: "Agent harness", def: "A thin runtime around the loop — tools, permissions, context management — increasingly favored over heavyweight orchestration frameworks.", related: ["Agentic stack"] },
+  { term: "Coding agent", def: "An agent (Claude Code, Cursor agents) that runs the loop on a repo: explores, edits, runs tests, iterates. The category's biggest success so far.", related: ["Agent loop"] },
+  { term: "Spec-driven development", def: "Humans write precise behavior specs and review diffs; coding agents implement. The craft moves upstream from typing to defining and verifying.", related: ["Coding agent"] },
+  { term: "A2A (Agent2Agent)", def: "An open protocol for agent↔agent interoperability: Agent Cards for discovery, tasks and artifacts for delegation across vendors and frameworks.", related: ["MCP", "Agent Card"] },
+  { term: "Agent Card", def: "A2A's discovery document — JSON describing an agent's skills, endpoint, and auth, so other agents can find and address it.", related: ["A2A (Agent2Agent)"] },
 ];

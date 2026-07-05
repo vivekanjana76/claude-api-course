@@ -136,4 +136,24 @@ export const interviewQA: InterviewQA[] = [
     q: "When should a human be in the loop?",
     a: "For irreversible or high-stakes actions (sending money, deleting data, emailing customers), low-confidence decisions, and ambiguous requests — let reversible, low-stakes actions run autonomously. This 'graduated autonomy' gives most of the speed of agents while a human owns the consequences that matter. Implement it as an approval gate in the harness around the risky tool, and layer it with other guardrails for defense in depth.",
   },
+  {
+    topic: "The Agentic Stack",
+    q: "Describe the stack around a production agent.",
+    a: "Bottom-up: models (often tiered — frontier for reasoning, small for cheap steps), model access (SDK or gateway with fallbacks/budgets), tools and connectors (your functions plus MCP servers), memory/state, orchestration (harness or framework), observability & evals, and guardrails/HITL on top. Buy the commodity edges (access, observability); own tools, prompts, and evals — that's where quality differentiates. Add each layer when its pain appears, observability first.",
+  },
+  {
+    topic: "The Agentic Stack",
+    q: "Why did coding become the first killer app for agents?",
+    a: "Software is the ideal agent environment: tests and compilers give the loop verifiable feedback, a tiny composable toolset (read/edit/grep/run) covers the domain, git makes actions reversible so high autonomy is safe, and everything is text. Most other domains lack the objective feedback signal.",
+  },
+  {
+    topic: "The Agentic Stack",
+    q: "How do MCP and A2A relate?",
+    a: "Complementary layers of the interoperability stack. MCP standardizes agent↔tool: capabilities, resources, and prompts exposed by servers. A2A standardizes agent↔agent: discovery via Agent Cards, delegation as tasks, results as artifacts — the remote agent runs its own loop. Rule of thumb: deterministic capability → MCP tool; autonomous peer that plans its own work, possibly cross-vendor → A2A.",
+  },
+  {
+    topic: "The Agentic Stack",
+    q: "What security posture do you take toward a peer agent's output?",
+    a: "Treat it exactly like untrusted content: it's injection surface, so it never overrides instructions, and anything irreversible stays behind your own guardrails and human approval regardless of the source. Authentication tells you who called, not that their intent is safe — least privilege applies to peer agents just as it does to tools.",
+  },
 ];
