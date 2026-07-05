@@ -5,6 +5,7 @@ import { LessonRenderer } from "@/components/LessonRenderer";
 import { Flashcards } from "@/components/Flashcards";
 import { Quiz } from "@/components/Quiz";
 import { CompleteButton } from "@/components/CompleteButton";
+import { LessonUX } from "@/components/LessonUX";
 import {
   Clock,
   ArrowLeft,
@@ -39,6 +40,7 @@ export default function LessonPage({ params }: { params: { slug: string } }) {
 
   return (
     <article className="max-w-3xl mx-auto px-6 lg:px-10 py-12 pb-24">
+      <LessonUX prev={prev?.lesson.slug} next={next?.lesson.slug} />
       {/* breadcrumb */}
       <div className="flex items-center gap-2 text-sm text-ink-muted mb-5">
         <Link href="/learn" className="hover:text-clay">Curriculum</Link>
@@ -113,6 +115,7 @@ export default function LessonPage({ params }: { params: { slug: string } }) {
           >
             <span className="flex items-center gap-1 text-xs text-ink-muted mb-1">
               <ArrowLeft size={13} /> Previous
+              <kbd className="ml-1 hidden sm:inline text-[0.62rem] border border-cream-300 rounded px-1 py-0.5">←</kbd>
             </span>
             <span className="font-medium text-ink group-hover:text-clay-dark transition-colors">
               {prev.lesson.title}
@@ -127,6 +130,7 @@ export default function LessonPage({ params }: { params: { slug: string } }) {
             className="group rounded-xl border border-cream-300 bg-white/40 p-4 text-right hover:border-clay/40 transition-colors"
           >
             <span className="flex items-center justify-end gap-1 text-xs text-ink-muted mb-1">
+              <kbd className="mr-1 hidden sm:inline text-[0.62rem] border border-cream-300 rounded px-1 py-0.5">→</kbd>
               Next <ArrowRight size={13} />
             </span>
             <span className="font-medium text-ink group-hover:text-clay-dark transition-colors">
