@@ -671,6 +671,37 @@ function ContextManagement() {
   );
 }
 
+function AiStack() {
+  return (
+    <Frame h={400}>
+      <text x={330} y={38} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={14} fontWeight={600} fill={C.ink}>
+        The modern LLM app stack
+      </text>
+
+      {/* central column, top-down */}
+      <Node x={180} y={60} w={300} h={58} label="Your product" sub="chat UI · API · background jobs" />
+      <Arrow x1={330} y1={118} x2={330} y2={140} flow />
+      <Node x={180} y={142} w={300} h={58} label="Orchestration & agents" sub="agent loop · workflows · frameworks" accent />
+      <Arrow x1={330} y1={200} x2={330} y2={222} flow />
+      <Node x={180} y={224} w={300} h={58} label="Gateway / router" sub="keys · fallbacks · cost caps · routing" fill={C.ochreSoft} />
+      <Arrow x1={330} y1={282} x2={330} y2={304} flow />
+      <Node x={180} y={306} w={300} h={58} label="Models & inference" sub="Claude API · open-weights on vLLM" fill={C.blueSoft} />
+
+      {/* left rail: data */}
+      <Node x={20} y={142} w={140} h={140} label="Data & RAG" sub="embeddings · vector store" fill={C.sageSoft} />
+      <Arrow x1={160} y1={190} x2={178} y2={180} color={C.sage} dashed />
+
+      {/* right rail: observability */}
+      <Node x={520} y={60} w={250} h={140} label="Observability & evals" sub="traces · eval suites · A/B" fill={C.sageSoft} />
+      <Node x={520} y={224} w={250} h={140} label="Guardrails & safety" sub="input/output checks · HITL" fill={C.claySoft} />
+      <Arrow x1={518} y1={170} x2={484} y2={170} color={C.sage} dashed />
+      <Arrow x1={518} y1={253} x2={484} y2={253} color={C.clay} dashed />
+
+      <Cap x={330} y={390} text="Every layer is swappable — the skill is knowing when a layer earns its place" />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "request-response": RequestResponse,
   tokens: Tokens,
@@ -693,6 +724,7 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   thinking: Thinking,
   "server-tools": ServerTools,
   "context-management": ContextManagement,
+  "ai-stack": AiStack,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

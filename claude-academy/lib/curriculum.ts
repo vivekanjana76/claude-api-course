@@ -5,6 +5,7 @@ import { evals } from "./mod-evals";
 import { agents } from "./mod-agents";
 import { rag } from "./mod-rag";
 import { advanced } from "./mod-advanced";
+import { stack } from "./mod-stack";
 
 export const modules: Module[] = [
   foundations,
@@ -13,6 +14,7 @@ export const modules: Module[] = [
   agents,
   rag,
   advanced,
+  stack,
 ];
 
 export interface LessonRef {

@@ -106,4 +106,29 @@ export const interviewQA: InterviewQA[] = [
     q: "What are the key responsible-use practices when building with Claude?",
     a: "Never put secrets (API keys, passwords) in prompts or memory; validate tool inputs since they're model output; gate irreversible actions behind human approval; be transparent that users are talking to an AI and where its knowledge comes from; and design for refusals as a normal outcome.",
   },
+  {
+    topic: "The AI Engineer's Stack",
+    q: "How is an AI engineer different from an ML engineer?",
+    a: "ML engineers train and serve models: data pipelines, training runs, model serving. AI engineers build products on foundation models they don't train: prompting, RAG, tool use/agents, and evals. The AI engineer's unit of progress is the eval suite around the system, not the model itself.",
+  },
+  {
+    topic: "The AI Engineer's Stack",
+    q: "Walk me through the modern LLM app stack.",
+    a: "Bottom-up: models & inference (Claude API, or open weights on vLLM), an optional gateway/router for multi-provider fallbacks and budgets (LiteLLM), orchestration (plain SDK code or an agent framework), data & retrieval (embeddings + a vector store like pgvector), observability & evals (Langfuse, Braintrust), and guardrails. Every layer is optional except the model — add each when its specific pain appears; observability usually earns its place first.",
+  },
+  {
+    topic: "The AI Engineer's Stack",
+    q: "When would you choose prompting vs RAG vs fine-tuning?",
+    a: "Route on behavior vs knowledge. Wrong behavior (format, tone, style) → prompt harder first; fine-tune only when thousands of examples exist and prompting can't hold the behavior, or prompt length costs too much at volume. Missing knowledge (your docs, fresh or per-customer data) → RAG, because knowledge changes and needs citations. Never fine-tune to teach facts — the model will hallucinate fluently in your domain. In production the levers stack: a fine-tuned small model for a high-volume step, RAG for knowledge, prompting everywhere.",
+  },
+  {
+    topic: "The AI Engineer's Stack",
+    q: "When do open-weight models beat a frontier API?",
+    a: "Three cases: data control (the model must run in your VPC or air-gapped), customization (you need LoRA-level control over behavior), and narrow-task economics (a small or distilled open model passes your evals on one high-volume task and undercuts API pricing even after honest GPU and ops accounting). Frontier APIs win on raw capability and zero ops burden. The dominant pattern is hybrid: frontier for hard low-volume work, a small open model behind a gateway for proven high-volume tasks.",
+  },
+  {
+    topic: "The AI Engineer's Stack",
+    q: "How do you keep quality high when coding agents write much of the code?",
+    a: "Treat the agent like a tireless junior with superhuman breadth: give it written project context (a CLAUDE.md-style brief), fast trustworthy tests as its feedback loop, and small scoped tasks. Work spec-first — precise inputs/outputs/edge-cases/non-goals — and review every diff against the spec with normal PR rigor, extra for security-sensitive code. You own what you ship regardless of who typed it.",
+  },
 ];

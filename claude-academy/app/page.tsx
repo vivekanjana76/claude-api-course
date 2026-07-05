@@ -15,6 +15,7 @@ import {
   FlaskConical,
   Cpu,
   Target,
+  Rocket,
 } from "lucide-react";
 
 const accent: Record<string, { dot: string; ring: string; text: string }> = {
@@ -31,6 +32,7 @@ const moduleIcon: Record<string, React.ReactNode> = {
   agents: <Wrench size={20} />,
   rag: <Database size={20} />,
   advanced: <Cpu size={20} />,
+  stack: <Rocket size={20} />,
 };
 
 export default function Home() {
@@ -113,7 +115,7 @@ export default function Home() {
         <div className="flex items-end justify-between mb-8">
           <div>
             <h2 className="font-serif text-3xl font-semibold text-ink">The curriculum</h2>
-            <p className="text-ink-muted mt-1">Six modules, beginner to frontier.</p>
+            <p className="text-ink-muted mt-1">Seven modules, beginner to frontier.</p>
           </div>
           <Link href="/learn" className="text-clay-dark hover:text-clay text-sm font-medium hidden sm:flex items-center gap-1">
             See all <ArrowRight size={15} />
