@@ -6,14 +6,15 @@ Built to *understand concepts* (no setup, no running code) and to *prepare you t
 
 ## What's inside
 
-- **6 modules · 33 lessons** — Foundations → Prompt Engineering → Evaluation → Tool Use & Agents → Retrieval (RAG) → Advanced Capabilities (incl. prompt-injection security & reducing hallucinations).
-- **Custom diagrams** for every concept (the agent loop, RAG pipeline, prompt caching, embeddings, context windows, MCP, managed agents, and more).
+- **7 modules · 38 lessons** — Foundations → Prompt Engineering → Evaluation → Tool Use & Agents → Retrieval (RAG) → Advanced Capabilities (incl. prompt-injection security & reducing hallucinations) → The AI Engineer's Stack (the role, the modern LLM app stack, prompting vs RAG vs fine-tuning, open-weight & local models, AI-first engineering with coding agents).
+- **Custom diagrams** for every concept (the agent loop, RAG pipeline, prompt caching, embeddings, context windows, MCP, managed agents, the LLM app stack, and more).
 - **Annotated code snippets** (Python/TS) to read — illustrating each idea.
 - **Flashcards & quizzes** on every lesson to make it stick.
 - **Command palette search** — press <kbd>⌘K</kbd> / <kbd>Ctrl-K</kbd> (or `/`) anywhere to jump to any lesson, glossary term, or page by keyword.
-- **Interview Q&A bank** — 21 likely questions with model answers, searchable by topic.
-- **Glossary** — 42 cross-linked definitions.
-- **Progress tracking** saved in your browser (localStorage).
+- **Interview Q&A bank** — 26 likely questions with model answers, searchable by topic.
+- **Glossary** — 55 cross-linked definitions.
+- **Progress tracking** saved in your browser (localStorage) — surfaced in the sidebar, on the curriculum page (per-module bars, per-lesson checks), and via a "Continue where you left off" card on the home and curriculum pages.
+- **Reading UX** — a scroll progress bar on every lesson and ←/→ keyboard navigation between lessons.
 
 ## Run it
 
