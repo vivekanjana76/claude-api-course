@@ -4,6 +4,7 @@ import { interviewQA } from "@/lib/interview";
 import { glossary } from "@/lib/glossary";
 import { patterns } from "@/lib/patterns";
 import { Logo } from "@/components/Logo";
+import { ContinueLearning } from "@/components/ContinueLearning";
 import {
   ArrowRight,
   Sparkles,
@@ -104,6 +105,11 @@ export default function Home() {
             <HeroArt />
           </div>
         </div>
+      </section>
+
+      {/* resume */}
+      <section className="max-w-6xl mx-auto px-6 pt-10 -mb-6">
+        <ContinueLearning />
       </section>
 
       {/* modules */}
