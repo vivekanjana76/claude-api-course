@@ -7,6 +7,7 @@ import { crewai } from "./mod-crewai";
 import { frameworks } from "./mod-frameworks";
 import { production } from "./mod-production";
 import { stack } from "./mod-stack";
+import { frontier } from "./mod-frontier";
 
 export const modules: Module[] = [
   foundations,
@@ -17,6 +18,7 @@ export const modules: Module[] = [
   frameworks,
   production,
   stack,
+  frontier,
 ];
 
 export interface LessonRef {

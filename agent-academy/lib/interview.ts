@@ -156,4 +156,24 @@ export const interviewQA: InterviewQA[] = [
     q: "What security posture do you take toward a peer agent's output?",
     a: "Treat it exactly like untrusted content: it's injection surface, so it never overrides instructions, and anything irreversible stays behind your own guardrails and human approval regardless of the source. Authentication tells you who called, not that their intent is safe — least privilege applies to peer agents just as it does to tools.",
   },
+  {
+    topic: "Frontier Agents",
+    q: "How would you architect a voice agent, and what drives the choice?",
+    a: "Two options: a cascaded pipeline (STT → text LLM → TTS) or a speech-to-speech model over a streaming connection. Cascaded gives full control — your existing agent, tools, and logging work unchanged — at the cost of three latency hops and lost vocal nuance. Speech-to-speech gives human-level latency and prosody but younger tooling and harder auditing. The driver is the ~1-second conversational latency budget: either way, tool calls must overlap with speech (conversational masking), turn detection and barge-in need explicit handling, and consequential actions get read-back confirmation because transcription mangles entities.",
+  },
+  {
+    topic: "Frontier Agents",
+    q: "How do you make an agent proactive without destroying user trust?",
+    a: "Climb an autonomy ladder per task type: notify → draft-for-approval → act-and-report → act silently. Promotion is earned from observed acceptance rates (e.g., 95% of drafts approved for a month), demotion is instant on one bad autonomous action. Grade the system on precision, not recall — every notification spends a limited trust budget, and over-pinging trains users to ignore the agent entirely. Anything irreversible stays behind a human gate regardless of ladder position.",
+  },
+  {
+    topic: "Frontier Agents",
+    q: "An enterprise vendor pitches their product as 'agentic AI'. How do you evaluate the claim?",
+    a: "One question cuts through agent washing: does the model observe results and choose the next step at runtime, or does code control the sequence? Ask for a trace where the system chose between meaningfully different actions. Then the durable diligence set: outcome-level eval scores on a real task distribution (not demos), the failure story (escalation, rollback, blast radius), per-task unit cost, and the permission model. A fixed pipeline with LLM steps can still be the right product — it's just a workflow, and should be priced and risked like one.",
+  },
+  {
+    topic: "Frontier Agents",
+    q: "Why do ambient agents raise the security stakes compared to chat assistants?",
+    a: "They're the lethal trifecta running unattended at scale: private-data access plus untrusted input (every inbound email or webpage is attacker-controlled) plus action authority — with no human glancing at each step. Structural guardrails must do all the work: least-privilege scopes per task, spending caps and allowlisted counterparties for agentic commerce, audit logs for every action, and human gates on the irreversible. Delegated authority, not model capability, is the real attack surface.",
+  },
 ];
