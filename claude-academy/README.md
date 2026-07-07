@@ -6,13 +6,13 @@ Built to *understand concepts* (no setup, no running code) and to *prepare you t
 
 ## What's inside
 
-- **7 modules · 38 lessons** — Foundations → Prompt Engineering → Evaluation → Tool Use & Agents → Retrieval (RAG) → Advanced Capabilities (incl. prompt-injection security & reducing hallucinations) → The AI Engineer's Stack (the role, the modern LLM app stack, prompting vs RAG vs fine-tuning, open-weight & local models, AI-first engineering with coding agents).
+- **8 modules · 42 lessons** — Foundations → Prompt Engineering → Evaluation → Tool Use & Agents → Retrieval (RAG) → Advanced Capabilities (incl. prompt-injection security & reducing hallucinations) → The AI Engineer's Stack (the role, the modern LLM app stack, prompting vs RAG vs fine-tuning, open-weight & local models, AI-first engineering with coding agents) → Frontier AI, Decoded (reasoning models & test-time compute, small language models & on-device AI, agentic RAG & deep research, and a buzzword decoder for vibe coding, world models, synthetic data, AGI and friends).
 - **Custom diagrams** for every concept (the agent loop, RAG pipeline, prompt caching, embeddings, context windows, MCP, managed agents, the LLM app stack, and more).
 - **Annotated code snippets** (Python/TS) to read — illustrating each idea.
 - **Flashcards & quizzes** on every lesson to make it stick.
 - **Command palette search** — press <kbd>⌘K</kbd> / <kbd>Ctrl-K</kbd> (or `/`) anywhere to jump to any lesson, glossary term, or page by keyword.
-- **Interview Q&A bank** — 26 likely questions with model answers, searchable by topic.
-- **Glossary** — 55 cross-linked definitions.
+- **Interview Q&A bank** — 31 likely questions with model answers, searchable by topic.
+- **Glossary** — 70 cross-linked definitions with live search, an A–Z letter rail, and "See also" links that jump to (and highlight) the related term.
 - **Progress tracking** saved in your browser (localStorage) — surfaced in the sidebar, on the curriculum page (per-module bars, per-lesson checks), and via a "Continue where you left off" card on the home and curriculum pages.
 - **Reading UX** — a scroll progress bar on every lesson and ←/→ keyboard navigation between lessons.
 
