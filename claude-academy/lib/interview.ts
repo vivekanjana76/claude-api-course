@@ -131,4 +131,29 @@ export const interviewQA: InterviewQA[] = [
     q: "How do you keep quality high when coding agents write much of the code?",
     a: "Treat the agent like a tireless junior with superhuman breadth: give it written project context (a CLAUDE.md-style brief), fast trustworthy tests as its feedback loop, and small scoped tasks. Work spec-first — precise inputs/outputs/edge-cases/non-goals — and review every diff against the spec with normal PR rigor, extra for security-sensitive code. You own what you ship regardless of who typed it.",
   },
+  {
+    topic: "Frontier AI",
+    q: "What is test-time compute, and when would you pay for it?",
+    a: "Extra computation spent at inference time to get a better answer: longer chain-of-thought (Claude's effort/adaptive thinking), best-of-N parallel sampling with a judge, or search over reasoning branches. It's the third scaling axis after pretraining and post-training. Pay for it on hard reasoning — math, debugging, planning, multi-constraint problems — and skip it on extraction, classification, and chat, where it burns latency and tokens for the same answer. Evals tell you which bucket a task is in.",
+  },
+  {
+    topic: "Frontier AI",
+    q: "What is a reasoning model?",
+    a: "A model trained — typically with reinforcement learning on problems with verifiable answers like math and code — to produce a long internal chain of thought before answering. The thinking behavior lives in the weights, not the prompt, and reaches quality that 'think step by step' prompting alone doesn't. On Claude this surfaces as extended/adaptive thinking controlled by the effort setting.",
+  },
+  {
+    topic: "Frontier AI",
+    q: "How does agentic RAG differ from classic RAG, and what new failure modes does it add?",
+    a: "Classic RAG retrieves once with the user's raw phrasing, then generates. Agentic RAG makes search a tool inside the agentic loop: the model decomposes the question, writes its own queries, judges the returned chunks, and re-searches until grounded — which fixes multi-hop and vague-query failures at 3–10× the cost. New failure modes: endless search loops, budget burn on repeated queries, and answering confidently after retrieval failed. Guard with iteration caps, per-search logging, and evals on retrieval behavior, not just final answers.",
+  },
+  {
+    topic: "Frontier AI",
+    q: "When does a small language model beat a frontier model?",
+    a: "On narrow, high-volume tasks — classification, routing, extraction, summarization — where your eval suite says the small model passes. Then the frontier model's extra capability is pure waste at that call site. If the SLM almost passes, distill: have the frontier model generate gold examples, LoRA-tune the small model, re-run evals. Production systems typically cascade — small model first, escalate to frontier on low confidence — and on-device SLMs add privacy, instant latency, and offline operation.",
+  },
+  {
+    topic: "Frontier AI",
+    q: "How do you evaluate whether a new AI buzzword matters for your team?",
+    a: "Three questions. What's the mechanism — can it be explained in terms of training, inference, or systems around models? If not, it's marketing. Who benefits from me believing the term — vendors coin words to reposition products. Is there an eval — real capabilities ship with measurable benchmarks; hype ships with demos. Most buzzwords decode to recombinations of mechanisms you already run: retrieval, tool loops, evals, token economics.",
+  },
 ];
