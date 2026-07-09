@@ -615,6 +615,95 @@ function DeploymentStrategies() {
   );
 }
 
+// ClickOps (manual) vs IaC (code) producing infrastructure.
+function IacVsClickops() {
+  return (
+    <Frame h={300}>
+      {/* clickops */}
+      <text x={200} y={40} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={14} fontWeight={700} fill={C.muted}>
+        ClickOps
+      </text>
+      <Node x={70} y={58} w={260} h={44} label="Human clicks in console" fill={C.card} stroke={C.muted} />
+      <Arrow x1={200} y1={102} x2={200} y2={128} color={C.muted} />
+      <Node x={70} y={130} w={260} h={44} label="Infrastructure" sub="unrepeatable · undocumented" fill={C.roseSoft} stroke={C.rose} text={C.rose} />
+      <text x={200} y={205} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.rose}>
+        ✗ drifts · ✗ no review · ✗ can't rebuild
+      </text>
+
+      {/* iac */}
+      <text x={600} y={40} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={14} fontWeight={700} fill={C.iris}>
+        Infrastructure as Code
+      </text>
+      <Node x={470} y={58} w={260} h={44} label="Code in Git (reviewed)" accent />
+      <Arrow x1={600} y1={102} x2={600} y2={128} color={C.iris} flow />
+      <Node x={470} y={130} w={260} h={44} label="Identical infrastructure" sub="reproducible · versioned" fill={C.tealSoft} stroke={C.teal} text={C.teal} />
+      <text x={600} y={205} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.teal}>
+        ✓ repeatable · ✓ reviewed · ✓ auditable
+      </text>
+
+      <line x1={400} y1={50} x2={400} y2={215} stroke={C.line} strokeWidth={1.4} strokeDasharray="4 5" />
+      <Cap x={400} y={250} text="Same goal, but only IaC is reproducible, reviewable, and safe to rebuild." />
+    </Frame>
+  );
+}
+
+// Terraform core workflow: write → init → plan → apply → destroy.
+function TerraformWorkflow() {
+  const steps = [
+    { t: "write", s: "HCL", c: C.iris },
+    { t: "init", s: "get providers", c: C.teal },
+    { t: "plan", s: "preview diff", c: C.rose },
+    { t: "apply", s: "make it real", c: C.amber },
+  ];
+  const w = 150,
+    gap = 20,
+    x0 = 40,
+    y = 110;
+  return (
+    <Frame h={240}>
+      {steps.map((st, i) => {
+        const x = x0 + i * (w + gap);
+        return (
+          <g key={st.t}>
+            <Node x={x} y={y} w={w} h={64} label={st.t} sub={st.s} fill={C.card} stroke={st.c} text={st.c} />
+            {i < steps.length - 1 && <Arrow x1={x + w} y1={y + 32} x2={x + w + gap} y2={y + 32} color={st.c} flow />}
+          </g>
+        );
+      })}
+      <text x={620} y={y + 20} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={600} fill={C.rose}>
+        plan is a
+      </text>
+      <text x={620} y={y + 38} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={600} fill={C.rose}>
+        dry run —
+      </text>
+      <text x={620} y={y + 56} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={600} fill={C.rose}>
+        always read it
+      </text>
+      <Cap x={400} y={210} text="`destroy` tears it all down — great for ephemeral environments." />
+    </Frame>
+  );
+}
+
+// State maps HCL to real cloud resources.
+function TerraformState() {
+  return (
+    <Frame h={260}>
+      <Node x={40} y={100} w={180} h={70} label="HCL config" sub="desired state" accent />
+      <Node x={310} y={95} w={180} h={80} label="State file" sub="the map (locked, remote)" fill={C.amberSoft} stroke={C.amber} text={C.amber} />
+      <Node x={580} y={100} w={180} h={70} label="Real cloud" sub="actual resources" fill={C.tealSoft} stroke={C.teal} text={C.teal} />
+      <Arrow x1={220} y1={135} x2={308} y2={135} color={C.iris} />
+      <Arrow x1={490} y1={135} x2={578} y2={135} color={C.teal} dashed />
+      <text x={264} y={122} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.muted}>
+        maps
+      </text>
+      <text x={534} y={122} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.muted}>
+        refresh
+      </text>
+      <Cap x={400} y={220} text="plan = diff(config, refreshed state). Lose the state and Terraform forgets what it manages." />
+    </Frame>
+  );
+}
+
 /* ---------- registry ---------- */
 const REGISTRY: Record<DiagramName, () => React.ReactElement> = {
   "devops-lifecycle": DevOpsLifecycle,
@@ -631,6 +720,9 @@ const REGISTRY: Record<DiagramName, () => React.ReactElement> = {
   "pipeline-stages": PipelineStages,
   "gha-workflow": GhaWorkflow,
   "deployment-strategies": DeploymentStrategies,
+  "iac-vs-clickops": IacVsClickops,
+  "terraform-workflow": TerraformWorkflow,
+  "terraform-state": TerraformState,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
