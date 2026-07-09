@@ -785,6 +785,104 @@ function ArgocdSync() {
   );
 }
 
+// The three pillars: metrics, logs, traces.
+function ObservabilityPillars() {
+  const cols = [
+    { t: "Metrics", s: "numeric time series", q: "how many? how fast?", c: C.iris },
+    { t: "Logs", s: "discrete events", q: "what happened at 14:03?", c: C.teal },
+    { t: "Traces", s: "request path", q: "where did latency go?", c: C.rose },
+  ];
+  return (
+    <Frame h={280}>
+      {cols.map((col, i) => {
+        const x = 60 + i * 240;
+        return (
+          <g key={col.t}>
+            <rect x={x} y={70} width={200} height={120} rx={12} fill={col.c} opacity={0.1} stroke={col.c} strokeWidth={1.6} />
+            <text x={x + 100} y={104} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={16} fontWeight={700} fill={col.c}>
+              {col.t}
+            </text>
+            <text x={x + 100} y={128} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.soft}>
+              {col.s}
+            </text>
+            <text x={x + 100} y={162} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontStyle="italic" fill={C.muted}>
+              {col.q}
+            </text>
+          </g>
+        );
+      })}
+      <rect x={60} y={210} width={680} height={34} rx={9} fill={C.amberSoft} stroke={C.amber} strokeWidth={1.3} />
+      <text x={400} y={232} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={600} fill={C.amber}>
+        Correlate by shared IDs — instrument once with OpenTelemetry
+      </text>
+      <Cap x={400} y={266} text="Three complementary signals; jump between them to explain any behavior." />
+    </Frame>
+  );
+}
+
+// Prometheus scrape → store → alertmanager + grafana.
+function PrometheusStack() {
+  return (
+    <Frame h={300}>
+      {/* targets */}
+      {[0, 1, 2].map((i) => (
+        <Node key={i} x={40} y={60 + i * 66} w={150} h={50} label={i === 2 ? "node_exporter" : `app /metrics`} fill={C.tealSoft} stroke={C.teal} text={C.teal} />
+      ))}
+      {/* prometheus */}
+      <Node x={300} y={110} w={180} h={80} label="Prometheus" sub="scrape · store TSDB · rules" accent />
+      {[0, 1, 2].map((i) => (
+        <Arrow key={i} x1={190} y1={85 + i * 66} x2={298} y2={140} color={C.teal} flow />
+      ))}
+      <text x={245} y={100} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.muted}>
+        scrape
+      </text>
+      {/* grafana + alertmanager */}
+      <Node x={580} y={60} w={180} h={62} label="Grafana" sub="dashboards" fill={C.card} stroke={C.iris} text={C.iris} />
+      <Node x={580} y={158} w={180} h={62} label="Alertmanager" sub="route · page" fill={C.roseSoft} stroke={C.rose} text={C.rose} />
+      <Arrow x1={480} y1={140} x2={578} y2={91} color={C.iris} />
+      <text x={535} y={104} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>
+        query
+      </text>
+      <Arrow x1={480} y1={160} x2={578} y2={189} color={C.rose} flow />
+      <text x={535} y={196} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.rose}>
+        alerts
+      </text>
+      <Cap x={400} y={270} text="Pull-based scraping into a time-series DB; Grafana visualizes, Alertmanager pages." />
+    </Frame>
+  );
+}
+
+// SLO and error budget bar.
+function SloErrorBudget() {
+  return (
+    <Frame h={260}>
+      <text x={400} y={44} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={14} fontWeight={700} fill={C.soft}>
+        SLO 99.9% → error budget 0.1% (~43 min / 30 days)
+      </text>
+      {/* the bar */}
+      <rect x={80} y={80} width={640} height={54} rx={10} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.6} />
+      {/* budget slice */}
+      <rect x={664} y={80} width={56} height={54} rx={0} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.6} />
+      <text x={372} y={113} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.teal}>
+        99.9% success — ship freely
+      </text>
+      <text x={692} y={150} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontWeight={700} fill={C.rose}>
+        budget
+      </text>
+      {/* labels */}
+      <text x={80} y={160} fontFamily="var(--font-sans)" fontSize={11} fill={C.muted}>
+        0%
+      </text>
+      <text x={720} y={160} textAnchor="end" fontFamily="var(--font-sans)" fontSize={11} fill={C.muted}>
+        100%
+      </text>
+      <Pill x={150} y={185} w={200} label="budget left → ship features" color={C.teal} />
+      <Pill x={450} y={185} w={210} label="budget spent → freeze, fix reliability" color={C.rose} />
+      <Cap x={400} y={240} text="Reliability as a number: spend the budget on releases, refill it with reliability work." />
+    </Frame>
+  );
+}
+
 /* ---------- registry ---------- */
 const REGISTRY: Record<DiagramName, () => React.ReactElement> = {
   "devops-lifecycle": DevOpsLifecycle,
@@ -807,6 +905,9 @@ const REGISTRY: Record<DiagramName, () => React.ReactElement> = {
   "gitops-loop": GitopsLoop,
   "push-vs-pull": PushVsPull,
   "argocd-sync": ArgocdSync,
+  "observability-pillars": ObservabilityPillars,
+  "prometheus-stack": PrometheusStack,
+  "slo-error-budget": SloErrorBudget,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
