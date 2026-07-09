@@ -14,6 +14,7 @@ import {
   Rocket,
   FileCode,
   GitMerge,
+  Activity,
   Layers,
   Network,
   Workflow,
@@ -35,6 +36,7 @@ const moduleIcon: Record<string, React.ReactNode> = {
   cicd: <Rocket size={20} />,
   iac: <FileCode size={20} />,
   gitops: <GitMerge size={20} />,
+  observability: <Activity size={20} />,
 };
 
 export default function Home() {
