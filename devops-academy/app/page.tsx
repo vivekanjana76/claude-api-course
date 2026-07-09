@@ -13,6 +13,7 @@ import {
   Boxes,
   Rocket,
   FileCode,
+  GitMerge,
   Layers,
   Network,
   Workflow,
@@ -33,6 +34,7 @@ const moduleIcon: Record<string, React.ReactNode> = {
   kubernetes: <Boxes size={20} />,
   cicd: <Rocket size={20} />,
   iac: <FileCode size={20} />,
+  gitops: <GitMerge size={20} />,
 };
 
 export default function Home() {

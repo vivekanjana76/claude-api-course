@@ -704,6 +704,87 @@ function TerraformState() {
   );
 }
 
+// GitOps reconciliation loop: Git → agent → cluster, continuously.
+function GitopsLoop() {
+  return (
+    <Frame h={280}>
+      <Node x={40} y={110} w={170} h={70} label="Git repo" sub="desired state (source of truth)" accent />
+      <Node x={315} y={110} w={170} h={70} label="GitOps agent" sub="Argo CD (in cluster)" fill={C.tealSoft} stroke={C.teal} text={C.teal} />
+      <Node x={590} y={110} w={170} h={70} label="Cluster" sub="live state" fill={C.amberSoft} stroke={C.amber} text={C.amber} />
+      <Arrow x1={210} y1={135} x2={313} y2={135} color={C.teal} flow />
+      <text x={262} y={122} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={600} fill={C.teal}>
+        pull
+      </text>
+      <Arrow x1={485} y1={135} x2={588} y2={135} color={C.teal} flow />
+      <text x={537} y={122} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={600} fill={C.teal}>
+        apply
+      </text>
+      {/* reconcile loop back */}
+      <path d="M675,180 C675,235 400,235 400,180" fill="none" stroke={C.muted} strokeWidth={1.6} strokeDasharray="5 5" />
+      <text x={400} y={252} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>
+        observe &amp; reconcile — drift is corrected continuously
+      </text>
+      <Cap x={130} y={210} text="deploy = commit" color={C.iris} />
+    </Frame>
+  );
+}
+
+// Push (CI reaches into cluster) vs Pull (agent reaches out to Git).
+function PushVsPull() {
+  return (
+    <Frame h={300}>
+      {/* push */}
+      <text x={200} y={40} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={14} fontWeight={700} fill={C.rose}>
+        Push (traditional CI/CD)
+      </text>
+      <Node x={70} y={70} w={110} h={50} label="CI" sub="has creds" fill={C.roseSoft} stroke={C.rose} text={C.rose} />
+      <Node x={230} y={70} w={110} h={50} label="Cluster" fill={C.card} stroke={C.muted} />
+      <Arrow x1={180} y1={95} x2={228} y2={95} color={C.rose} flow />
+      <text x={205} y={140} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.muted}>
+        kubectl apply →
+      </text>
+      <text x={205} y={158} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.rose}>
+        creds leave the cluster
+      </text>
+
+      {/* pull */}
+      <text x={600} y={40} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={14} fontWeight={700} fill={C.teal}>
+        Pull (GitOps)
+      </text>
+      <Node x={460} y={70} w={110} h={50} label="Git" accent />
+      <rect x={600} y={58} width={150} height={90} rx={11} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.6} />
+      <text x={675} y={78} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.teal}>
+        Cluster
+      </text>
+      <Node x={615} y={88} w={120} h={44} label="Agent" fill={C.card} stroke={C.teal} text={C.teal} />
+      <Arrow x1={615} y1={110} x2={572} y2={100} color={C.teal} flow />
+      <text x={605} y={165} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.teal}>
+        ← agent pulls · creds stay in-cluster
+      </text>
+
+      <line x1={400} y1={50} x2={400} y2={185} stroke={C.line} strokeWidth={1.4} strokeDasharray="4 5" />
+      <Cap x={400} y={225} text="Inverting the direction keeps cluster credentials inside the cluster and corrects drift." />
+    </Frame>
+  );
+}
+
+// Argo CD compares Git (desired) vs cluster (live) → sync + health status.
+function ArgocdSync() {
+  return (
+    <Frame h={280}>
+      <Node x={60} y={80} w={180} h={70} label="Git (desired)" sub="rendered manifests" accent />
+      <Node x={560} y={80} w={180} h={70} label="Cluster (live)" sub="running resources" fill={C.amberSoft} stroke={C.amber} text={C.amber} />
+      <Node x={310} y={78} w={180} h={74} label="Argo CD" sub="diff &amp; reconcile" fill={C.tealSoft} stroke={C.teal} text={C.teal} />
+      <Arrow x1={240} y1={115} x2={308} y2={115} color={C.iris} />
+      <Arrow x1={560} y1={115} x2={492} y2={115} color={C.amber} dashed />
+      {/* status chips */}
+      <Pill x={250} y={190} w={140} label="Synced / OutOfSync" color={C.iris} />
+      <Pill x={410} y={190} w={140} label="Healthy / Degraded" color={C.teal} />
+      <Cap x={400} y={250} text="Two independent signals: is it in sync with Git, and are the resources actually healthy?" />
+    </Frame>
+  );
+}
+
 /* ---------- registry ---------- */
 const REGISTRY: Record<DiagramName, () => React.ReactElement> = {
   "devops-lifecycle": DevOpsLifecycle,
@@ -723,6 +804,9 @@ const REGISTRY: Record<DiagramName, () => React.ReactElement> = {
   "iac-vs-clickops": IacVsClickops,
   "terraform-workflow": TerraformWorkflow,
   "terraform-state": TerraformState,
+  "gitops-loop": GitopsLoop,
+  "push-vs-pull": PushVsPull,
+  "argocd-sync": ArgocdSync,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
