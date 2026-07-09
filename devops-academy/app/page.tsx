@@ -12,6 +12,7 @@ import {
   Container,
   Boxes,
   Rocket,
+  FileCode,
   Layers,
   Network,
   Workflow,
@@ -31,6 +32,7 @@ const moduleIcon: Record<string, React.ReactNode> = {
   docker: <Container size={20} />,
   kubernetes: <Boxes size={20} />,
   cicd: <Rocket size={20} />,
+  iac: <FileCode size={20} />,
 };
 
 export default function Home() {
