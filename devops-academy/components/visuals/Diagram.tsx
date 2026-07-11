@@ -883,6 +883,93 @@ function SloErrorBudget() {
   );
 }
 
+// DevSecOps: a security check embedded at every pipeline stage, not one gate at the end.
+function DevSecOpsPipeline() {
+  const stages = [
+    { t: "Code", s: "SAST • secrets", c: C.iris },
+    { t: "Build", s: "SCA • image scan", c: C.teal },
+    { t: "Deploy", s: "sign • policy", c: C.amber },
+    { t: "Runtime", s: "RBAC • netpol", c: C.rose },
+  ];
+  return (
+    <Frame h={280}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.ink}>
+        Security shifts left — a check at every stage
+      </text>
+      {stages.map((st, i) => {
+        const x = 40 + i * 190;
+        return (
+          <g key={st.t}>
+            <Node x={x} y={80} w={150} h={58} label={st.t} fill={C.card} stroke={st.c} text={st.c} />
+            {/* shield badge */}
+            <path
+              d={`M${x + 75},152 l24,8 v14 c0,14 -12,22 -24,28 c-12,-6 -24,-14 -24,-28 v-14 Z`}
+              fill={st.c}
+              opacity={0.14}
+              stroke={st.c}
+              strokeWidth={1.4}
+            />
+            <text x={x + 75} y={192} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={st.c}>
+              scan
+            </text>
+            <Cap x={x + 75} y={232} text={st.s} color={C.muted} />
+            {i < stages.length - 1 && <Arrow x1={x + 150} y1={109} x2={x + 190} y2={109} color={C.muted} flow />}
+          </g>
+        );
+      })}
+      <Cap x={400} y={262} text="Every commit passes automated security gates — impossible to skip under deadline pressure." />
+    </Frame>
+  );
+}
+
+// Supply chain: trust established at each hop from dependencies to a verified deploy.
+function SupplyChainSecurity() {
+  const steps = [
+    { t: "Dependencies", s: "pin + SCA scan", c: C.iris },
+    { t: "Build image", s: "minimal base", c: C.teal },
+    { t: "SBOM + sign", s: "cosign", c: C.amber },
+    { t: "Verify + deploy", s: "reject unsigned", c: C.rose },
+  ];
+  return (
+    <Frame h={260}>
+      {steps.map((st, i) => {
+        const y = 40 + i * 52;
+        return (
+          <g key={st.t}>
+            <Node x={230} y={y} w={200} h={40} label={st.t} fill={C.card} stroke={st.c} text={st.c} />
+            <text x={445} y={y + 25} fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>
+              {st.s}
+            </text>
+            <circle cx={200} cy={y + 20} r={6} fill={st.c} />
+            {i < steps.length - 1 && <Arrow x1={200} y1={y + 26} x2={200} y2={y + 46} color={C.muted} flow />}
+          </g>
+        );
+      })}
+      <Pill x={40} y={118} w={130} label="trust chain" color={C.rose} />
+      <Cap x={400} y={244} text="Each hop adds trust; a broken or unsigned link is rejected before it ships." />
+    </Frame>
+  );
+}
+
+// Kubernetes RBAC: subject → (RoleBinding) → Role's verbs on resources.
+function RbacModel() {
+  return (
+    <Frame h={260}>
+      <Node x={40} y={95} w={170} h={70} label="Subject" sub="user / ServiceAccount" accent />
+      <Node x={315} y={95} w={170} h={70} label="RoleBinding" sub="grants role to subject" fill={C.roseSoft} stroke={C.rose} text={C.rose} />
+      <Node x={590} y={95} w={170} h={70} label="Role" sub="verbs on resources" fill={C.tealSoft} stroke={C.teal} text={C.teal} />
+      <Arrow x1={210} y1={130} x2={313} y2={130} color={C.muted} />
+      <Arrow x1={485} y1={130} x2={588} y2={130} color={C.muted} />
+      <Pill x={560} y={185} w={110} label="get, list" color={C.teal} />
+      <Pill x={680} y={185} w={90} label="create" color={C.teal} />
+      <text x={675} y={80} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>
+        on: pods, secrets…
+      </text>
+      <Cap x={400} y={238} text="Least privilege: bind each workload to only the verbs and resources it truly needs." />
+    </Frame>
+  );
+}
+
 /* ---------- registry ---------- */
 const REGISTRY: Record<DiagramName, () => React.ReactElement> = {
   "devops-lifecycle": DevOpsLifecycle,
@@ -908,6 +995,9 @@ const REGISTRY: Record<DiagramName, () => React.ReactElement> = {
   "observability-pillars": ObservabilityPillars,
   "prometheus-stack": PrometheusStack,
   "slo-error-budget": SloErrorBudget,
+  "devsecops-pipeline": DevSecOpsPipeline,
+  "supply-chain-security": SupplyChainSecurity,
+  "rbac-model": RbacModel,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

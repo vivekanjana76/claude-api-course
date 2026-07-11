@@ -20,6 +20,7 @@ import {
   Workflow,
   MessagesSquare,
   BookOpen,
+  ShieldCheck,
 } from "lucide-react";
 
 const accent: Record<string, { dot: string; ring: string; text: string; chip: string }> = {
@@ -37,6 +38,7 @@ const moduleIcon: Record<string, React.ReactNode> = {
   iac: <FileCode size={20} />,
   gitops: <GitMerge size={20} />,
   observability: <Activity size={20} />,
+  security: <ShieldCheck size={20} />,
 };
 
 export default function Home() {
