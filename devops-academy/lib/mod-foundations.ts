@@ -1,0 +1,198 @@
+import type { Module } from "./types";
+
+export const foundations: Module = {
+  id: "foundations",
+  title: "DevOps Foundations",
+  blurb: "What DevOps actually is, the culture and principles behind it, version control with Git, and the shape of a delivery pipeline.",
+  accent: "iris",
+  lessons: [
+    {
+      slug: "what-is-devops",
+      title: "What is DevOps?",
+      summary:
+        "Not a tool or a job title — a way of working that tears down the wall between building software and running it, so teams ship faster and more safely.",
+      minutes: 8,
+      blocks: [
+        { type: "p", text: "**DevOps** is a set of practices and a culture that combine software **development (Dev)** and IT **operations (Ops)** so a team can build, test, release, and run software continuously — faster and more reliably than the old model where developers threw code 'over the wall' to a separate ops team." },
+        { type: "callout", kind: "key", text: "DevOps is not a tool you install or a person you hire. It's a way of working: shared ownership of the whole lifecycle, heavy automation, and fast feedback from production back to the people writing the code." },
+        { type: "diagram", name: "devops-lifecycle", caption: "The DevOps lifecycle is a loop, not a line: plan → code → build → test → release → deploy → operate → monitor → back to plan." },
+        { type: "h2", text: "The problem it solves" },
+        { type: "p", text: "In the traditional model, developers were rewarded for **change** (new features) and operations for **stability** (nothing breaks). Those goals conflict. Releases piled up into risky quarterly 'big bang' deployments, and when something broke, Dev and Ops blamed each other. DevOps aligns everyone on one goal: **safely delivering value to users, continuously.**" },
+        { type: "h2", text: "What changes in practice" },
+        { type: "list", items: [
+          "**Shared ownership.** The team that builds a service also runs it — 'you build it, you run it.'",
+          "**Automate everything repeatable.** Builds, tests, infrastructure, and deployments run without manual steps, so they're fast and consistent.",
+          "**Small, frequent releases.** Ship tiny changes many times a day instead of huge batches once a quarter — smaller changes are easier to test and to roll back.",
+          "**Fast feedback.** Monitoring and alerts tell you within minutes whether a change is healthy, feeding straight back into the next change.",
+          "**Blameless learning.** Failures are treated as system problems to fix, not people to punish.",
+        ]},
+        { type: "h2", text: "Why it wins" },
+        { type: "p", text: "Study after study (the DORA research) finds that teams practicing DevOps well deploy far more often, recover from incidents far faster, and have *lower* change-failure rates — speed and stability rise together, not at each other's expense. The rest of this course teaches the concrete practices and tools that make that possible: containers, orchestration, CI/CD, infrastructure as code, GitOps, and observability." },
+        { type: "callout", kind: "note", text: "A related term you'll hear is **SRE (Site Reliability Engineering)** — Google's specific implementation of DevOps ideas, using software engineering to solve operations problems (error budgets, SLOs, toil reduction). Think of SRE as 'class DevOps implements SRE.'" },
+      ],
+      takeaways: [
+        "DevOps is a culture + practices that unite development and operations around continuously, safely delivering value.",
+        "It replaces the risky 'over the wall' handoff and big-bang releases with shared ownership and small, frequent changes.",
+        "Its pillars: shared ownership, automation, fast feedback, and blameless learning.",
+        "Done well it improves speed and stability at the same time (the DORA finding); SRE is a specific implementation of it.",
+      ],
+      flashcards: [
+        { front: "DevOps in one sentence", back: "A culture and set of practices that unite development and operations to build, ship, and run software continuously — faster and more reliably through shared ownership, automation, and fast feedback." },
+        { front: "Why did the old Dev-vs-Ops split cause problems?", back: "Dev was rewarded for change and Ops for stability — conflicting goals that led to risky big-bang releases and blame when things broke." },
+        { front: "How does DevOps relate to SRE?", back: "SRE (Site Reliability Engineering) is Google's concrete implementation of DevOps principles, using software engineering — SLOs, error budgets, toil reduction — to run operations." },
+      ],
+      quiz: [
+        { q: "Which best describes DevOps?", options: ["A single tool you install", "A job title on the ops team", "A culture and set of practices uniting dev and ops to deliver continuously", "A programming language"], answer: 2, explain: "DevOps is a way of working — shared ownership, automation, and fast feedback — not a tool or a title." },
+        { q: "The DORA research found that elite DevOps teams have…", options: ["More speed but worse stability", "Better stability but slower releases", "Both higher deploy frequency and lower change-failure rates", "No measurable difference"], answer: 2, explain: "Speed and stability rise together — elite teams deploy more often, recover faster, AND fail less." },
+      ],
+    },
+    {
+      slug: "devops-culture-and-principles",
+      title: "Culture: CALMS & the Three Ways",
+      summary:
+        "The mental models behind DevOps — the CALMS framework and Gene Kim's Three Ways — that explain why the practices work and where to start.",
+      minutes: 9,
+      blocks: [
+        { type: "p", text: "Tools are the easy part of DevOps; culture is the hard part. Two frameworks give you a shared language for the *why* behind the practices." },
+        { type: "h2", text: "CALMS" },
+        { type: "p", text: "**CALMS** is a checklist for how 'DevOps' an organization really is:" },
+        { type: "list", items: [
+          "**C — Culture.** Shared responsibility and blameless collaboration between dev, ops, security, and the business.",
+          "**A — Automation.** Remove manual, repeatable toil: builds, tests, provisioning, deployments.",
+          "**L — Lean.** Work in small batches, limit work-in-progress, and optimize the whole flow rather than local efficiency.",
+          "**M — Measurement.** Instrument everything — you can't improve what you don't measure (deploy frequency, lead time, failure rate, recovery time).",
+          "**S — Sharing.** Share knowledge, tools, and responsibility across teams; make information radiate instead of hide in silos.",
+        ]},
+        { type: "callout", kind: "tip", text: "If a team says they 'do DevOps' but only bought a CI tool, run them through CALMS. Usually the missing letters are C and S — the human ones." },
+        { type: "diagram", name: "three-ways", caption: "The Three Ways: flow left-to-right, feedback right-to-left, and continual experimentation on top." },
+        { type: "h2", text: "The Three Ways" },
+        { type: "p", text: "From *The Phoenix Project* and *The DevOps Handbook*, the **Three Ways** are the principles all DevOps practices derive from:" },
+        { type: "steps", items: [
+          { title: "The First Way — Flow", text: "Optimize the flow of work from Dev → Ops → customer. Make work visible, reduce batch sizes, and never pass defects downstream. This is where CI/CD and small releases come from." },
+          { title: "The Second Way — Feedback", text: "Create fast, constant feedback from right to left, at every stage. Amplify signals from production so problems are found and fixed quickly. This is where monitoring, alerting, and automated tests come from." },
+          { title: "The Third Way — Continual Learning", text: "Foster a culture of experimentation, blameless post-mortems, and continual improvement. Make it safe to take risks and learn from failure. This is where chaos engineering and game days come from." },
+        ]},
+        { type: "h2", text: "The four key metrics (DORA)" },
+        { type: "p", text: "The DevOps Research and Assessment team distilled performance into four metrics you should track:" },
+        { type: "compare", caption: "The DORA four keys — two for speed, two for stability.", columns: ["Metric", "Measures", "Elite performers"], rows: [
+          { label: "Deployment frequency", cells: ["How often you ship to production", "On-demand, many times a day"] },
+          { label: "Lead time for changes", cells: ["Commit → running in production", "Less than an hour"] },
+          { label: "Change failure rate", cells: ["% of deploys causing a problem", "0–15%"] },
+          { label: "Mean time to restore (MTTR)", cells: ["How fast you recover from an incident", "Less than an hour"] },
+        ]},
+        { type: "callout", kind: "warn", text: "Don't game the metrics. Deploy frequency without stability is just breaking prod faster. The four keys are meant to be balanced — two speed, two stability — and read together." },
+      ],
+      takeaways: [
+        "CALMS (Culture, Automation, Lean, Measurement, Sharing) is a checklist for how mature a DevOps practice really is.",
+        "The Three Ways — Flow, Feedback, Continual Learning — are the principles every DevOps practice derives from.",
+        "The DORA four keys balance speed (deploy frequency, lead time) against stability (change-failure rate, MTTR).",
+        "The hard part of DevOps is culture (the C and S in CALMS), not tooling.",
+      ],
+      flashcards: [
+        { front: "What does CALMS stand for?", back: "Culture, Automation, Lean, Measurement, Sharing — a framework for assessing DevOps maturity." },
+        { front: "Name the Three Ways", back: "First Way: Flow (Dev→Ops→customer). Second Way: Feedback (fast signals right-to-left). Third Way: Continual learning and experimentation." },
+        { front: "What are the four DORA metrics?", back: "Deployment frequency, lead time for changes, change failure rate, and mean time to restore (MTTR) — two speed, two stability." },
+      ],
+      quiz: [
+        { q: "Which DORA metric measures stability rather than speed?", options: ["Deployment frequency", "Lead time for changes", "Change failure rate", "Number of commits"], answer: 2, explain: "Change failure rate (and MTTR) measure stability; deploy frequency and lead time measure speed." },
+        { q: "The Second Way is primarily about…", options: ["Reducing batch sizes", "Fast feedback loops from right to left", "Hiring more ops staff", "Writing documentation"], answer: 1, explain: "The Second Way is Feedback — amplifying fast signals (monitoring, tests, alerts) back toward development." },
+      ],
+    },
+    {
+      slug: "version-control-with-git",
+      title: "Version control with Git",
+      summary:
+        "Git is the substrate under all of DevOps — branches, commits, pull requests, and the branching strategies that let a team ship continuously.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "Almost everything in DevOps starts from a **Git repository** — application code, pipeline definitions, infrastructure code, and Kubernetes manifests all live in version control. Understanding Git's model is a prerequisite for CI/CD, infrastructure as code, and GitOps." },
+        { type: "h2", text: "The mental model" },
+        { type: "p", text: "**Git** is a distributed version-control system. Every clone is a full copy of the history. Work is recorded as **commits** — immutable snapshots, each pointing to its parent — forming a graph. A **branch** is just a movable pointer to a commit, so branching and merging are cheap." },
+        { type: "diagram", name: "git-workflow", caption: "A feature branch diverges from main, gets reviewed as a pull request, and merges back." },
+        { type: "list", items: [
+          "**Commit** — a snapshot of your changes with a message and a unique hash (SHA). The atomic unit of history.",
+          "**Branch** — a lightweight, movable pointer to a commit; used to develop a change in isolation from `main`.",
+          "**Remote** — a shared copy of the repo (e.g. on GitHub) that the team pushes to and pulls from.",
+          "**Pull request (PR) / merge request** — a proposal to merge a branch, where code review, CI checks, and discussion happen.",
+        ]},
+        { type: "h2", text: "The everyday loop" },
+        { type: "code", lang: "bash", caption: "The core Git workflow", code: "git checkout -b feature/add-login   # branch off main\n# ...edit files...\ngit add .                           # stage changes\ngit commit -m \"Add login form\"       # snapshot them\ngit push -u origin feature/add-login # publish the branch\n# open a Pull Request on GitHub, get review + CI, then merge" },
+        { type: "h2", text: "Branching strategies" },
+        { type: "compare", caption: "How teams organize branches to ship continuously.", columns: ["Strategy", "How it works", "Best for"], rows: [
+          { label: "Trunk-based", cells: ["Everyone commits to main via short-lived branches", "Continuous delivery, mature CI"] },
+          { label: "GitHub Flow", cells: ["Branch → PR → merge to main → deploy", "Web apps deploying continuously"] },
+          { label: "GitFlow", cells: ["Long-lived develop/release/hotfix branches", "Versioned/on-prem software with releases"] },
+        ]},
+        { type: "callout", kind: "key", text: "Modern DevOps favors trunk-based development with short-lived branches: small changes, merged to main daily, behind feature flags if needed. Long-lived branches cause painful 'merge hell' and delay feedback — the opposite of Flow." },
+        { type: "callout", kind: "tip", text: "Protect `main` with branch-protection rules: require PR review and passing CI checks before merge. This makes the main branch always-releasable — a foundation for continuous delivery." },
+      ],
+      takeaways: [
+        "Git is the substrate for all of DevOps: app code, pipelines, infra, and manifests all live in version control.",
+        "A commit is an immutable snapshot; a branch is just a movable pointer, making branching and merging cheap.",
+        "Pull requests are where review, CI checks, and discussion happen before code reaches main.",
+        "Trunk-based development with short-lived branches suits continuous delivery; GitFlow suits versioned releases.",
+      ],
+      flashcards: [
+        { front: "What is a Git branch, really?", back: "A lightweight, movable pointer to a commit. Because it's just a pointer, branching and merging are cheap." },
+        { front: "What is a pull request for?", back: "Proposing to merge a branch — the place where code review, automated CI checks, and discussion happen before code reaches main." },
+        { front: "Trunk-based vs GitFlow", back: "Trunk-based: everyone integrates to main via short-lived branches (best for continuous delivery). GitFlow: long-lived develop/release/hotfix branches (best for versioned releases)." },
+      ],
+      quiz: [
+        { q: "In Git, a branch is fundamentally…", options: ["A full copy of all files", "A movable pointer to a commit", "A separate repository", "A backup"], answer: 1, explain: "A branch is just a lightweight, movable pointer to a commit — which is why branching is cheap." },
+        { q: "Which practice best supports continuous delivery?", options: ["Long-lived release branches", "Trunk-based development with short-lived branches", "Committing directly to main with no review", "Quarterly merges"], answer: 1, explain: "Small, short-lived branches merged to main frequently keep main releasable and give fast feedback." },
+      ],
+    },
+    {
+      slug: "the-delivery-pipeline",
+      title: "The delivery pipeline, end to end",
+      summary:
+        "How a commit becomes a running production service — the stages of continuous integration and continuous delivery, and the tools at each stop.",
+      minutes: 9,
+      blocks: [
+        { type: "p", text: "The heart of DevOps is the **delivery pipeline**: an automated path that turns a commit into a running, monitored production service. Every practice in this course plugs into some stage of it." },
+        { type: "diagram", name: "cicd-pipeline", caption: "A commit flows through build, test, package, and deploy stages — each an automated gate." },
+        { type: "h2", text: "The stages" },
+        { type: "steps", items: [
+          { title: "Source", text: "A developer pushes a commit or opens a PR in Git (GitHub). This event triggers the pipeline." },
+          { title: "Build", text: "The pipeline compiles the code and packages it — increasingly into a container image (Docker) — producing an immutable artifact." },
+          { title: "Test", text: "Automated tests run: unit, integration, security scans, linting. A failure stops the pipeline before bad code spreads." },
+          { title: "Release / Package", text: "The versioned artifact is pushed to a registry (a container registry, package repository) — the single source of what gets deployed." },
+          { title: "Deploy", text: "The artifact is rolled out to an environment (staging, then production), often onto Kubernetes, using a safe strategy (rolling, blue-green, canary)." },
+          { title: "Operate & Monitor", text: "In production, observability tools watch metrics, logs, and traces, feeding problems back to the start of the loop." },
+        ]},
+        { type: "h2", text: "CI vs CD vs CD" },
+        { type: "compare", caption: "Three overlapping terms — know the boundary of each.", columns: ["Term", "What it automates", "Human gate?"], rows: [
+          { label: "Continuous Integration", cells: ["Build + test every change, merged to main often", "No — fully automated"] },
+          { label: "Continuous Delivery", cells: ["Every passing change is deployable & auto-deployed to staging", "Yes — a human approves prod"] },
+          { label: "Continuous Deployment", cells: ["Every passing change auto-deploys to production", "No — no manual gate"] },
+        ]},
+        { type: "callout", kind: "key", text: "Continuous **Delivery** keeps a human 'deploy to prod' button; continuous **Deployment** removes even that button. Both require rock-solid CI and automated testing underneath — you can't safely automate a deploy you don't trust." },
+        { type: "h2", text: "The tool landscape" },
+        { type: "list", items: [
+          "**Source & CI:** GitHub + GitHub Actions, GitLab CI, Jenkins.",
+          "**Package:** container images in a registry (Docker Hub, GHCR, ECR).",
+          "**Provision infrastructure:** Terraform, and configuration with Ansible.",
+          "**Run:** containers orchestrated by Kubernetes.",
+          "**Deploy (GitOps):** Argo CD or Flux syncing manifests from Git.",
+          "**Observe:** Prometheus, Grafana, and the ELK/OpenTelemetry stack.",
+        ]},
+        { type: "callout", kind: "note", text: "The rest of this course walks the pipeline from left to right: containers and Docker (build/package), Kubernetes (run), CI/CD and GitHub Actions (integrate/deploy), Terraform (provision), Argo CD (GitOps deploy), and observability (operate)." },
+      ],
+      takeaways: [
+        "The delivery pipeline is an automated path turning a commit into a running, monitored production service.",
+        "Its stages: source → build → test → release/package → deploy → operate & monitor, looping back.",
+        "CI automates build+test; continuous delivery keeps a human prod-approval; continuous deployment removes it.",
+        "Each course module maps to a stage: Docker (build), Kubernetes (run), CI/CD (integrate), Terraform (provision), Argo CD (deploy), observability (operate).",
+      ],
+      flashcards: [
+        { front: "Continuous Delivery vs Continuous Deployment", back: "Delivery: every passing change is deployable and auto-goes to staging, but a human approves production. Deployment: passing changes auto-deploy all the way to production with no manual gate." },
+        { front: "What does Continuous Integration automate?", back: "Building and testing every change as it's merged to main frequently — catching integration problems early, fully automatically." },
+        { front: "Name the stages of a delivery pipeline", back: "Source → Build → Test → Release/Package → Deploy → Operate & Monitor, feeding back to the start." },
+      ],
+      quiz: [
+        { q: "What distinguishes Continuous Deployment from Continuous Delivery?", options: ["Deployment has no automated tests", "Deployment removes the manual approval before production", "Delivery doesn't build artifacts", "They're identical"], answer: 1, explain: "Continuous Deployment auto-releases every passing change to production with no human gate; Delivery keeps that approval button." },
+        { q: "In the pipeline, where do automated tests run?", options: ["After deploy to production", "Before the build", "In the test stage, after build and before release", "Only nightly"], answer: 2, explain: "Tests run in the test stage — after the artifact is built and before it's released — so failures stop bad code from progressing." },
+      ],
+    },
+  ],
+};

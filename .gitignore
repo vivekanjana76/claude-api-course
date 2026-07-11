@@ -147,6 +147,8 @@ examples/fine-tuned_qa/local_cache/*
 !claude-academy/lib/**
 !agent-academy/lib/
 !agent-academy/lib/**
+!devops-academy/lib/
+!devops-academy/lib/**
 
 # Node / Next.js (claude-academy, agent-academy)
 node_modules/

@@ -1,0 +1,188 @@
+import type { Module } from "./types";
+
+export const docker: Module = {
+  id: "docker",
+  title: "Containers & Docker",
+  blurb: "Why containers changed everything, how Docker images and layers work, writing Dockerfiles, and shipping with registries and Compose.",
+  accent: "teal",
+  lessons: [
+    {
+      slug: "containers-vs-vms",
+      title: "Containers vs virtual machines",
+      summary:
+        "A container packages an app with its dependencies and shares the host kernel — starting in milliseconds and running identically everywhere. Here's how that differs from a VM.",
+      minutes: 9,
+      blocks: [
+        { type: "p", text: "A **container** is a lightweight, isolated package that bundles an application together with everything it needs to run — code, runtime, libraries, and settings — so it runs identically on a laptop, a CI runner, or a production server. It solves the oldest problem in software: *'it works on my machine.'*" },
+        { type: "diagram", name: "containers-vs-vms", caption: "VMs virtualize hardware (each carries a full guest OS); containers virtualize the OS (they share the host kernel)." },
+        { type: "h2", text: "The key difference" },
+        { type: "p", text: "A **virtual machine** virtualizes *hardware*: a hypervisor runs several guest operating systems, each a full OS with its own kernel, on one physical machine. A **container** virtualizes the *operating system*: containers share the host's kernel and isolate processes using Linux primitives — **namespaces** (what a process can see) and **cgroups** (what resources it can use). No guest OS per app means containers are tiny and fast." },
+        { type: "compare", caption: "Same isolation goal, very different weight.", columns: ["Aspect", "Virtual machine", "Container"], rows: [
+          { label: "Isolates", cells: ["Full hardware + OS", "Process (shares host kernel)"] },
+          { label: "Size", cells: ["Gigabytes", "Megabytes"] },
+          { label: "Startup", cells: ["Minutes", "Milliseconds to seconds"] },
+          { label: "Density per host", cells: ["Tens", "Hundreds to thousands"] },
+          { label: "Isolation strength", cells: ["Stronger (separate kernels)", "Weaker (shared kernel)"] },
+        ]},
+        { type: "callout", kind: "key", text: "Containers are fast and dense because they share the host kernel instead of each shipping a full OS. The trade-off is slightly weaker isolation — which is why untrusted, multi-tenant workloads sometimes still use VMs (or micro-VMs) as an extra boundary." },
+        { type: "h2", text: "Why it matters for DevOps" },
+        { type: "list", items: [
+          "**Consistency.** The same image runs in dev, CI, and prod — no more environment drift.",
+          "**Speed.** Milliseconds to start means fast scaling and fast pipelines.",
+          "**Density.** Pack many containers per host, improving utilization and cost.",
+          "**Portability.** An image built once runs on any host with a container runtime.",
+          "**Immutability.** You ship a fixed image, not a mutated server — deployments become predictable and easy to roll back.",
+        ]},
+        { type: "callout", kind: "note", text: "**Docker** popularized containers but they build on older Linux tech (namespaces, cgroups, LXC). Today the runtime landscape is broader — containerd and CRI-O run containers, and the OCI standard means images are portable across tools. 'Docker' is often used loosely to mean 'containers.'" },
+      ],
+      takeaways: [
+        "A container bundles an app with its dependencies so it runs identically everywhere — solving 'works on my machine.'",
+        "VMs virtualize hardware (a full guest OS each); containers virtualize the OS, sharing the host kernel via namespaces + cgroups.",
+        "Containers are megabytes and start in milliseconds; VMs are gigabytes and start in minutes.",
+        "The trade-off is weaker isolation (shared kernel), which is why untrusted multi-tenant work may still use VMs.",
+      ],
+      flashcards: [
+        { front: "Container vs VM in one line", back: "A VM virtualizes hardware and runs a full guest OS per app; a container virtualizes the OS and shares the host kernel — so it's far smaller and faster but slightly less isolated." },
+        { front: "What Linux primitives make containers work?", back: "Namespaces (isolate what a process can see) and cgroups (limit the resources it can use)." },
+        { front: "Why do containers help DevOps?", back: "Consistency across environments, millisecond startup, high density, portability, and immutable artifacts that are easy to roll back." },
+      ],
+      quiz: [
+        { q: "What do containers share that VMs do not?", options: ["The host's CPU only", "The host operating system kernel", "The same IP address always", "Nothing"], answer: 1, explain: "Containers share the host kernel and isolate at the process level; VMs each run a full guest OS with its own kernel." },
+        { q: "A container starts in milliseconds mainly because…", options: ["It uses a faster CPU", "It doesn't boot a full guest OS", "It has no dependencies", "It runs in the cloud"], answer: 1, explain: "There's no guest OS to boot — the container is just isolated processes on the already-running host kernel." },
+      ],
+    },
+    {
+      slug: "docker-images-and-layers",
+      title: "Images, layers & the build cache",
+      summary:
+        "A Docker image is a stack of read-only layers built from a Dockerfile. Understanding layering is the key to small, fast, cacheable builds.",
+      minutes: 9,
+      blocks: [
+        { type: "p", text: "A running container starts from an **image** — a read-only template containing a filesystem and metadata. Images are the artifact you build, version, push, and deploy. The magic is that an image is not one blob but a stack of **layers**." },
+        { type: "diagram", name: "image-layers", caption: "Each Dockerfile instruction adds a read-only layer; the running container adds a thin writable layer on top." },
+        { type: "h2", text: "Layers and copy-on-write" },
+        { type: "p", text: "Each instruction in a Dockerfile creates a new **layer** — a diff of filesystem changes. Layers are stacked with a union filesystem and are **content-addressed and cached**. When you start a container, Docker adds a thin **writable layer** on top; the layers below are shared, read-only, and reused across containers and images." },
+        { type: "list", items: [
+          "**Shared & deduplicated.** Ten containers from one image share the same read-only layers — huge disk and memory savings.",
+          "**Cached.** If a layer's inputs haven't changed, Docker reuses the cached layer instead of rebuilding it — this is why build order matters.",
+          "**Immutable.** Lower layers never change; a 'modified' file is copied up into the writable layer (copy-on-write).",
+        ]},
+        { type: "callout", kind: "key", text: "The build cache invalidates from the first changed layer downward. Put the things that change rarely (installing dependencies) EARLY and the things that change often (copying your source) LATE — so a code change doesn't re-run `npm install`." },
+        { type: "h2", text: "Image vs container" },
+        { type: "compare", caption: "One is the template, the other is the running instance.", columns: ["", "Image", "Container"], rows: [
+          { label: "What it is", cells: ["Read-only template (layers)", "A running instance of an image"] },
+          { label: "State", cells: ["Immutable", "Has a writable layer; ephemeral"] },
+          { label: "Analogy", cells: ["A class", "An object / instance"] },
+        ]},
+        { type: "h2", text: "Tags and digests" },
+        { type: "p", text: "Images are named `repository:tag`, e.g. `nginx:1.27` or `myapp:v2.1.0`. A **tag** is a movable label; the immutable identity is the **digest** (a SHA256 hash of the content). In production, pin to a specific tag or digest — never rely on `latest`, which silently moves and makes builds non-reproducible." },
+        { type: "callout", kind: "warn", text: "`latest` is not 'the newest' — it's just the default tag, and it moves. Deploying `myapp:latest` means two servers can run different code. Always deploy an explicit, immutable version tag or digest." },
+      ],
+      takeaways: [
+        "An image is a read-only template made of stacked, content-addressed layers; a container adds a thin writable layer on top.",
+        "Layers are shared, deduplicated, and cached — order Dockerfile instructions from least- to most-frequently-changing.",
+        "The build cache invalidates from the first changed layer downward, so put dependency installs before copying source.",
+        "Pin images to explicit version tags or digests; never rely on the moving `latest` tag in production.",
+      ],
+      flashcards: [
+        { front: "What is a Docker image made of?", back: "A stack of read-only, content-addressed layers — one per Dockerfile instruction — plus metadata. A running container adds a thin writable layer on top." },
+        { front: "Why does Dockerfile instruction order matter?", back: "The build cache invalidates from the first changed layer down. Put rarely-changing steps (dependency installs) early and often-changing steps (copying source) late to maximize cache reuse." },
+        { front: "Why avoid the `latest` tag in production?", back: "`latest` is just a default, movable label — not 'newest.' It can point to different content over time, making deployments non-reproducible. Pin an explicit version tag or digest." },
+      ],
+      quiz: [
+        { q: "You change one line of source code. Which Dockerfile ordering rebuilds fastest?", options: ["COPY source, then install dependencies", "Install dependencies, then COPY source", "Order doesn't affect caching", "Put everything in one layer"], answer: 1, explain: "Installing dependencies before copying source means a code change only invalidates the later COPY layer, reusing the cached dependency install." },
+        { q: "What is the immutable identity of an image?", options: ["Its tag", "Its name", "Its content digest (SHA256)", "Its size"], answer: 2, explain: "Tags move; the digest is a content hash that uniquely and immutably identifies the exact image." },
+      ],
+    },
+    {
+      slug: "writing-dockerfiles",
+      title: "Writing production Dockerfiles",
+      summary:
+        "The Dockerfile instructions you actually use, and the multi-stage build pattern that produces small, secure images.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "A **Dockerfile** is a text recipe for building an image — a sequence of instructions Docker executes top to bottom. A good Dockerfile produces an image that is **small** (fast to pull, less to scan), **cached well** (fast to rebuild), and **secure** (minimal contents, non-root)." },
+        { type: "h2", text: "The core instructions" },
+        { type: "code", lang: "dockerfile", caption: "A simple Node.js Dockerfile", code: "FROM node:20-slim                 # base image\nWORKDIR /app                      # set working dir\nCOPY package*.json ./             # copy manifests first (cache!)\nRUN npm ci --omit=dev             # install deps in a cached layer\nCOPY . .                          # then copy source\nEXPOSE 3000                       # document the port\nUSER node                         # drop root privileges\nCMD [\"node\", \"server.js\"]          # default process" },
+        { type: "list", items: [
+          "**FROM** — the base image you build on. Prefer small, official bases (`-slim`, `-alpine`, or distroless).",
+          "**WORKDIR** — sets the working directory for later instructions.",
+          "**COPY / ADD** — copy files in. Use `COPY`; reserve `ADD` for its special URL/tar behavior.",
+          "**RUN** — execute a command at build time, creating a layer (e.g. install packages).",
+          "**CMD vs ENTRYPOINT** — `CMD` is the default command/args (easily overridden); `ENTRYPOINT` is the fixed executable. Together: `ENTRYPOINT` = the program, `CMD` = its default arguments.",
+          "**EXPOSE / ENV / USER** — document ports, set environment variables, and drop to a non-root user.",
+        ]},
+        { type: "h2", text: "Multi-stage builds" },
+        { type: "p", text: "The single most important pattern: build in one stage with the full toolchain, then copy only the finished artifact into a tiny runtime stage. The compiler, dev dependencies, and source never ship to production." },
+        { type: "code", lang: "dockerfile", caption: "Multi-stage: build fat, ship thin", code: "# --- build stage ---\nFROM golang:1.22 AS build\nWORKDIR /src\nCOPY . .\nRUN go build -o /app/server ./cmd/server\n\n# --- runtime stage ---\nFROM gcr.io/distroless/static\nCOPY --from=build /app/server /server\nUSER nonroot:nonroot\nENTRYPOINT [\"/server\"]" },
+        { type: "callout", kind: "key", text: "Multi-stage builds can shrink an image from ~800 MB to ~15 MB. The final image has no compiler, no shell, no package manager — smaller attack surface, faster pulls, and nothing for an attacker to use if they break in." },
+        { type: "h2", text: "Best practices" },
+        { type: "list", items: [
+          "**Use a `.dockerignore`** to keep `node_modules`, `.git`, and secrets out of the build context.",
+          "**Order for cache:** dependencies before source, as covered last lesson.",
+          "**Run as non-root** with `USER` — never run production containers as root.",
+          "**Pin base image versions** — `node:20.11-slim`, not `node:latest`.",
+          "**One concern per image** — a container should run a single main process.",
+          "**Scan images** for vulnerabilities (Trivy, Docker Scout) in CI.",
+        ]},
+        { type: "callout", kind: "warn", text: "Never bake secrets (API keys, passwords) into an image with ENV or COPY — they persist in the layer history and can be extracted. Inject secrets at runtime via environment or a secrets manager instead." },
+      ],
+      takeaways: [
+        "A Dockerfile is a top-to-bottom recipe; aim for images that are small, well-cached, and secure.",
+        "Know the core instructions: FROM, WORKDIR, COPY, RUN, CMD/ENTRYPOINT, EXPOSE, ENV, USER.",
+        "Multi-stage builds compile in a fat stage and copy only the artifact into a tiny runtime stage — often 50× smaller.",
+        "Run as non-root, pin base versions, use .dockerignore, scan images, and never bake secrets into layers.",
+      ],
+      flashcards: [
+        { front: "CMD vs ENTRYPOINT", back: "ENTRYPOINT is the fixed executable that always runs; CMD provides default arguments that are easy to override. Combined: ENTRYPOINT = the program, CMD = its default args." },
+        { front: "What problem do multi-stage builds solve?", back: "They let you build with a full toolchain but ship only the finished artifact in a tiny runtime image — no compiler, dev deps, or source in production. Smaller and more secure." },
+        { front: "Why must you never COPY/ENV secrets into an image?", back: "They persist in the immutable layer history and can be extracted from the image. Inject secrets at runtime instead." },
+      ],
+      quiz: [
+        { q: "What is the main benefit of a multi-stage build?", options: ["Faster builds only", "Shipping only the finished artifact in a tiny, secure runtime image", "Running multiple apps per container", "Avoiding the need for a base image"], answer: 1, explain: "Multi-stage builds keep the compiler and dev dependencies out of the final image, producing a much smaller, more secure result." },
+        { q: "Which is a Dockerfile security best practice?", options: ["Run as root for simplicity", "Use the latest tag", "Add a USER instruction to drop root", "Bake API keys in with ENV"], answer: 2, explain: "Dropping root with USER limits the blast radius if the container is compromised; the others are anti-patterns." },
+      ],
+    },
+    {
+      slug: "registries-and-compose",
+      title: "Registries & multi-container apps with Compose",
+      summary:
+        "Where images live and how you share them (registries), plus running a whole multi-service app locally with Docker Compose.",
+      minutes: 9,
+      blocks: [
+        { type: "p", text: "Once you've built an image, two questions follow: where does it live so others (and your cluster) can pull it, and how do you run several containers together? Enter **registries** and **Compose**." },
+        { type: "h2", text: "Container registries" },
+        { type: "p", text: "A **registry** is a versioned store for images — the source of truth for what gets deployed. You `push` images to it from CI and `pull` them at deploy time. Public options include **Docker Hub** and **GitHub Container Registry (GHCR)**; clouds offer **ECR** (AWS), **ACR** (Azure), and **Artifact Registry** (GCP)." },
+        { type: "diagram", name: "registry-flow", caption: "CI builds and pushes an image to a registry; the cluster pulls it to run — the registry is the handoff point." },
+        { type: "code", lang: "bash", caption: "Build, tag, push, pull", code: "docker build -t ghcr.io/acme/api:v1.4.0 .\ndocker push ghcr.io/acme/api:v1.4.0\n# ...later, on any host or in the cluster...\ndocker pull ghcr.io/acme/api:v1.4.0\ndocker run -p 8080:8080 ghcr.io/acme/api:v1.4.0" },
+        { type: "callout", kind: "tip", text: "Tag images with the Git commit SHA or a semantic version in CI (`api:v1.4.0`, `api:git-9f3a1c`). This makes every deployed image traceable back to exactly the code that produced it." },
+        { type: "h2", text: "Docker Compose" },
+        { type: "p", text: "Real apps are several services — a web app, a database, a cache. **Docker Compose** defines them all in one `docker-compose.yml` and runs them together with one command, on a shared network, for local development and testing." },
+        { type: "code", lang: "yaml", caption: "docker-compose.yml — an app plus its database", code: "services:\n  api:\n    build: .\n    ports: [\"8080:8080\"]\n    environment:\n      DATABASE_URL: postgres://db:5432/app\n    depends_on: [db]\n  db:\n    image: postgres:16\n    environment:\n      POSTGRES_PASSWORD: devsecret\n    volumes:\n      - pgdata:/var/lib/postgresql/data\nvolumes:\n  pgdata:" },
+        { type: "list", items: [
+          "**`docker compose up`** starts every service; **`down`** stops and removes them.",
+          "Services reach each other by **name** (`db`) on Compose's private network.",
+          "**Volumes** persist data (like the database) beyond a container's lifetime.",
+          "It's a **local-dev and CI tool** — for production orchestration you graduate to Kubernetes.",
+        ]},
+        { type: "callout", kind: "key", text: "Two ideas to carry forward: containers are ephemeral, so persistent state lives in volumes (or external managed databases); and Compose's model of 'a set of services on a shared network' is exactly what Kubernetes scales up to across a cluster." },
+        { type: "callout", kind: "note", text: "Compose is great for one host. When you need many hosts, self-healing, rolling updates, and autoscaling, you move to an orchestrator — which is the next module: Kubernetes." },
+      ],
+      takeaways: [
+        "A registry is the versioned source of truth for images; CI pushes, and hosts/clusters pull to deploy.",
+        "Tag images by commit SHA or semantic version so every deployment traces back to exact code.",
+        "Docker Compose defines and runs a multi-service app together on a shared network — ideal for local dev and CI.",
+        "Containers are ephemeral: persist state in volumes or external databases; for production orchestration, move to Kubernetes.",
+      ],
+      flashcards: [
+        { front: "What is a container registry?", back: "A versioned store for images (Docker Hub, GHCR, ECR/ACR). CI pushes images to it; hosts and clusters pull from it — it's the deployment source of truth." },
+        { front: "What is Docker Compose for?", back: "Defining and running a multi-container app together (web + db + cache) on a shared network with one command — mainly for local development and CI, not production." },
+        { front: "How do containers keep data across restarts?", back: "Through volumes (or an external managed database). The container filesystem is ephemeral; the writable layer is lost when the container is removed." },
+      ],
+      quiz: [
+        { q: "In Docker Compose, how does the `api` service reach the `db` service?", options: ["By IP address hardcoded", "By the service name on the shared network", "Through the internet", "It can't"], answer: 1, explain: "Compose puts services on a private network where they resolve each other by service name (e.g. `db`)." },
+        { q: "Where should a container's persistent data live?", options: ["In the container's writable layer", "In a volume or external database", "In the image", "In environment variables"], answer: 1, explain: "Containers are ephemeral — the writable layer is lost on removal — so persistent data belongs in volumes or external stores." },
+      ],
+    },
+  ],
+};
