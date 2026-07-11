@@ -1,0 +1,208 @@
+import type { Module } from "./types";
+
+export const iac: Module = {
+  id: "iac",
+  title: "Infrastructure as Code",
+  blurb: "Provision infrastructure from version-controlled code with Terraform: the IaC mindset, HCL and the plan/apply workflow, state, and reusable modules.",
+  accent: "iris",
+  lessons: [
+    {
+      slug: "what-is-infrastructure-as-code",
+      title: "What is Infrastructure as Code?",
+      summary:
+        "Stop clicking in consoles. Define servers, networks, and databases as version-controlled code that's reproducible, reviewable, and idempotent.",
+      minutes: 8,
+      blocks: [
+        { type: "p", text: "**Infrastructure as Code (IaC)** is the practice of provisioning and managing infrastructure — servers, networks, databases, DNS, IAM — through machine-readable, version-controlled files instead of manual clicks in a web console or one-off commands. The infrastructure becomes *code*: reviewed, tested, and deployed like any other." },
+        { type: "diagram", name: "iac-vs-clickops", caption: "'ClickOps' is manual and unrepeatable; IaC is code that produces the same infrastructure every time." },
+        { type: "h2", text: "The problem with clicking" },
+        { type: "p", text: "Manually configuring infrastructure — often called **ClickOps** — doesn't scale and doesn't last. It's not repeatable (can you rebuild it identically after a disaster?), not reviewable (what changed, and who changed it?), and it drifts: staging and production slowly diverge until 'works in staging' means nothing. IaC fixes all three." },
+        { type: "list", items: [
+          "**Reproducible.** Spin up an identical environment (dev, staging, prod, or a DR region) from the same code.",
+          "**Version-controlled.** Every change is a Git commit — reviewed in a PR, auditable, and revertable.",
+          "**Self-documenting.** The code *is* the spec of what exists; no stale wiki page.",
+          "**Automatable.** Provisioning becomes a pipeline step, not a ticket to a human.",
+          "**Consistent.** No more snowflake servers configured slightly differently by hand.",
+        ]},
+        { type: "h2", text: "Declarative vs imperative" },
+        { type: "compare", caption: "Two ways to express infrastructure.", columns: ["Style", "You write", "Example"], rows: [
+          { label: "Imperative", cells: ["The steps to reach the state", "'create VM, then attach disk, then…' (scripts)"] },
+          { label: "Declarative", cells: ["The desired end state", "'3 VMs with this disk exist' (Terraform)"] },
+        ]},
+        { type: "callout", kind: "key", text: "Most modern IaC is declarative: you describe the desired end state and the tool figures out how to get there — creating, updating, or deleting resources to match. This is the same reconciliation idea behind Kubernetes." },
+        { type: "h2", text: "Idempotency" },
+        { type: "p", text: "A defining property of good IaC is **idempotency**: applying the same configuration repeatedly converges to the same state. Run it once or ten times — if the infrastructure already matches, nothing changes. This makes IaC safe to re-run and is why declarative tools can be trusted in automation." },
+        { type: "callout", kind: "note", text: "Two families of tools: **provisioning** tools (Terraform, OpenTofu, CloudFormation, Pulumi) create the infrastructure itself, while **configuration management** tools (Ansible, Chef, Puppet) configure software *on* existing servers. This module focuses on Terraform, the most widely used provisioning tool." },
+      ],
+      takeaways: [
+        "IaC provisions infrastructure through version-controlled code instead of manual console clicks (ClickOps).",
+        "Benefits: reproducible, version-controlled, self-documenting, automatable, and consistent — no snowflake servers.",
+        "Most IaC is declarative (describe the end state) rather than imperative (list the steps).",
+        "Idempotency means re-applying the same config converges to the same state — safe to run repeatedly in automation.",
+      ],
+      flashcards: [
+        { front: "What is Infrastructure as Code?", back: "Provisioning and managing infrastructure through machine-readable, version-controlled files rather than manual console clicks — making it reproducible, reviewable, and automatable." },
+        { front: "Declarative vs imperative IaC", back: "Imperative: you write the steps to reach a state (scripts). Declarative: you describe the desired end state and the tool computes the changes (Terraform, CloudFormation)." },
+        { front: "What does idempotency mean for IaC?", back: "Applying the same configuration repeatedly converges to the same state — if reality already matches, nothing changes. This makes re-running safe." },
+      ],
+      quiz: [
+        { q: "What is a core benefit of IaC over manual configuration?", options: ["It's always cheaper", "Reproducible, version-controlled, reviewable infrastructure", "It removes the need for testing", "It only works on AWS"], answer: 1, explain: "IaC turns infrastructure into version-controlled code that's reproducible and reviewable — unlike unrepeatable manual clicks." },
+        { q: "Terraform is primarily which style of tool?", options: ["Imperative scripting", "Declarative provisioning", "A monitoring tool", "A container runtime"], answer: 1, explain: "Terraform is declarative: you describe the desired end state and it computes and applies the changes to reach it." },
+      ],
+    },
+    {
+      slug: "terraform-basics",
+      title: "Terraform basics: HCL, plan & apply",
+      summary:
+        "Providers, resources, variables, and outputs in HCL — plus the plan/apply workflow that previews every change before it happens.",
+      minutes: 11,
+      blocks: [
+        { type: "p", text: "**Terraform** (and its open-source fork **OpenTofu**) is the de-facto standard for declarative provisioning. You write **HCL** (HashiCorp Configuration Language), Terraform compares it to reality, and applies the difference. It works across AWS, Azure, GCP, Kubernetes, and hundreds of other platforms through providers." },
+        { type: "h2", text: "The building blocks" },
+        { type: "list", items: [
+          "**Provider** — a plugin that talks to a platform's API (aws, azurerm, google, kubernetes). You configure it once.",
+          "**Resource** — a single piece of infrastructure to manage (a VM, a bucket, a DNS record).",
+          "**Variable** — a typed input that parameterizes the config (region, instance size).",
+          "**Output** — a value exported after apply (a load balancer's DNS name), for humans or other configs.",
+          "**Data source** — a read-only lookup of something that already exists (an existing VPC, the latest AMI).",
+        ]},
+        { type: "code", lang: "hcl", caption: "main.tf — a provider and a resource", code: "terraform {\n  required_providers {\n    aws = { source = \"hashicorp/aws\", version = \"~> 5.0\" }\n  }\n}\n\nprovider \"aws\" {\n  region = var.region\n}\n\nvariable \"region\" {\n  type    = string\n  default = \"us-east-1\"\n}\n\nresource \"aws_s3_bucket\" \"assets\" {\n  bucket = \"acme-app-assets\"\n  tags   = { Environment = \"prod\" }\n}\n\noutput \"bucket_name\" {\n  value = aws_s3_bucket.assets.bucket\n}" },
+        { type: "h2", text: "The core workflow" },
+        { type: "diagram", name: "terraform-workflow", caption: "write → init → plan (preview the diff) → apply (make it real) → destroy when done." },
+        { type: "steps", items: [
+          { title: "terraform init", text: "Downloads the providers and modules your config needs. Run once per project (and after adding providers)." },
+          { title: "terraform plan", text: "Computes and shows the exact diff — what will be created, changed, or destroyed — WITHOUT touching anything. Your safety net." },
+          { title: "terraform apply", text: "Executes the plan, creating/updating/deleting resources to match your config. Prompts for confirmation." },
+          { title: "terraform destroy", text: "Tears down everything the config manages — handy for ephemeral environments." },
+        ]},
+        { type: "callout", kind: "key", text: "`terraform plan` is the feature that makes Terraform safe. It's a dry run showing precisely what will change before anything happens — always read the plan, and in CI, save it and apply that exact plan so what you reviewed is what runs." },
+        { type: "callout", kind: "warn", text: "Terraform builds a dependency graph automatically from references (bucket → policy that references it). Don't fight it with manual ordering; reference attributes (`aws_s3_bucket.assets.id`) and let Terraform sequence the work." },
+        { type: "h2", text: "The plan symbols" },
+        { type: "list", items: [
+          "**`+`** create a new resource.",
+          "**`~`** update a resource in place.",
+          "**`-`** destroy a resource.",
+          "**`-/+`** replace (destroy then create) — watch for these; they can cause downtime.",
+        ]},
+        { type: "callout", kind: "note", text: "See a `-/+` replace on your production database? Stop and understand why — some attribute changes force resource recreation. This is exactly the kind of surprise `plan` exists to catch before it deletes something important." },
+      ],
+      takeaways: [
+        "Terraform uses declarative HCL: providers (platform plugins), resources, variables, outputs, and data sources.",
+        "The workflow is init (fetch providers) → plan (preview the diff) → apply (make it real) → destroy (tear down).",
+        "`terraform plan` is a dry run showing exactly what will change — always review it; in CI, apply the saved plan.",
+        "Terraform infers dependencies from references and builds an execution graph; watch for `-/+` replacements that cause downtime.",
+      ],
+      flashcards: [
+        { front: "What does `terraform plan` do?", back: "Computes and shows the exact diff — resources to create (+), change (~), destroy (-), or replace (-/+) — without modifying anything. It's a dry run and the key safety mechanism." },
+        { front: "Name Terraform's core object types", back: "Provider (platform API plugin), resource (managed infrastructure), variable (input), output (exported value), and data source (read-only lookup of existing infra)." },
+        { front: "How does Terraform decide the order to create resources?", back: "It builds a dependency graph automatically from references between resources — you don't specify ordering manually." },
+      ],
+      quiz: [
+        { q: "Which command previews changes without applying them?", options: ["terraform init", "terraform plan", "terraform apply", "terraform destroy"], answer: 1, explain: "`terraform plan` computes and displays the diff as a dry run; `apply` is what actually makes changes." },
+        { q: "In a plan, what does `-/+` indicate?", options: ["An in-place update", "A resource being replaced (destroyed then recreated)", "A syntax error", "A no-op"], answer: 1, explain: "`-/+` means Terraform must replace the resource — destroy and recreate it — which can cause downtime, so review carefully." },
+      ],
+    },
+    {
+      slug: "terraform-state-and-modules",
+      title: "State & reusable modules",
+      summary:
+        "The state file is how Terraform maps code to reality — where it lives, why it must be locked and shared, and how modules make infrastructure reusable.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "Two concepts separate a toy Terraform setup from a team-ready one: **state** (how Terraform tracks what it manages) and **modules** (how you make configuration reusable). Get these right and Terraform scales to a whole organization." },
+        { type: "h2", text: "State: the map to reality" },
+        { type: "p", text: "Terraform records what it has created in a **state file** (`terraform.tfstate`) — a JSON mapping between the resources in your code and the real objects in the provider. On each run it reads state, refreshes it against reality, and computes the plan from the difference. Without state, Terraform wouldn't know that `aws_s3_bucket.assets` in your code is *that specific bucket* in AWS." },
+        { type: "diagram", name: "terraform-state", caption: "State sits between your HCL and the real cloud, mapping declared resources to actual ones." },
+        { type: "callout", kind: "warn", text: "The state file can contain secrets (database passwords, keys) in plain text and is the source of truth for everything Terraform manages. Never commit it to Git. Losing or corrupting it can orphan your entire infrastructure." },
+        { type: "h2", text: "Remote state & locking" },
+        { type: "p", text: "For any team, state must be **remote** and **locked**:" },
+        { type: "list", items: [
+          "**Remote backend** — store state in a shared, versioned, encrypted location (S3, Azure Blob, Terraform Cloud) so the whole team and CI share one source of truth.",
+          "**State locking** — prevent two people (or two pipeline runs) from applying at once and corrupting state; the backend takes a lock during apply (e.g. via DynamoDB for the S3 backend).",
+          "**Isolation** — separate state per environment (dev/staging/prod) so a mistake in dev can't touch prod.",
+        ]},
+        { type: "callout", kind: "key", text: "Local state on a laptop is fine for learning and fatal for teams. The first thing a real project does is configure a remote, locked, encrypted backend — it's what makes collaboration and CI safe." },
+        { type: "h2", text: "Modules: reuse and composition" },
+        { type: "p", text: "A **module** is a reusable package of Terraform config with inputs (variables) and outputs. Instead of copy-pasting the same 40 lines to create a network in every project, you write a `network` module once and call it with different parameters. Your root configuration becomes a composition of modules." },
+        { type: "code", lang: "hcl", caption: "Calling a reusable module", code: "module \"prod_network\" {\n  source = \"./modules/network\"\n\n  cidr_block  = \"10.0.0.0/16\"\n  environment = \"prod\"\n  az_count    = 3\n}\n\n# use the module's outputs\nresource \"aws_instance\" \"app\" {\n  subnet_id = module.prod_network.private_subnet_ids[0]\n}" },
+        { type: "list", items: [
+          "**DRY** — define infrastructure patterns once, reuse everywhere.",
+          "**Consistency** — every environment gets the same well-reviewed building blocks.",
+          "**Registries** — public modules (the Terraform Registry) and private ones share vetted infrastructure across teams.",
+        ]},
+        { type: "callout", kind: "tip", text: "Keep modules small and focused (a network, a database, a service) with clear inputs and outputs — like functions. Compose them in thin per-environment root configs. Avoid giant do-everything modules; they're as hard to reuse as giant functions." },
+      ],
+      takeaways: [
+        "State maps the resources in your code to real objects; Terraform reads and refreshes it to compute each plan.",
+        "State can hold secrets in plain text — never commit it; losing it can orphan your infrastructure.",
+        "Teams need a remote, locked, encrypted backend (S3/Azure Blob/TF Cloud) with state isolated per environment.",
+        "Modules package config with inputs/outputs for DRY, consistent reuse — compose small focused modules like functions.",
+      ],
+      flashcards: [
+        { front: "What is the Terraform state file for?", back: "It maps the resources declared in your code to the real objects in the provider, so Terraform knows what it manages and can compute the diff. It can contain secrets — never commit it." },
+        { front: "Why must team state be remote and locked?", back: "A remote backend gives everyone (and CI) one shared, versioned, encrypted source of truth; locking prevents concurrent applies from corrupting state." },
+        { front: "What is a Terraform module?", back: "A reusable package of configuration with inputs (variables) and outputs — like a function for infrastructure. It keeps config DRY and consistent across environments." },
+      ],
+      quiz: [
+        { q: "Why should the Terraform state file never be committed to Git?", options: ["It's too large", "It can contain secrets in plain text and is the source of truth for managed infra", "Git can't store JSON", "It changes the syntax"], answer: 1, explain: "State often holds sensitive values in plain text and is critical — it belongs in a secure, locked remote backend, not version control." },
+        { q: "What problem does state locking solve?", options: ["Slow plans", "Two simultaneous applies corrupting the state", "Missing providers", "Large module counts"], answer: 1, explain: "Locking prevents concurrent applies (people or pipelines) from writing state at the same time and corrupting it." },
+      ],
+    },
+    {
+      slug: "terraform-drift-and-practices",
+      title: "Drift, environments & best practices",
+      summary:
+        "What happens when reality diverges from code, how to structure multiple environments, and the practices that keep Terraform safe in a team and a pipeline.",
+      minutes: 9,
+      blocks: [
+        { type: "p", text: "The final piece is running Terraform responsibly over time: detecting drift, structuring environments, and integrating with CI so infrastructure changes get the same review as code." },
+        { type: "h2", text: "Drift" },
+        { type: "p", text: "**Drift** is when the real infrastructure no longer matches the code — usually because someone made a change by hand in the console ('just a quick fix'). On the next run, `terraform plan` detects the difference and proposes to revert it back to what the code says." },
+        { type: "callout", kind: "key", text: "Terraform's answer to drift is simple: the code is the source of truth. If someone hand-edits a resource, the next plan will show a diff and want to undo it. The lesson — make ALL changes through code, never touch managed resources by hand." },
+        { type: "list", items: [
+          "**Detect** drift by running `terraform plan` regularly (many teams run it on a schedule in CI and alert on unexpected diffs).",
+          "**Avoid** it by removing console write access to managed resources — enforce that changes go through PRs.",
+          "**Import** existing resources (`terraform import` / import blocks) to bring hand-created infrastructure under management instead of fighting it.",
+        ]},
+        { type: "h2", text: "Structuring environments" },
+        { type: "compare", caption: "Common ways to separate dev/staging/prod.", columns: ["Approach", "How", "Trade-off"], rows: [
+          { label: "Separate directories", cells: ["A folder + state per environment", "Explicit and safe; some duplication"] },
+          { label: "Workspaces", cells: ["One config, multiple named states", "DRY but easy to apply to the wrong env"] },
+          { label: "Module + thin roots", cells: ["Shared modules, small per-env roots", "Recommended: DRY and isolated"] },
+        ]},
+        { type: "h2", text: "Terraform in CI/CD" },
+        { type: "p", text: "Infrastructure changes deserve the same pipeline as application code:" },
+        { type: "steps", items: [
+          { title: "On a PR", text: "Run `terraform plan` and post the diff as a comment so reviewers see exactly what will change." },
+          { title: "Review & approve", text: "A human reviews the plan and approves the PR — the plan is the reviewable artifact." },
+          { title: "On merge", text: "CI runs `terraform apply` on the saved plan, so what was reviewed is exactly what's applied." },
+        ]},
+        { type: "callout", kind: "warn", text: "Secrets don't belong in `.tf` files or state you can avoid. Pass them via environment variables, a secrets manager, or provider-native secret references — and mark sensitive variables/outputs `sensitive = true` so they don't print in logs and plans." },
+        { type: "h2", text: "Best-practice checklist" },
+        { type: "list", items: [
+          "Remote, locked, encrypted state, isolated per environment.",
+          "Pin provider and module versions for reproducible runs.",
+          "`fmt` and `validate` in CI; `plan` on PRs, `apply` on merge.",
+          "Small, versioned, reusable modules; thin per-environment roots.",
+          "Never hand-edit managed resources; make all changes through code.",
+        ]},
+        { type: "callout", kind: "note", text: "This closes the provisioning story: Terraform stands up the cluster and cloud resources, containers and Kubernetes run the workloads on top, and — in the next module — GitOps keeps what's deployed in sync with Git." },
+      ],
+      takeaways: [
+        "Drift is when reality diverges from code (usually manual console changes); the code is the source of truth and plan will revert it.",
+        "Detect drift with scheduled plans, avoid it by removing console write access, and adopt existing resources with import.",
+        "Structure environments with shared modules + thin per-env roots (isolated state), over error-prone workspaces.",
+        "Run Terraform in CI: plan on PRs (post the diff), apply the saved plan on merge; keep secrets out of .tf and mark them sensitive.",
+      ],
+      flashcards: [
+        { front: "What is drift in Terraform?", back: "When the real infrastructure no longer matches the code — usually from a manual change. The next `terraform plan` detects it and proposes reverting to what the code declares." },
+        { front: "How should Terraform run in CI/CD?", back: "Run `plan` on PRs and post the diff for review; on merge, run `apply` against the saved plan so what was reviewed is exactly what's applied." },
+        { front: "How do you handle infrastructure created by hand?", back: "Use `terraform import` (or import blocks) to bring it under Terraform management, rather than letting it drift or recreating it." },
+      ],
+      quiz: [
+        { q: "Someone changes a Terraform-managed resource by hand. What happens on the next plan?", options: ["Terraform ignores it", "Terraform detects the drift and proposes reverting to the code", "The state is deleted", "Nothing until destroy"], answer: 1, explain: "The code is the source of truth; plan surfaces the drift and proposes changes to bring reality back in line with the config." },
+        { q: "What's the recommended CI flow for Terraform?", options: ["Apply directly on every commit", "Plan on PRs for review, apply the saved plan on merge", "Only run locally", "Never use CI"], answer: 1, explain: "Planning on PRs makes changes reviewable; applying the saved plan on merge ensures what was reviewed is exactly what runs." },
+      ],
+    },
+  ],
+};

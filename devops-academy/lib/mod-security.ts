@@ -1,0 +1,195 @@
+import type { Module } from "./types";
+
+export const security: Module = {
+  id: "security",
+  title: "DevSecOps & Security",
+  blurb: "Building security into the pipeline instead of bolting it on: shift-left scanning, a trustworthy software supply chain, secrets management, and runtime least-privilege with policy-as-code.",
+  accent: "rose",
+  lessons: [
+    {
+      slug: "shift-left-security-devsecops",
+      title: "Shift-left security & the DevSecOps mindset",
+      summary:
+        "Why security can't be a gate at the end, and how DevSecOps embeds automated checks (SAST, DAST, SCA) into every stage of the pipeline as a shared responsibility.",
+      minutes: 9,
+      blocks: [
+        { type: "p", text: "For years security was a **gate at the end** — a separate team that reviewed a release just before launch and said yes or no. In a world of daily deploys that model is broken: it's slow, it's a bottleneck, and problems found the day before launch are the most expensive kind to fix. **DevSecOps** is the answer: make security a continuous, automated, shared part of the pipeline — not a final checkpoint." },
+        { type: "h2", text: "Shift left" },
+        { type: "p", text: "'**Shift left**' means moving security checks as early (as far *left* on the pipeline timeline) as possible — into the developer's editor, the pull request, and the build — rather than waiting for a pre-production audit. The earlier a flaw is caught, the cheaper it is to fix: a vulnerability caught in code review costs minutes; the same flaw in production can cost an incident, a breach, and a very bad week." },
+        { type: "diagram", name: "devsecops-pipeline", caption: "Security checks embedded at each stage — from IDE and commit to build, deploy, and runtime — rather than a single gate before release." },
+        { type: "callout", kind: "key", text: "DevSecOps rests on the same idea as CI quality gates: automate the check and run it on every change. Security scanning becomes just another required status check on the pull request — fast, consistent, and impossible to skip under deadline pressure." },
+        { type: "h2", text: "The core scan types" },
+        { type: "compare", caption: "The automated application-security checks you wire into a pipeline.", columns: ["Type", "What it examines", "Catches"], rows: [
+          { label: "SAST", cells: ["Your source code, statically (not running)", "Injection, hard-coded secrets, insecure patterns"] },
+          { label: "DAST", cells: ["The running app, from the outside", "Runtime flaws: auth bypass, XSS, misconfig"] },
+          { label: "SCA", cells: ["Your dependencies & their versions", "Known CVEs in third-party libraries"] },
+          { label: "Secret scanning", cells: ["Diffs & history for credential patterns", "API keys/tokens committed by accident"] },
+        ]},
+        { type: "list", items: [
+          "**SAST** (Static Application Security Testing) reads your code without running it — fast, runs on every PR, but can be noisy with false positives.",
+          "**DAST** (Dynamic) probes the deployed app like an attacker would — fewer false positives, but needs a running environment and runs later.",
+          "**SCA** (Software Composition Analysis) is often the highest-value check: most of your code is dependencies, and most breaches exploit a *known* CVE in one of them.",
+          "**Secret scanning** blocks credentials from ever entering Git — a leaked key in history is compromised forever, even after you delete the line.",
+        ]},
+        { type: "callout", kind: "warn", text: "A tool that pages developers on every low-severity finding gets muted — the security equivalent of alert fatigue. Fail the build only on high-confidence, high-severity issues; surface the rest as advisory. A gate people trust and don't route around is worth more than a comprehensive one they disable." },
+        { type: "h2", text: "It's a culture, not a tool" },
+        { type: "p", text: "The 'Sec' in DevSecOps is a *shared responsibility*, exactly like the 'Ops' in DevOps. Developers own the security of what they build; the security team shifts from being gatekeepers to being enablers — providing paved-road tooling, secure defaults, and guardrails that make the secure path the easy path." },
+        { type: "callout", kind: "note", text: "A useful mental model is **threat modeling**: before building a feature, ask 'how could this be abused?' Frameworks like STRIDE (Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege) give teams a lightweight, repeatable way to think like an attacker early." },
+      ],
+      takeaways: [
+        "DevSecOps replaces the end-of-line security gate with automated checks embedded across the pipeline — security as a shared responsibility.",
+        "Shift left: catch flaws in the IDE/PR/build where they're cheapest to fix, not in a pre-production audit.",
+        "The core scans: SAST (static code), DAST (running app), SCA (dependency CVEs), and secret scanning — wired in as required PR checks.",
+        "Fail builds only on high-severity findings to avoid fatigue, and give developers paved-road tooling with secure defaults.",
+      ],
+      flashcards: [
+        { front: "What does 'shift left' mean in security?", back: "Moving security checks as early in the pipeline as possible (IDE, pull request, build) instead of a pre-release audit — because flaws are cheapest to fix the earlier they're caught." },
+        { front: "SAST vs DAST vs SCA", back: "SAST scans your source code statically; DAST probes the running app from the outside; SCA analyzes your third-party dependencies for known CVEs. SCA is often the highest-value since most code and most breaches involve dependencies." },
+        { front: "How is DevSecOps a culture, not just a tool?", back: "Security becomes a shared responsibility: developers own what they build, and the security team shifts from gatekeepers to enablers providing secure defaults, paved-road tooling, and guardrails." },
+      ],
+      quiz: [
+        { q: "Which scan type analyzes your third-party dependencies for known vulnerabilities?", options: ["SAST", "DAST", "SCA", "Load testing"], answer: 2, explain: "SCA (Software Composition Analysis) inventories your dependencies and flags known CVEs — high-value since most code is dependencies." },
+        { q: "The main idea of 'shift left' security is to…", options: ["Move the security team to a different office", "Catch security issues as early in the pipeline as possible", "Run all scans only in production", "Skip security to deploy faster"], answer: 1, explain: "Shifting left catches flaws early (IDE/PR/build), where they are far cheaper to fix than in production." },
+      ],
+    },
+    {
+      slug: "securing-the-software-supply-chain",
+      title: "Securing the software supply chain",
+      summary:
+        "From image scanning and minimal base images to SBOMs, signing with cosign, and SLSA provenance — establishing trust in the artifacts you ship.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "Your app isn't just the code you wrote — it's that code plus a base image, dozens of system packages, and a tree of language dependencies, all built by a pipeline. Every link in that chain is an attack surface. High-profile attacks (SolarWinds, Codecov, a stream of malicious npm packages) all targeted the **software supply chain** rather than the app itself. Securing it means being able to trust *what's in* your artifacts and *where they came from*." },
+        { type: "diagram", name: "supply-chain-security", caption: "Trust at each hop: scan and pin dependencies, build minimal images, generate an SBOM, sign the artifact, and verify the signature before deploy." },
+        { type: "h2", text: "Start with the image" },
+        { type: "list", items: [
+          "**Use minimal base images.** A `distroless` or `alpine` image has a fraction of the packages of a full OS — fewer packages means a far smaller attack surface and fewer CVEs to patch. (Multi-stage builds, from the Docker module, make this easy.)",
+          "**Scan images for CVEs** in CI with a scanner like **Trivy**, Grype, or Snyk — it inspects OS packages and app dependencies against vulnerability databases. Fail the build on fixable high/critical findings.",
+          "**Pin and update.** Reference base images and dependencies by digest or exact version, and use tools like Dependabot/Renovate to update them deliberately — not `latest`, which drifts silently.",
+          "**Run as non-root** and read-only where possible, so a compromised process has as little power as it can.",
+        ]},
+        { type: "code", lang: "bash", caption: "Scan an image in CI and fail on fixable high/critical CVEs", code: "trivy image --severity HIGH,CRITICAL \\\n  --ignore-unfixed --exit-code 1 \\\n  myorg/api:1.4.2" },
+        { type: "h2", text: "Know what's inside: the SBOM" },
+        { type: "p", text: "A **Software Bill of Materials (SBOM)** is a complete, machine-readable inventory of every component in an artifact — like an ingredients label for software. When the next big CVE drops (think Log4Shell), an SBOM lets you answer 'are we affected, and where?' in seconds instead of days of frantic grepping. Generate one per build (formats: SPDX, CycloneDX) and store it alongside the image." },
+        { type: "callout", kind: "key", text: "The supply-chain question isn't 'is my code secure?' but 'can I trust this artifact end to end?' — the base image, every dependency, the build process, and the fact that what's running is exactly what I built. SBOMs answer 'what's inside'; signing answers 'is it authentic'." },
+        { type: "h2", text: "Prove authenticity: signing & provenance" },
+        { type: "list", items: [
+          "**Sign your artifacts.** Signing an image (e.g. with **cosign** from the Sigstore project) lets the cluster verify at deploy time that the image is the genuine one your pipeline produced and hasn't been tampered with or swapped.",
+          "**Verify before you run.** A policy (see the next lesson) can *reject* any image that isn't signed by your CI's identity — closing the door on unsigned or rogue images.",
+          "**Provenance & SLSA.** **SLSA** (Supply-chain Levels for Software Artifacts) is a framework of increasing guarantees; higher levels require tamper-proof, automatically generated *provenance* attesting exactly how and where an artifact was built.",
+        ]},
+        { type: "code", lang: "bash", caption: "Keyless signing and verification with cosign", code: "# Sign in CI using the workflow's OIDC identity (no long-lived keys)\ncosign sign myorg/api:1.4.2\n\n# Verify before deploy — fails if not signed by the expected identity\ncosign verify myorg/api:1.4.2 \\\n  --certificate-identity-regexp 'https://github.com/myorg/.+' \\\n  --certificate-oidc-issuer https://token.actions.githubusercontent.com" },
+        { type: "callout", kind: "tip", text: "You don't need SLSA Level 3 on day one. Get the fundamentals first: minimal base images, image scanning as a required gate, an SBOM per build, and signed images with verification at deploy. That covers the vast majority of real supply-chain risk." },
+      ],
+      takeaways: [
+        "Most modern attacks target the supply chain (base image, dependencies, build) rather than your code — trust must span the whole chain.",
+        "Harden the image: minimal base images, CVE scanning (Trivy) as a required gate, pinned/updated dependencies, non-root runtime.",
+        "An SBOM is a machine-readable inventory of everything in an artifact, so you can instantly answer 'are we affected?' when a CVE drops.",
+        "Sign artifacts (cosign/Sigstore) and verify at deploy; SLSA provenance proves how and where an artifact was built.",
+      ],
+      flashcards: [
+        { front: "What is a software supply-chain attack?", back: "An attack that targets the components and process around your code — base images, dependencies, or the build pipeline — rather than the application itself (e.g. SolarWinds, malicious npm packages)." },
+        { front: "What is an SBOM and why does it matter?", back: "A Software Bill of Materials — a machine-readable inventory of every component in an artifact. It lets you instantly determine whether you're affected by a newly disclosed CVE and exactly where." },
+        { front: "What problem does signing images (e.g. with cosign) solve?", back: "It proves authenticity and integrity: the cluster can verify at deploy time that an image is the genuine one your pipeline built and wasn't tampered with or swapped for a malicious one." },
+      ],
+      quiz: [
+        { q: "What is the primary purpose of an SBOM?", options: ["To make images smaller", "A machine-readable inventory of every component, so you can answer 'are we affected by this CVE?'", "To sign container images", "To replace the Dockerfile"], answer: 1, explain: "An SBOM lists every component in an artifact, enabling instant impact analysis when a vulnerability like Log4Shell is disclosed." },
+        { q: "Choosing a distroless or alpine base image primarily helps because it…", options: ["Runs faster", "Has fewer packages, shrinking the attack surface and CVE count", "Signs the image automatically", "Removes the need for scanning"], answer: 1, explain: "Minimal base images contain far fewer packages, so there's less to attack and fewer vulnerabilities to patch." },
+      ],
+    },
+    {
+      slug: "secrets-management",
+      title: "Secrets management",
+      summary:
+        "Why credentials must never live in Git, and the tools that inject them safely at runtime: secret managers, Vault, external/sealed secrets, and rotation.",
+      minutes: 9,
+      blocks: [
+        { type: "p", text: "Every system needs secrets — database passwords, API keys, TLS certificates, cloud credentials. Where those secrets live, and how they reach a running workload, is one of the most common places security goes wrong. The golden rule is simple: **secrets never belong in source code or a Git repository.**" },
+        { type: "h2", text: "Why not in Git?" },
+        { type: "list", items: [
+          "Git history is **forever** — deleting a committed key in a later commit doesn't remove it; anyone with the repo can check out the old commit and read it.",
+          "Repos get **cloned, forked, and leaked** far beyond the people you'd trust with a production password.",
+          "A secret in code can't be **rotated** independently of a deploy, and there's no audit trail of who accessed it.",
+        ]},
+        { type: "callout", kind: "warn", text: "A leaked credential is compromised the moment it hits a remote — treat it as burned and rotate it immediately, don't just delete the commit. This is exactly what secret scanning (previous lessons) tries to prevent at the door: the cheapest secret leak is the one that never got committed." },
+        { type: "callout", kind: "note", text: "Kubernetes **Secret** objects are only base64-*encoded*, not encrypted — anyone with API access (or a readable etcd) can decode them. Treat them as a delivery mechanism, not a security boundary: enable encryption at rest, lock them down with RBAC, and back them with a real secret manager." },
+        { type: "h2", text: "The approaches" },
+        { type: "compare", caption: "Ways to keep secrets out of Git and get them to workloads safely.", columns: ["Approach", "How it works", "Good for"], rows: [
+          { label: "Secret manager", cells: ["Central vault (Vault, AWS/GCP/Azure)", "Dynamic secrets, rotation, audit"] },
+          { label: "External Secrets", cells: ["Operator syncs a manager → K8s Secret", "Kubernetes apps, GitOps-friendly"] },
+          { label: "Sealed Secrets", cells: ["Encrypt secret so only the cluster can decrypt", "Storing secrets *in* Git safely"] },
+          { label: "Cloud-native inject", cells: ["Workload identity → manager at runtime", "Least standing credentials"] },
+        ]},
+        { type: "list", items: [
+          "**Secret managers** like **HashiCorp Vault** or a cloud provider's Secrets Manager store secrets encrypted, gate access with fine-grained policy, log every access, and can issue **dynamic secrets** — short-lived, generated on demand and auto-revoked.",
+          "**External Secrets Operator** lets a workload declare *which* secret it needs; the operator fetches it from the manager and materializes a Kubernetes Secret — so the manager stays the source of truth.",
+          "**Sealed Secrets** solves the GitOps puzzle: it encrypts a secret with a key only the in-cluster controller holds, so the *encrypted* blob is safe to commit to Git. Now even secrets fit the 'everything in Git' model.",
+        ]},
+        { type: "callout", kind: "key", text: "The pattern behind all of these: keep the plaintext secret in a system built to protect it, reference it by name in your code/manifests, and inject it at runtime. The repo holds a pointer or an encrypted blob — never the raw secret." },
+        { type: "h2", text: "Rotate and least-privilege" },
+        { type: "p", text: "Two habits multiply the value of any secrets tool. **Rotation** — changing secrets on a schedule (or automatically, with dynamic secrets) — limits how long a leaked credential is useful. **Least privilege** — each service gets only the secrets and permissions it truly needs — limits the blast radius when one is compromised. The best secret is one that's short-lived and narrowly scoped." },
+      ],
+      takeaways: [
+        "Never put secrets in source code or Git — history is permanent, repos leak, and you lose rotation and audit.",
+        "Kubernetes Secrets are only base64-encoded; enable encryption at rest, restrict with RBAC, and back them with a real manager.",
+        "Use a secret manager (Vault/cloud) for encryption, policy, audit, and dynamic short-lived secrets; External Secrets syncs them into K8s.",
+        "Sealed Secrets encrypt secrets so they're safe to commit (GitOps-friendly); rotate regularly and grant least privilege to shrink blast radius.",
+      ],
+      flashcards: [
+        { front: "Why must secrets never be committed to Git?", back: "Git history is permanent (deleting later doesn't remove it), repos get cloned/forked/leaked, and you lose independent rotation and access auditing. A committed secret should be considered compromised and rotated." },
+        { front: "Are Kubernetes Secrets encrypted?", back: "No — by default they're only base64-encoded, which anyone with API/etcd access can decode. Enable encryption at rest, restrict with RBAC, and back them with a real secret manager." },
+        { front: "What do Sealed Secrets solve?", back: "They let you store secrets in Git safely: a secret is encrypted so only the in-cluster controller can decrypt it, so the encrypted blob is safe to commit — fitting the GitOps 'everything in Git' model." },
+      ],
+      quiz: [
+        { q: "By default, a Kubernetes Secret is…", options: ["Strongly encrypted with a per-cluster key", "Only base64-encoded — trivially decodable by anyone with access", "Stored in Vault automatically", "Never persisted to disk"], answer: 1, explain: "Kubernetes Secrets are base64-encoded, not encrypted. Enable encryption at rest and RBAC, and use a real secret manager for protection." },
+        { q: "What is a key advantage of dynamic secrets from a tool like Vault?", options: ["They're stored in Git", "They're short-lived and auto-revoked, limiting the window a leak is useful", "They never need rotation because they're public", "They make images smaller"], answer: 1, explain: "Dynamic secrets are generated on demand and expire quickly, so a leaked one is useful for only a short time — rotation happens by design." },
+      ],
+    },
+    {
+      slug: "runtime-security-rbac-policy-as-code",
+      title: "Runtime security: RBAC, network policies & policy-as-code",
+      summary:
+        "Least privilege where it counts — Kubernetes RBAC, NetworkPolicies for zero-trust networking, and admission controllers (OPA/Gatekeeper, Kyverno) that enforce rules as code.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "The final layer is the running system. Even with clean code and trusted images, a cluster that gives every workload full permissions and open network access is one compromised pod away from disaster. Runtime security is about **least privilege** and **defense in depth** — assuming any single component can be breached and limiting what that breach can reach." },
+        { type: "h2", text: "RBAC: who can do what" },
+        { type: "p", text: "Kubernetes **Role-Based Access Control (RBAC)** governs which identities — users and, crucially, workload **ServiceAccounts** — can perform which actions on which resources. The model is small and composable:" },
+        { type: "diagram", name: "rbac-model", caption: "A Subject (user or ServiceAccount) is bound to a Role's permissions via a RoleBinding — granting only the verbs and resources it needs." },
+        { type: "list", items: [
+          "A **Role** (namespaced) or **ClusterRole** (cluster-wide) is a set of allowed **verbs** (get, list, create, delete…) on **resources** (pods, secrets…).",
+          "A **RoleBinding** grants a Role to a **subject** — a user, group, or ServiceAccount.",
+          "Every pod runs as a ServiceAccount; give each app its own with only the permissions it needs, and **don't** mount the default token if it doesn't call the API.",
+        ]},
+        { type: "callout", kind: "warn", text: "The most common Kubernetes RBAC mistake is binding cluster-admin to a ServiceAccount 'to make it work.' If that pod is compromised, the attacker owns the whole cluster. Grant the narrowest role that works and widen only when something genuinely fails." },
+        { type: "h2", text: "NetworkPolicies: zero-trust networking" },
+        { type: "p", text: "By default, **every pod in a cluster can talk to every other pod** — a flat network an attacker loves, because one foothold reaches everything. A **NetworkPolicy** restricts pod-to-pod traffic by label selector, letting you allow only the connections that should exist (e.g. 'only the API may reach the database'). Start by default-denying a namespace, then allow explicitly — the essence of zero-trust." },
+        { type: "code", lang: "yaml", caption: "Default-deny all ingress in a namespace, then allow selectively", code: "apiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: default-deny-ingress\n  namespace: payments\nspec:\n  podSelector: {}        # all pods in the namespace\n  policyTypes: [Ingress] # deny all inbound unless another policy allows it" },
+        { type: "h2", text: "Policy-as-code: enforce the rules automatically" },
+        { type: "p", text: "How do you guarantee *every* team follows the rules — no privileged containers, no `latest` tags, images only from your registry, resource limits always set? You don't rely on review; you enforce it with an **admission controller** that checks (and can reject) every object as it's created." },
+        { type: "list", items: [
+          "**OPA / Gatekeeper** uses the Rego policy language to express constraints; Gatekeeper is its Kubernetes admission controller.",
+          "**Kyverno** is a Kubernetes-native alternative where policies are themselves YAML — no new language to learn — and can validate, mutate, or generate resources.",
+          "**Pod Security Admission** is the built-in baseline that enforces the Pod Security Standards (e.g. blocking privileged pods) without any add-on.",
+        ]},
+        { type: "callout", kind: "key", text: "Policy-as-code turns security rules into automated, version-controlled guardrails enforced at the API server — the same shift-left, everything-as-code philosophy applied to governance. A rule that's a document gets ignored; a rule that's an admission policy is simply impossible to violate." },
+        { type: "callout", kind: "note", text: "These layers compose into **defense in depth**: minimal signed images (supply chain) run under least-privilege ServiceAccounts (RBAC), on a default-deny network (NetworkPolicy), with policy-as-code blocking risky configs — and observability (previous module) watching it all. No single layer has to be perfect because a breach must defeat several." },
+      ],
+      takeaways: [
+        "Runtime security is least privilege + defense in depth: assume any component can be breached and limit what it can reach.",
+        "Kubernetes RBAC binds subjects (users/ServiceAccounts) to Roles; give each workload its own narrowly-scoped ServiceAccount — never cluster-admin.",
+        "Pods can talk to everything by default; NetworkPolicies enforce zero-trust — default-deny a namespace, then allow only needed connections.",
+        "Policy-as-code (OPA/Gatekeeper, Kyverno, Pod Security Admission) enforces rules automatically at the API server, turning governance into guardrails.",
+      ],
+      flashcards: [
+        { front: "How does Kubernetes RBAC work?", back: "A Role (or ClusterRole) defines allowed verbs on resources; a RoleBinding grants that Role to a subject — a user, group, or workload ServiceAccount. Grant each workload the narrowest role it needs." },
+        { front: "What is the default pod-to-pod network behavior in Kubernetes, and how do you restrict it?", back: "By default every pod can reach every other pod (a flat network). A NetworkPolicy restricts traffic by label selector — best practice is to default-deny a namespace and then allow only required connections (zero-trust)." },
+        { front: "What is policy-as-code and which tools provide it?", back: "Automated enforcement of security/governance rules at the Kubernetes admission stage — every object is checked and can be rejected. Tools: OPA/Gatekeeper (Rego), Kyverno (YAML policies), and built-in Pod Security Admission." },
+      ],
+      quiz: [
+        { q: "By default, network traffic between pods in a Kubernetes cluster is…", options: ["Fully blocked until you allow it", "Allowed everywhere — any pod can reach any other pod", "Encrypted and authenticated automatically", "Limited to the same node"], answer: 1, explain: "Kubernetes has a flat network by default: all pods can communicate. NetworkPolicies let you default-deny and allow only intended connections." },
+        { q: "What does an admission controller like Gatekeeper or Kyverno let you do?", options: ["Scan images for CVEs", "Automatically enforce/reject cluster configurations against policy at creation time", "Store secrets encrypted", "Autoscale pods"], answer: 1, explain: "Policy-as-code admission controllers validate every object against rules as it's created and can reject non-compliant ones — governance as code." },
+      ],
+    },
+  ],
+};
