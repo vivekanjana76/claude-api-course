@@ -55,6 +55,7 @@ export default function Home() {
           <Link href="/learn" className="hover:text-iris transition-colors">Curriculum</Link>
           <Link href="/patterns" className="hover:text-iris transition-colors">Patterns</Link>
           <Link href="/cheatsheets" className="hover:text-iris transition-colors">Cheatsheets</Link>
+          <Link href="/prep" className="hover:text-iris transition-colors">Prep</Link>
           <Link href="/interview" className="hover:text-iris transition-colors">Interview Q&amp;A</Link>
           <Link href="/glossary" className="hover:text-iris transition-colors">Glossary</Link>
           <Link
