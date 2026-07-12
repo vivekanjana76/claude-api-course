@@ -1,0 +1,68 @@
+import type { Pattern } from "./types";
+
+export const patterns: Pattern[] = [
+  {
+    name: "Multi-AZ high availability",
+    tagline: "Span two+ Availability Zones so one failing doesn't take you down.",
+    diagram: "availability-multi-az",
+    when: "Any production workload that must survive a data-center failure — the baseline resilience pattern.",
+    watch: "Cross-AZ replication adds latency and data-transfer cost; make sure the standby is actually tested to fail over.",
+    accent: "teal",
+  },
+  {
+    name: "Autoscaling web tier",
+    tagline: "A load balancer over a fleet that grows and shrinks with demand.",
+    diagram: "autoscaling",
+    when: "Stateless web/app tiers with variable traffic — self-heals failed instances and matches capacity to load.",
+    watch: "Only works if instances are stateless; store sessions in a shared cache. Set sane min/max to avoid runaway cost.",
+    accent: "amber",
+  },
+  {
+    name: "Load-balanced fan-out",
+    tagline: "One front door spreading traffic across healthy targets.",
+    diagram: "load-balancer",
+    when: "Any time you run more than one instance of a service and need health checks and even distribution.",
+    watch: "Choose L7 (ALB/App Gateway) for HTTP routing vs L4 (NLB) for raw speed; misconfigured health checks drain good targets.",
+    accent: "iris",
+  },
+  {
+    name: "Public/private subnet tiering",
+    tagline: "Expose the load balancer; hide app servers and databases.",
+    diagram: "vpc-anatomy",
+    when: "Standard secure network layout — minimize what's directly reachable from the internet.",
+    watch: "NAT gateways cost per hour and per GB; forgetting one strands private instances with no outbound access.",
+    accent: "rose",
+  },
+  {
+    name: "Hub-and-spoke network",
+    tagline: "Centralize egress, firewalling, and hybrid links in one hub.",
+    diagram: "network-topology",
+    when: "Many VNets/VPCs (prod, dev, shared services) plus on-prem connectivity that should share central controls.",
+    watch: "The hub becomes a critical dependency — make its firewall and gateway highly available.",
+    accent: "teal",
+  },
+  {
+    name: "Edge caching (CDN)",
+    tagline: "Serve content from near the user; only misses hit the origin.",
+    diagram: "cdn",
+    when: "Global audiences, static-heavy sites, or any origin you want to shield from spikes and DDoS.",
+    watch: "Dynamic/personalized responses need careful cache TTLs — a bad rule can serve one user's data to another.",
+    accent: "iris",
+  },
+  {
+    name: "Tiered storage lifecycle",
+    tagline: "Age data from hot to cold automatically to cut cost.",
+    diagram: "storage-tiers",
+    when: "Large or growing object stores where access frequency drops over time (logs, backups, media).",
+    watch: "Archive tiers are slow and pricey to retrieve — don't cool data you still read often.",
+    accent: "amber",
+  },
+  {
+    name: "Well-Architected review",
+    tagline: "Pressure-test any design against six pillars.",
+    diagram: "well-architected",
+    when: "Before launch and periodically after — a structured checklist for operations, security, reliability, performance, cost, sustainability.",
+    watch: "It's a review discipline, not a one-time gate; revisit as the workload and its traffic evolve.",
+    accent: "rose",
+  },
+];

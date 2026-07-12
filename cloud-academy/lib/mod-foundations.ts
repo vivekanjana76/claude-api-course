@@ -1,0 +1,176 @@
+import type { Module } from "./types";
+
+export const foundations: Module = {
+  id: "foundations",
+  title: "Cloud Foundations",
+  blurb: "What the cloud actually is, the service and deployment models, and how AWS and Azure are built.",
+  accent: "iris",
+  lessons: [
+    {
+      slug: "what-is-cloud",
+      title: "What is cloud computing?",
+      summary:
+        "Renting computing on demand over the internet instead of buying and running your own servers — and why that changes everything about how software is built.",
+      minutes: 8,
+      blocks: [
+        { type: "p", text: "**Cloud computing** is the on-demand delivery of compute, storage, databases, and other IT resources over the internet, with **pay-as-you-go** pricing. Instead of buying servers, racking them in a data center, and hoping you guessed capacity right, you rent exactly what you need from a provider like **Amazon Web Services (AWS)** or **Microsoft Azure** and give it back when you're done." },
+        { type: "callout", kind: "key", text: "The core shift: capital expense (buy hardware up front) becomes operating expense (pay for usage). You trade owning infrastructure for renting a capability." },
+        { type: "h2", text: "Why it took over" },
+        { type: "list", items: [
+          "**No up-front cost.** Launch a server in minutes for cents an hour instead of a $10k purchase and weeks of lead time.",
+          "**Elasticity.** Scale up for a traffic spike and back down after — you pay only for what you use, when you use it.",
+          "**Global reach.** Deploy to data centers on other continents without owning a single building.",
+          "**Managed services.** Offload databases, queues, and machine learning to the provider so your team ships features, not patches.",
+          "**Someone else's ops.** The provider handles power, cooling, hardware failures, and physical security.",
+        ]},
+        { type: "h2", text: "The five defining traits (NIST)" },
+        { type: "p", text: "The classic definition lists five essential characteristics: **on-demand self-service** (provision without a human in the loop), **broad network access** (reach it over the internet), **resource pooling** (multi-tenant hardware), **rapid elasticity** (scale in seconds), and **measured service** (metered, pay-per-use billing)." },
+        { type: "callout", kind: "note", text: "AWS launched in 2006 with S3 and EC2; Azure followed in 2010. Together with Google Cloud they hold the large majority of the market. This course teaches AWS and Azure side by side because the concepts are identical — only the names differ." },
+        { type: "h2", text: "What you stop worrying about" },
+        { type: "p", text: "Before the cloud, launching a product meant forecasting peak load, buying enough servers to survive it, and eating the cost of idle capacity the other 350 days a year. In the cloud you start at zero, grow with demand, and let autoscaling absorb spikes. That single change is why a two-person startup can now run infrastructure that once required a dedicated operations team." },
+      ],
+      takeaways: [
+        "Cloud computing = renting compute/storage/services on demand with pay-as-you-go pricing.",
+        "It converts big up-front hardware costs (capex) into metered usage costs (opex).",
+        "The superpowers are elasticity, global reach, managed services, and no hardware ops.",
+        "AWS and Azure teach the same concepts under different names — learn the pattern once.",
+      ],
+      flashcards: [
+        { front: "Capex vs opex in the cloud", back: "Cloud replaces capital expense (buying hardware up front) with operating expense (paying for metered usage)." },
+        { front: "What does 'elasticity' mean?", back: "The ability to automatically scale resources up and down with demand, paying only for what you use." },
+        { front: "Name three of NIST's five cloud traits", back: "On-demand self-service, broad network access, resource pooling, rapid elasticity, measured service (any three)." },
+      ],
+      quiz: [
+        { q: "What pricing model most defines cloud computing?", options: ["Annual license", "Pay-as-you-go / metered usage", "One-time purchase", "Per-employee seat"], answer: 1, explain: "Cloud is defined by on-demand, metered, pay-as-you-go billing — you pay for what you use." },
+        { q: "Which is a direct benefit of elasticity?", options: ["Lower internet latency everywhere", "Scaling up for a spike and back down after, paying only for usage", "Free storage", "Guaranteed zero downtime"], answer: 1, explain: "Elasticity lets you match capacity to demand automatically and pay only for what you consume." },
+      ],
+    },
+    {
+      slug: "service-and-deployment-models",
+      title: "IaaS, PaaS, SaaS & deployment models",
+      summary:
+        "The pizza-as-a-service ladder: how much you manage versus the provider, and the difference between public, private, and hybrid cloud.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "Cloud services sit on a spectrum defined by **how much the provider manages for you**. The more they manage, the less you control — and the faster you ship." },
+        { type: "diagram", name: "cloud-service-models", caption: "As you move from IaaS to SaaS, the provider takes over more of the stack." },
+        { type: "h2", text: "The three service models" },
+        { type: "list", items: [
+          "**IaaS (Infrastructure as a Service)** — you rent raw virtual machines, disks, and networks. You manage the OS, patching, and everything above it. *Examples: EC2, Azure Virtual Machines.*",
+          "**PaaS (Platform as a Service)** — you deploy code and the platform runs it; no OS or servers to manage. *Examples: AWS Elastic Beanstalk, Azure App Service.*",
+          "**SaaS (Software as a Service)** — you just use finished software over the web; the vendor runs everything. *Examples: Microsoft 365, Gmail, Salesforce.*",
+        ]},
+        { type: "callout", kind: "tip", text: "A useful analogy: IaaS is renting a kitchen, PaaS is a meal-kit delivery, SaaS is eating at a restaurant. Same dinner, wildly different amounts of work." },
+        { type: "h2", text: "Where 'serverless' fits" },
+        { type: "p", text: "**Serverless** (AWS Lambda, Azure Functions) is often called FaaS — Functions as a Service. It's PaaS taken to its limit: you provide only a function, and the platform provisions, scales, and bills per invocation with nothing running when idle. There are still servers — you just never see or manage them." },
+        { type: "h2", text: "Deployment models" },
+        { type: "compare", caption: "Where the infrastructure physically lives.", columns: ["Model", "What it is", "Use it when"], rows: [
+          { label: "Public cloud", cells: ["Shared provider infrastructure (AWS, Azure)", "Default choice — scale, low cost, no hardware"] },
+          { label: "Private cloud", cells: ["Dedicated infrastructure for one org", "Strict regulatory or data-residency needs"] },
+          { label: "Hybrid cloud", cells: ["Public + private/on-prem connected together", "Migrating gradually, or keeping some data on-prem"] },
+          { label: "Multi-cloud", cells: ["Using more than one public provider", "Avoiding lock-in, best-of-breed services"] },
+        ]},
+        { type: "callout", kind: "warn", text: "More managed isn't always better. Managed services trade control and portability for speed. A SaaS is fastest to adopt but hardest to customize or move off later." },
+      ],
+      takeaways: [
+        "IaaS → PaaS → SaaS is a ladder of increasing provider responsibility and decreasing control.",
+        "IaaS = VMs you manage; PaaS = deploy code, no servers; SaaS = finished software you just use.",
+        "Serverless (FaaS) is PaaS pushed to per-invocation billing with nothing running when idle.",
+        "Deployment models — public, private, hybrid, multi-cloud — describe where the infrastructure lives.",
+      ],
+      flashcards: [
+        { front: "IaaS vs PaaS vs SaaS in one line each", back: "IaaS: rent VMs, you manage the OS up. PaaS: deploy code, platform runs it. SaaS: use finished software, vendor runs all." },
+        { front: "What is serverless / FaaS?", back: "You provide a function; the platform provisions, scales, and bills per invocation with nothing running when idle (e.g. Lambda, Azure Functions)." },
+        { front: "Hybrid vs multi-cloud", back: "Hybrid = public cloud connected to private/on-prem. Multi-cloud = using more than one public provider." },
+      ],
+      quiz: [
+        { q: "You deploy code to a platform that handles the servers, OS, and scaling for you. Which model is this?", options: ["IaaS", "PaaS", "SaaS", "On-prem"], answer: 1, explain: "PaaS runs your code without you managing servers or the OS. SaaS would be finished software you don't write." },
+        { q: "Which best describes serverless (FaaS)?", options: ["No servers exist at all", "You manage the OS but not hardware", "You provide a function and are billed per invocation with nothing idle", "A private data center"], answer: 2, explain: "Serverless still uses servers, but you never manage them and pay only per invocation." },
+      ],
+    },
+    {
+      slug: "global-infrastructure",
+      title: "How AWS & Azure are built: regions, AZs & edge",
+      summary:
+        "Regions, availability zones, and edge locations — the physical geography that determines latency, resilience, and data residency.",
+      minutes: 9,
+      blocks: [
+        { type: "p", text: "Both AWS and Azure organize the world into **Regions** and **Availability Zones**. Understanding this geography is the foundation of every resilient, low-latency, compliant design." },
+        { type: "diagram", name: "regions-az", caption: "A Region contains multiple isolated Availability Zones; each AZ is one or more data centers." },
+        { type: "h2", text: "Regions" },
+        { type: "p", text: "A **Region** is a distinct geographic area (e.g. AWS `us-east-1` in N. Virginia, Azure `East US`). You choose a region for three reasons: **latency** (close to users), **data residency / compliance** (keep data in a country), and **cost** (prices vary by region). Most services and data are region-scoped and don't automatically leave the region." },
+        { type: "h2", text: "Availability Zones (AZs)" },
+        { type: "p", text: "Each region contains multiple **Availability Zones** — physically separate data centers with independent power, cooling, and networking, connected by fast private links. Spreading your app across AZs means a fire, flood, or power failure in one zone doesn't take you down. **Deploying to multiple AZs is the single most important resilience practice in the cloud.**" },
+        { type: "callout", kind: "key", text: "A Region = a city. An Availability Zone = a separate building in that city. You put copies of your app in multiple buildings so losing one keeps you running." },
+        { type: "h2", text: "Edge locations" },
+        { type: "p", text: "Beyond regions, providers run hundreds of smaller **edge locations** (points of presence) worldwide. These power **content delivery networks** (CloudFront, Azure CDN) and DNS, caching content close to users for low latency — even where there's no full region." },
+        { type: "h2", text: "Global vs regional services" },
+        { type: "compare", caption: "Some services are global; most are regional.", columns: ["Scope", "Examples", "Implication"], rows: [
+          { label: "Global", cells: ["IAM, Route 53, CloudFront / Entra ID, Azure DNS", "One instance spans all regions"] },
+          { label: "Regional", cells: ["EC2, S3, RDS / VMs, Storage, SQL DB", "Lives in one region; you pick which"] },
+          { label: "Zonal", cells: ["An EC2 instance, an EBS volume", "Tied to a single AZ"] },
+        ]},
+        { type: "callout", kind: "warn", text: "A common beginner mistake: launching everything in one AZ. It works in the demo and fails in the outage. Design for at least two AZs from day one." },
+      ],
+      takeaways: [
+        "A Region is a geographic area; you choose it for latency, compliance, and cost.",
+        "Availability Zones are isolated data centers within a region — spread across ≥2 for resilience.",
+        "Edge locations cache content near users via CDNs, separate from full regions.",
+        "Know a service's scope: global (IAM/DNS), regional (compute/storage), or zonal (a single instance/disk).",
+      ],
+      flashcards: [
+        { front: "Region vs Availability Zone", back: "A Region is a geographic area (a 'city'); an AZ is an isolated data center within it (a 'building'). Spread across AZs for resilience." },
+        { front: "Three reasons to choose a region", back: "Latency to users, data residency / compliance, and cost (prices vary by region)." },
+        { front: "What are edge locations for?", back: "Caching content close to users (CDN) and DNS — hundreds of small PoPs, distinct from full regions." },
+      ],
+      quiz: [
+        { q: "What is the most important practice for surviving a data-center failure?", options: ["Use a bigger instance type", "Deploy across multiple Availability Zones", "Buy reserved capacity", "Enable a CDN"], answer: 1, explain: "AZs are physically isolated data centers; spanning multiple AZs means one failing doesn't take you down." },
+        { q: "You must keep data inside one country for compliance. Which choice matters most?", options: ["The instance size", "The Region you deploy to", "The CDN provider", "The OS version"], answer: 1, explain: "Regions are geographic and most data stays in-region, so region choice governs data residency." },
+      ],
+    },
+    {
+      slug: "shared-responsibility-and-pricing",
+      title: "Shared responsibility & how you pay",
+      summary:
+        "Who secures what in the cloud, and the pricing levers — on-demand, reserved, spot, and the ever-present cost of data transfer.",
+      minutes: 9,
+      blocks: [
+        { type: "p", text: "Two ideas trip up newcomers more than any other: **who is responsible for security**, and **why the bill looks the way it does**. Master both early." },
+        { type: "h2", text: "The shared responsibility model" },
+        { type: "p", text: "Security in the cloud is a partnership. The provider secures the cloud itself; you secure what you put in it." },
+        { type: "diagram", name: "shared-responsibility", caption: "Provider secures OF the cloud; you secure IN the cloud. The line moves with the service model." },
+        { type: "list", items: [
+          "**Provider is responsible for** the physical data centers, hardware, network, and the internals of managed services — 'security *of* the cloud.'",
+          "**You are responsible for** your data, identity and access (IAM) configuration, network/firewall rules, and OS/app patching on VMs — 'security *in* the cloud.'",
+          "**The line shifts.** On a raw VM you patch the OS; on a serverless function the provider does. More managed = less on your plate.",
+        ]},
+        { type: "callout", kind: "warn", text: "The overwhelming majority of cloud breaches are misconfigurations on the customer side — a public storage bucket, an over-permissive IAM policy — not a provider failure. Your side of the line is where the risk lives." },
+        { type: "h2", text: "How pricing works" },
+        { type: "p", text: "You pay for three broad things: **compute** (per second/hour a VM or function runs), **storage** (per GB-month), and **data transfer** (per GB moving out). The first two are obvious; the third is the one that surprises people." },
+        { type: "compare", caption: "The main ways to pay for compute.", columns: ["Model", "Discount", "Trade-off"], rows: [
+          { label: "On-demand", cells: ["None (baseline)", "Maximum flexibility, highest price"] },
+          { label: "Reserved / Savings Plans", cells: ["Up to ~72%", "Commit to 1–3 years of usage"] },
+          { label: "Spot / Low-priority", cells: ["Up to ~90%", "Can be reclaimed with little notice"] },
+        ]},
+        { type: "callout", kind: "key", text: "Data transfer *into* the cloud is usually free; data transfer *out* to the internet (egress) costs money. Cross-region and sometimes cross-AZ traffic is billed too. 'Egress' is the silent line item on every large bill." },
+        { type: "h2", text: "Free tiers" },
+        { type: "p", text: "Both providers offer a **free tier** — some services free for 12 months, others always free within limits — perfect for learning. Set a **billing alert / budget** on day one so a forgotten resource never surprises you." },
+      ],
+      takeaways: [
+        "Shared responsibility: the provider secures 'OF the cloud'; you secure 'IN the cloud' (data, IAM, config).",
+        "Most cloud breaches are customer-side misconfigurations, not provider failures.",
+        "You pay for compute (time), storage (GB-month), and data transfer out (egress).",
+        "Compute discounts: reserved/savings plans (commit) and spot (interruptible) trade flexibility for big savings.",
+      ],
+      flashcards: [
+        { front: "Shared responsibility model in one line", back: "Provider secures security OF the cloud (hardware, facilities, service internals); you secure IN the cloud (data, IAM, network config, VM patching)." },
+        { front: "What is egress and why care?", back: "Egress is data transfer out to the internet. Inbound is usually free; outbound and cross-region traffic is billed — a common surprise on cloud bills." },
+        { front: "On-demand vs reserved vs spot", back: "On-demand: full price, flexible. Reserved/Savings Plans: big discount for a 1–3yr commitment. Spot: up to ~90% off but can be reclaimed anytime." },
+      ],
+      quiz: [
+        { q: "Under the shared responsibility model, who configures IAM policies correctly?", options: ["The provider", "You, the customer", "Nobody — it's automatic", "A third-party auditor"], answer: 1, explain: "Identity and access configuration is squarely on the customer's side — 'security in the cloud.'" },
+        { q: "Which workload is the best fit for Spot / low-priority instances?", options: ["A production database", "A fault-tolerant batch job that can restart", "A payment gateway", "A user's login session store"], answer: 1, explain: "Spot instances can be reclaimed with little notice, so they suit interruptible, restartable batch work — not stateful production services." },
+      ],
+    },
+  ],
+};
