@@ -20,6 +20,12 @@ export const crewai: Module = {
           text: "**CrewAI** is a popular open-source Python framework for multi-agent systems. Its mental model is a *company*: you assemble a **crew** of **agents**, each with a role, and give them **tasks** to complete. It's lightweight, standalone (not built on LangChain), and tuned for intuitive role-based collaboration.",
         },
         { type: "diagram", name: "crewai-crew", caption: "A Crew binds role-playing Agents to Tasks and runs them under a Process." },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Framework** = a pre-built toolkit that handles the plumbing so you write less boilerplate. **Open-source** = code that's free to read, use, and modify. **Primitive** = a basic building block the framework hands you (here: agent, task, crew). **Role / goal / backstory** = short descriptions CrewAI compiles into an agent's system prompt. **Standalone** = works on its own without depending on another large framework (CrewAI isn't built on LangChain).",
+        },
         { type: "h3", text: "The three core primitives" },
         {
           type: "compare",

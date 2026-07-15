@@ -34,6 +34,12 @@ export const stack: Module = {
             { label: "Guardrails & HITL", cells: ["Limits, approvals, injection defense", "Permission gates, output validation, sandboxes"] },
           ],
         },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**The stack** = the layers of software that turn a bare model into a real product (model access, memory, tools, observability, UI). **Commodity layer** = a part that's roughly the same everywhere, so you buy it rather than build it. **Observability** = being able to see what your agent did and why (logs and traces). **Differentiator** = the part that makes your product uniquely good — worth owning instead of outsourcing.",
+        },
         { type: "h3", text: "How the layers map to what you've learned" },
         {
           type: "list",

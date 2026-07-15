@@ -20,6 +20,12 @@ export const production: Module = {
           text: "Agents are non-deterministic and multi-step, so 'it looked good in my last test' is not a quality bar. **Evaluation** replaces vibes with evidence: a dataset of inputs, a way to run the agent, and graders that score the results — so you can change a prompt or tool and *know* whether it helped.",
         },
         { type: "diagram", name: "eval-agent", caption: "Dataset → run the agent → grade outcome & trajectory → measure → improve. Repeat." },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Non-deterministic** = the same input can give different outputs each run — which is why 'it worked once' isn't proof. **Evaluation (eval)** = scoring an agent against a set of test cases so you can measure whether a change helped. **Dataset** = the curated inputs (and often expected outputs) you test against. **Grader / judge** = something that scores each result — a rule, or another LLM. **Trajectory** = the full sequence of steps an agent took to reach its answer.",
+        },
         { type: "h3", text: "Three things to evaluate" },
         {
           type: "compare",

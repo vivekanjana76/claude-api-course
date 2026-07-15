@@ -20,6 +20,12 @@ export const frameworks: Module = {
           text: "**LangGraph** (from the LangChain team) models an agentic system as a **graph**: **nodes** are steps (call a model, run a tool, an agent), **edges** define what runs next, and everything operates over a shared **state** object. It's lower-level than CrewAI — more wiring, but far more control over flow, especially loops and conditional branching.",
         },
         { type: "diagram", name: "langgraph-graph", caption: "Nodes transform shared state; edges (some conditional) route execution — cycles allowed." },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Graph** = boxes (nodes) joined by arrows (edges) that show what runs next. **Node** = one step, like calling the model or running a tool. **Edge** = the arrow deciding the next node. **State** = the shared data object every step reads from and writes to. **Cycle / loop** = an arrow pointing back to an earlier node — what lets an agent keep going until it's done. **DAG** = a graph with no loops (Directed Acyclic Graph), i.e. a straight-through pipeline.",
+        },
         { type: "h3", text: "The core concepts" },
         {
           type: "list",

@@ -20,6 +20,12 @@ export const tools: Module = {
           text: "A model alone produces only text. **Tool use** (a.k.a. function calling) lets it interact with reality: search the web, query a database, run code, send an email, hit any API. You define the tools; the model chooses *when* to call them and *with what arguments*; your code executes them.",
         },
         { type: "diagram", name: "tool-call", caption: "The round trip: model requests a tool → your code executes it → you return the result → the model continues." },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Function calling / tool use** = letting the model trigger real functions instead of only writing text. **API** = a defined way for one program to ask another to do something over the network. **JSON Schema** = a standard format that describes the shape of data (which fields, which types) — here it tells the model exactly what arguments a tool accepts. **Argument** = an input value passed into a function. **Endpoint** = the specific address (URL) an API request is sent to.",
+        },
         { type: "h3", text: "Anatomy of a tool" },
         {
           type: "p",
