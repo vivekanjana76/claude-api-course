@@ -26,6 +26,7 @@ export const foundations: Module = {
         { type: "h2", text: "The five defining traits (NIST)" },
         { type: "p", text: "The classic definition lists five essential characteristics: **on-demand self-service** (provision without a human in the loop), **broad network access** (reach it over the internet), **resource pooling** (multi-tenant hardware), **rapid elasticity** (scale in seconds), and **measured service** (metered, pay-per-use billing)." },
         { type: "callout", kind: "note", text: "AWS launched in 2006 with S3 and EC2; Azure followed in 2010. Together with Google Cloud they hold the large majority of the market. This course teaches AWS and Azure side by side because the concepts are identical — only the names differ." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**On-premises (on-prem)** = running your own servers in your own building — the old way the cloud replaces. **Provision** = create a resource (a server, a database) ready to use. **Data center** = a warehouse full of servers; the cloud is really someone else's data centers you rent from. **Latency** = the delay before a request gets a response — lower is better, and it drops the closer you are to the server. **NIST** = a US standards body whose definition of 'cloud' everyone quotes." },
         { type: "h2", text: "What you stop worrying about" },
         { type: "p", text: "Before the cloud, launching a product meant forecasting peak load, buying enough servers to survive it, and eating the cost of idle capacity the other 350 days a year. In the cloud you start at zero, grow with demand, and let autoscaling absorb spikes. That single change is why a two-person startup can now run infrastructure that once required a dedicated operations team." },
       ],
@@ -71,6 +72,7 @@ export const foundations: Module = {
           { label: "Multi-cloud", cells: ["Using more than one public provider", "Avoiding lock-in, best-of-breed services"] },
         ]},
         { type: "callout", kind: "warn", text: "More managed isn't always better. Managed services trade control and portability for speed. A SaaS is fastest to adopt but hardest to customize or move off later." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**The stack** = all the layers software needs to run (hardware → OS → runtime → your app); 'more managed' means the provider owns more of those layers. **Managed service** = something the provider runs and maintains for you. **Portability** = how easily you can move your app to a different provider. **Vendor lock-in** = getting so tied to one provider's specifics that leaving is expensive. **FaaS** (Functions as a Service) = the serverless model where you upload just a function and pay only when it runs." },
       ],
       takeaways: [
         "IaaS → PaaS → SaaS is a ladder of increasing provider responsibility and decreasing control.",
@@ -111,6 +113,7 @@ export const foundations: Module = {
           { label: "Zonal", cells: ["An EC2 instance, an EBS volume", "Tied to a single AZ"] },
         ]},
         { type: "callout", kind: "warn", text: "A common beginner mistake: launching everything in one AZ. It works in the demo and fails in the outage. Design for at least two AZs from day one." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Data residency / compliance** = legal rules requiring certain data to physically stay inside a country or region. **Resilience** = staying up even when a piece fails. **CDN** (Content Delivery Network) = a network of nearby cache servers that serve images/video/files from close to each user, cutting latency. **DNS** (Domain Name System) = the internet's phone book, turning a name like `example.com` into a server address. **PoP** (Point of Presence) = one of those small edge locations. **Availability** = the % of time a service is up and working." },
       ],
       takeaways: [
         "A Region is a geographic area; you choose it for latency, compliance, and cost.",
@@ -153,6 +156,7 @@ export const foundations: Module = {
           { label: "Spot / Low-priority", cells: ["Up to ~90%", "Can be reclaimed with little notice"] },
         ]},
         { type: "callout", kind: "key", text: "Data transfer *into* the cloud is usually free; data transfer *out* to the internet (egress) costs money. Cross-region and sometimes cross-AZ traffic is billed too. 'Egress' is the silent line item on every large bill." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**IAM** (Identity and Access Management) = the system controlling who can do what — users, roles, and permissions. **Ingress / egress** = data coming *in* / going *out*; egress to the internet is what you pay for. **Misconfiguration** = an insecure setting left wrong by accident (e.g. a storage bucket set to public) — the #1 cause of cloud breaches. **Firewall** = rules controlling which network traffic is allowed in or out. **GB-month** = storing 1 GB for 1 month, the unit storage is priced in." },
         { type: "h2", text: "Free tiers" },
         { type: "p", text: "Both providers offer a **free tier** — some services free for 12 months, others always free within limits — perfect for learning. Set a **billing alert / budget** on day one so a forgotten resource never surprises you." },
       ],
