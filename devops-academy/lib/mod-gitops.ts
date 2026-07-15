@@ -32,6 +32,7 @@ export const gitops: Module = {
           { label: "Rollback", cells: ["Re-run a pipeline", "`git revert` to the previous commit"] },
         ]},
         { type: "callout", kind: "key", text: "In GitOps, a deployment is a Git commit. To ship, you merge a change to the manifests repo; to roll back, you revert the commit. The cluster follows Git automatically — so Git is your deploy history, your audit log, and your rollback mechanism, all at once." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Manifest** = a YAML file describing what should run in Kubernetes (which image, how many copies). **GitOps** = making a Git repo the single source of truth so 'change the repo' *is* 'change production.' **Agent** = a program running in the cluster that watches Git and applies changes for you (e.g. Argo CD). **Audit log** = a permanent record of who changed what and when — here, your Git history gives it for free. **Revert** = undo a specific past commit, which in GitOps rolls production back." },
         { type: "callout", kind: "note", text: "GitOps usually splits into two repos: the app source repo (CI builds and pushes an image, then bumps the image tag in…) the config/manifests repo, which the GitOps agent watches. CI still builds; GitOps handles deploy." },
       ],
       takeaways: [

@@ -34,6 +34,7 @@ export const docker: Module = {
           "**Immutability.** You ship a fixed image, not a mutated server — deployments become predictable and easy to roll back.",
         ]},
         { type: "callout", kind: "note", text: "**Docker** popularized containers but they build on older Linux tech (namespaces, cgroups, LXC). Today the runtime landscape is broader — containerd and CRI-O run containers, and the OCI standard means images are portable across tools. 'Docker' is often used loosely to mean 'containers.'" },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Kernel** = the core of an operating system that talks directly to the hardware; sharing it is exactly what makes containers so lightweight. **Multi-tenant** = one shared system running workloads for different customers or teams that must not see each other's data. **Hypervisor** = the software layer that runs virtual machines on one physical host. **OCI** (Open Container Initiative) = the open standard for image and runtime formats, so an image built with one tool runs on any other compliant one." },
       ],
       takeaways: [
         "A container bundles an app with its dependencies so it runs identically everywhere — solving 'works on my machine.'",
@@ -126,6 +127,7 @@ export const docker: Module = {
           "**Scan images** for vulnerabilities (Trivy, Docker Scout) in CI.",
         ]},
         { type: "callout", kind: "warn", text: "Never bake secrets (API keys, passwords) into an image with ENV or COPY — they persist in the layer history and can be extracted. Inject secrets at runtime via environment or a secrets manager instead." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Base image** = the starting filesystem you build on top of (the `FROM` line). **slim / alpine / distroless** = progressively more stripped-down base images; less software inside means a smaller image and fewer things an attacker can exploit. **Attack surface** = everything an attacker could potentially target — smaller is safer. **Blast radius** = how much can be damaged if one thing is compromised. **Non-root** = running the app as a limited user so a break-in can't control the whole container. **Trivy / Docker Scout** = tools that scan an image for known security vulnerabilities." },
       ],
       takeaways: [
         "A Dockerfile is a top-to-bottom recipe; aim for images that are small, well-cached, and secure.",

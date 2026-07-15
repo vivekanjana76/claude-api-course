@@ -31,6 +31,7 @@ export const observability: Module = {
         ]},
         { type: "callout", kind: "note", text: "**OpenTelemetry (OTel)** is the emerging vendor-neutral standard for generating and shipping all three signals, so you instrument once and send the data to any backend (Prometheus, Grafana, Jaeger, Datadog). Instrument with OTel to avoid lock-in." },
         { type: "callout", kind: "tip", text: "The pillars work together. A metric alert fires ('error rate up'); you pivot to traces to find the slow/failing service; you read that service's logs for the exact error. Design so you can jump between them by shared IDs (trace/request/correlation IDs)." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Telemetry** = the data a system emits about itself. **Metric** = a number over time (requests per second, CPU %). **Log** = a timestamped text record of an event. **Trace** = the full story of one request as it hops between services; each hop is a **span**. **Instrument** = add code to your app so it emits this data. **Known-unknowns** = failures you anticipated and can pre-build dashboards for; **unknown-unknowns** = surprises you didn't, which observability helps you investigate after the fact." },
       ],
       takeaways: [
         "Monitoring watches for known problems; observability lets you ask arbitrary questions to explain novel behavior — key in distributed systems.",

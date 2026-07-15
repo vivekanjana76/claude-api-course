@@ -42,6 +42,7 @@ export const cicd: Module = {
           { label: "Argo CD / Flux", cells: ["GitOps CD (pull-based)", "Deploy side; covered in the GitOps module"] },
         ]},
         { type: "callout", kind: "note", text: "There's a split: **CI tools** (GitHub Actions, Jenkins) push changes out, while **GitOps CD tools** (Argo CD, Flux) pull desired state from Git into the cluster. Many teams use both — Actions to build and test, Argo CD to deploy. We use GitHub Actions here and cover GitOps later." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Pipeline** = the automated assembly line a code change travels through (build → test → deploy). **Pipeline as code** = that process written in a file in your repo, so it's version-controlled like the app. **Artifact** = the built thing you deploy (usually a container image). **Promote** = move that exact same artifact forward to the next environment (dev → staging → prod) without rebuilding. **Environment** = a place the app runs — dev (yours), staging (a prod rehearsal), prod (real users)." },
       ],
       takeaways: [
         "A pipeline has triggers (events), jobs (on runners), steps (commands), and produces artifacts — all defined as versioned code in the repo.",
@@ -90,6 +91,7 @@ export const cicd: Module = {
         { type: "p", text: "A **matrix** runs the same job across combinations (OS × language version) in parallel. Caching dependencies (`cache: npm` above, or `actions/cache`) keeps pipelines fast." },
         { type: "code", lang: "yaml", caption: "Testing across versions in parallel", code: "strategy:\n  matrix:\n    node: [18, 20, 22]\nruns-on: ubuntu-latest\nsteps:\n  - uses: actions/checkout@v4\n  - uses: actions/setup-node@v4\n    with: { node-version: ${{ matrix.node }} }\n  - run: npm ci && npm test" },
         { type: "callout", kind: "warn", text: "Pin marketplace actions to a version (`actions/checkout@v4`) or, for untrusted third-party actions, to a full commit SHA. A `@main` reference means someone else's change runs in your pipeline with your secrets — a real supply-chain risk." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Workflow / job / step** = a workflow is the whole automated process; it contains jobs (parallel units of work) made of steps (individual commands). **Runner** = the machine GitHub spins up to execute a job. **Marketplace action** = a reusable step someone else published that you plug in (like `checkout`). **Commit SHA** = the unique fingerprint of one exact commit. **Supply-chain risk** = the danger that code you *depend on* (an action, a library) is malicious or hijacked and runs inside your build." },
       ],
       takeaways: [
         "GitHub Actions workflows are YAML in .github/workflows/, triggered by events (push, pull_request, schedule, manual).",
@@ -137,6 +139,7 @@ export const cicd: Module = {
         { type: "h2", text: "Branch protection ties it together" },
         { type: "p", text: "Gates only matter if they're enforced. **Branch protection rules** on `main` require the CI checks to pass and the PR to be reviewed before merge — making it structurally impossible to merge code that fails the pipeline. This is what keeps the main branch always releasable." },
         { type: "callout", kind: "tip", text: "Make the pipeline required, not advisory. If a green check is optional, under deadline pressure someone will skip it. Required status checks + review turn your quality gates into guarantees." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Unit test** = checks one small piece of code in isolation (fast, cheap). **Integration test** = checks that several pieces work together. **E2E (end-to-end) test** = drives the whole app like a real user (slow, but realistic). **Flaky test** = one that passes and fails randomly without any code change — poison for trust in the pipeline. **Quality gate** = an automated pass/fail check that blocks a change until it's met. **Shift left** = run these checks as early as possible, where fixes are cheapest." },
       ],
       takeaways: [
         "Quality gates are automated checks that must pass before a change progresses — how CI protects main and prod.",
@@ -180,6 +183,7 @@ export const cicd: Module = {
         { type: "h2", text: "Feature flags & rollback" },
         { type: "p", text: "**Feature flags** decouple *deploy* from *release*: ship code dark (flag off), then turn a feature on for a cohort at runtime — no redeploy to enable or disable. Combined with the strategies above, they give fine-grained control and an instant kill switch." },
         { type: "callout", kind: "key", text: "The single most important operational property is fast, reliable rollback. Immutable, versioned artifacts make this trivial — redeploy the previous known-good image (or `kubectl rollout undo`). If you can roll back in seconds, every deploy is low-stakes." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Rollout** = the act of releasing a new version. **Rollback** = reverting to the previous known-good version when something breaks. **Canary** = releasing to a tiny slice of users first (named after canaries in coal mines) to catch trouble early. **Blue-green** = keeping two full environments and flipping traffic from old (blue) to new (green) all at once. **Latency** = how long a request takes to respond. **Progressive delivery** = automatically ramping a release up (or rolling it back) based on live metrics." },
         { type: "callout", kind: "note", text: "Progressive delivery — automated canary and blue-green driven by metrics — is often run by GitOps tools like Argo Rollouts, which the GitOps & Argo CD module builds on." },
       ],
       takeaways: [
