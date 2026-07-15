@@ -28,6 +28,7 @@ export const storage: Module = {
           { label: "File", cells: ["File-level over NFS/SMB", "Many VMs mount it", "Shared app files, legacy lift-and-shift"] },
         ]},
         { type: "callout", kind: "warn", text: "Don't try to run a database on object storage or serve millions of tiny web requests from a single block volume. Match the shape to the pattern: object for scale & HTTP, block for one fast disk, file for shared mounts." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Object storage** = storing whole files (called objects) fetched by name over HTTP — think Google Drive at massive scale (S3, Azure Blob). **Block storage** = a raw virtual hard disk you attach to one VM (EBS, Azure Disk). **File storage** = a shared folder several machines mount at once. **Blob** = any lump of data (a Binary Large OBject) — an image, video, or backup. **Durability** = the odds your data is never lost. **HTTP API** = fetching/storing data via web requests instead of a filesystem." },
       ],
       takeaways: [
         "Object storage (S3/Blob): flat buckets, HTTP API, near-infinite scale — the cloud's default blob store.",

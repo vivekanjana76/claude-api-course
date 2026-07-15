@@ -32,6 +32,7 @@ export const compute: Module = {
         { type: "h2", text: "Stateless by default" },
         { type: "p", text: "Treat VMs as **disposable**. Anything on the local/root disk can vanish if the instance is terminated or fails. Keep important data on separate durable storage (a database, object storage, or a persistent volume) so you can replace a VM at any time without losing state. This mindset — 'cattle, not pets' — is what makes autoscaling and self-healing possible." },
         { type: "callout", kind: "warn", text: "Don't SSH in and hand-configure a production VM ('snowflake server'). Bake configuration into the image or a startup script so every replacement is identical and reproducible." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**VM (virtual machine)** = a software-simulated computer running on shared physical hardware. **Instance** = one running VM. **vCPU** = a virtual CPU core assigned to it. **SSH** = a secure remote command-line login to a Linux server. **Snowflake server** = a server hand-tweaked until it's unique and impossible to reproduce — a fragile anti-pattern. **GPU** = a chip that does massive parallel math, used for machine learning and graphics." },
       ],
       takeaways: [
         "A VM is a rented virtual server billed by the second — EC2 on AWS, Virtual Machines on Azure.",

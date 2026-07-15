@@ -25,6 +25,7 @@ export const networking: Module = {
           "**NAT Gateway** — lets private resources reach *out* to the internet (for updates, APIs) while staying unreachable *inbound*. One-way outbound access.",
         ]},
         { type: "callout", kind: "key", text: "The classic secure layout: public subnets hold only the load balancer; app servers and databases sit in private subnets and reach the internet outbound-only through a NAT gateway. Minimize what's directly exposed." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**VPC / VNet** = your own private, walled-off network inside the cloud. **Subnet** = a slice of that network; **public** subnets can reach the internet, **private** ones can't be reached from it. **CIDR / the `/16` notation** = a compact way to write a range of IP addresses (a smaller number after the slash = a bigger range). **NAT gateway** = a one-way door letting private servers call *out* to the internet without being reachable *from* it. **Load balancer** = spreads incoming traffic across many servers." },
         { type: "h2", text: "Connecting networks" },
         { type: "compare", caption: "Ways to link your network to others.", columns: ["Need", "AWS", "Azure"], rows: [
           { label: "Link two cloud networks", cells: ["VPC Peering / Transit Gateway", "VNet Peering"] },
