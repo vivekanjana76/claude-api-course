@@ -33,6 +33,7 @@ export const iac: Module = {
         { type: "h2", text: "Idempotency" },
         { type: "p", text: "A defining property of good IaC is **idempotency**: applying the same configuration repeatedly converges to the same state. Run it once or ten times — if the infrastructure already matches, nothing changes. This makes IaC safe to re-run and is why declarative tools can be trusted in automation." },
         { type: "callout", kind: "note", text: "Two families of tools: **provisioning** tools (Terraform, OpenTofu, CloudFormation, Pulumi) create the infrastructure itself, while **configuration management** tools (Ansible, Chef, Puppet) configure software *on* existing servers. This module focuses on Terraform, the most widely used provisioning tool." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Infrastructure** = the servers, networks, databases, and cloud resources your app runs on. **Provisioning** = creating that infrastructure. **Idempotent** = running the same command twice safely produces the same result (apply it again and nothing extra happens) — the opposite of a script that breaks if you re-run it. **State** = Terraform's record of what it has already created, so it knows the difference between 'make this' and 'change this.' **ClickOps** = setting things up by hand in a web console — the error-prone thing IaC replaces." },
       ],
       takeaways: [
         "IaC provisions infrastructure through version-controlled code instead of manual console clicks (ClickOps).",

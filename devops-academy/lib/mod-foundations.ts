@@ -29,6 +29,7 @@ export const foundations: Module = {
         { type: "h2", text: "Why it wins" },
         { type: "p", text: "Study after study (the DORA research) finds that teams practicing DevOps well deploy far more often, recover from incidents far faster, and have *lower* change-failure rates — speed and stability rise together, not at each other's expense. The rest of this course teaches the concrete practices and tools that make that possible: containers, orchestration, CI/CD, infrastructure as code, GitOps, and observability." },
         { type: "callout", kind: "note", text: "A related term you'll hear is **SRE (Site Reliability Engineering)** — Google's specific implementation of DevOps ideas, using software engineering to solve operations problems (error budgets, SLOs, toil reduction). Think of SRE as 'class DevOps implements SRE.'" },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**SLO** (Service Level Objective) = a reliability target you promise, like '99.9% of requests succeed.' **Error budget** = the tiny slice of failure that target still allows (here, 0.1%) — you 'spend' it shipping features and slow down when it runs low. **Toil** = boring, repetitive manual ops work (restarting a server, re-running the same script) that should be automated away. **Provisioning** = creating the servers, networks, and databases an app needs before it can run." },
       ],
       takeaways: [
         "DevOps is a culture + practices that unite development and operations around continuously, safely delivering value.",
@@ -125,6 +126,7 @@ export const foundations: Module = {
         ]},
         { type: "callout", kind: "key", text: "Modern DevOps favors trunk-based development with short-lived branches: small changes, merged to main daily, behind feature flags if needed. Long-lived branches cause painful 'merge hell' and delay feedback — the opposite of Flow." },
         { type: "callout", kind: "tip", text: "Protect `main` with branch-protection rules: require PR review and passing CI checks before merge. This makes the main branch always-releasable — a foundation for continuous delivery." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Feature flag** = an if-statement wrapping new code so you can merge it to `main` but keep it switched *off* until it's ready — this separates 'deployed' from 'released.' **Merge hell** = the painful, conflict-ridden mess you get when a long-lived branch has drifted far from `main` and you finally try to combine them. **CI checks** = the automated builds and tests GitHub runs on your PR before it's allowed to merge." },
       ],
       takeaways: [
         "Git is the substrate for all of DevOps: app code, pipelines, infra, and manifests all live in version control.",
@@ -176,6 +178,7 @@ export const foundations: Module = {
           "**Deploy (GitOps):** Argo CD or Flux syncing manifests from Git.",
           "**Observe:** Prometheus, Grafana, and the ELK/OpenTelemetry stack.",
         ]},
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Artifact** = the packaged output of a build (a container image, a `.jar`, a zip) that later stages deploy — build it once, reuse it everywhere. **Linting** = an automated check that flags style mistakes and likely bugs in source code before it runs. **Registry** = a versioned store for artifacts (think 'GitHub, but for built container images'). **Staging** = a production-like test environment real users never see. **Manifest** = a YAML file describing what to deploy (covered in the Kubernetes module)." },
         { type: "callout", kind: "note", text: "The rest of this course walks the pipeline from left to right: containers and Docker (build/package), Kubernetes (run), CI/CD and GitHub Actions (integrate/deploy), Terraform (provision), Argo CD (GitOps deploy), and observability (operate)." },
       ],
       takeaways: [
