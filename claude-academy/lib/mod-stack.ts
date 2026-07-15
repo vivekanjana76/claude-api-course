@@ -29,6 +29,12 @@ export const stack: Module = {
             { label: "AI-first engineer", cells: ["How do I build everything with AI leverage?", "Any software work, but designed around AI tools and agentic workflows."] },
           ],
         },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**ML (machine learning) engineering** = the classic job of collecting data and training your own models. **Foundation model** = a huge, general-purpose model (like Claude) already trained by a large lab and used via API. **Serving** = running a trained model so an app can send it requests. **AI engineer** = someone who builds reliable products on top of models they don't train. **API call** = a single request sent to a model over the network.",
+        },
         { type: "h3", text: "The skills map" },
         {
           type: "list",

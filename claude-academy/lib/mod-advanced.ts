@@ -20,6 +20,12 @@ export const advanced: Module = {
           text: "Earlier you learned chain-of-thought as a prompting trick. Modern Claude models build it in: they can produce **thinking blocks** — internal reasoning — before the final answer, and the API gives you controls for how much.",
         },
         { type: "diagram", name: "thinking", caption: "Native thinking: Claude reasons in dedicated blocks first, then answers. You control depth with effort." },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Thinking block** = internal reasoning the model writes to itself before the final answer; you can inspect it, but the end user usually doesn't see it. **Inference** = the moment a model actually runs to produce an answer (as opposed to *training*, when it was built). **Effort / thinking budget** = a dial for how much the model reasons — more can mean better answers, but higher cost and slower responses. **Chain-of-thought** = reasoning through the steps before committing to an answer.",
+        },
         { type: "h3", text: "Adaptive thinking + effort" },
         {
           type: "p",

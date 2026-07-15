@@ -23,6 +23,12 @@ export const prompting: Module = {
           type: "p",
           text: "The mantra: **be clear, be specific, give structure.** If a human could misread your instruction, so can Claude.",
         },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Prompt** = the input text you give the model. **Prompt engineering** = the craft of writing prompts that reliably produce the output you want. **System prompt** = standing instructions that set the model's role and rules for the whole conversation. **Few-shot** = including a couple of example input→output pairs to show the model the pattern; **zero-shot** = giving instructions with no examples. **Underspecified** = missing detail the model is forced to guess at.",
+        },
         { type: "h3", text: "The building blocks of a strong prompt" },
         {
           type: "list",
