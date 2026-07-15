@@ -24,6 +24,12 @@ export const evals: Module = {
           text: "An eval is, conceptually, a **test suite for an AI feature**: a set of inputs, a way to run them through your prompt, and a way to score the results.",
         },
         { type: "diagram", name: "eval-loop", caption: "The improvement loop: dataset → run prompt → grade → measure → refine → repeat." },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Evaluation (eval)** = a repeatable test that scores an AI feature's outputs so you can measure whether a change helped. **Test suite** = a collection of test cases run together. **Dataset** = the inputs (and often expected answers) you test against. **Ground truth** = the known-correct answer you compare an output to. **Regression** = when a change quietly makes something that used to work worse. **Grader / judge** = the rule or model that scores each output.",
+        },
         { type: "h3", text: "What an eval lets you do" },
         {
           type: "list",

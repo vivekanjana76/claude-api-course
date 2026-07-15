@@ -24,6 +24,12 @@ export const agents: Module = {
           text: "Crucially, **Claude never runs your code.** It only emits a structured request — 'call get_weather with {city: \"Paris\"}'. Your application runs the function and feeds the result back. This keeps you in control of every side effect.",
         },
         { type: "diagram", name: "tool-loop", caption: "The round trip: Claude requests a tool → your code executes it → you return the result → Claude continues." },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Function calling / tool use** = letting Claude trigger real functions instead of only writing text. **Structured request** = Claude replying with a machine-readable 'call this tool with these arguments' instead of prose. **Side effect** = anything that changes the real world (sends an email, charges a card) — which is exactly why *your* code runs the tool, not Claude. **API** = a defined way for one program to ask another to do something. **Argument** = an input value passed into a function.",
+        },
         { type: "h3", text: "Defining a tool" },
         {
           type: "p",

@@ -29,6 +29,12 @@ export const frontier: Module = {
             { label: "Test-time compute", cells: ["Per request, at inference", "Better answers to hard problems — paid for in latency and tokens, per call."] },
           ],
         },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Pretraining** = the massive first training phase where a model learns language from enormous amounts of text. **Parameters / weights** = the billions of numbers a model learns during training. **GPU** = the specialized chip that does the heavy parallel math. **Post-training** = extra tuning after pretraining to improve behavior. **RLHF** = Reinforcement Learning from Human Feedback — teaching a model what answers humans prefer. **Inference** = running the finished model to answer your request. **Test-time compute** = spending more computation at inference to get a better answer.",
+        },
         { type: "h3", text: "What a reasoning model is" },
         {
           type: "p",

@@ -24,6 +24,12 @@ export const foundations: Module = {
           text: "Almost everything goes through one endpoint: **POST /v1/messages**. You send a list of messages; Claude returns a reply. Tools, images, structured outputs, and thinking are all features layered on top of that single endpoint — not separate APIs.",
         },
         { type: "diagram", name: "request-response", caption: "The shape of every interaction: your app sends a request, Claude returns a structured response." },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Endpoint** = a specific API address you send requests to (here, `/v1/messages`). **Request / response** = the message you send the model and the reply you get back. **Token** = the chunk of text models read and write (roughly a word-piece); you're billed per token. **Latency** = how long a request takes to respond. **SDK** = an official code library (e.g. for Python or JavaScript) that makes calling the API easier than hand-writing raw HTTP.",
+        },
         { type: "h3", text: "Three ways to reach Claude" },
         {
           type: "list",

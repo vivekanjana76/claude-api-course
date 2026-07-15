@@ -24,6 +24,12 @@ export const rag: Module = {
           text: "**Retrieval-Augmented Generation (RAG)** solves this without retraining. The idea: when a question comes in, first **retrieve** the most relevant pieces of your data, then put them in the prompt and ask Claude to answer **using only that context**. The model becomes a reasoning engine over *your* facts.",
         },
         { type: "diagram", name: "rag-pipeline", caption: "RAG at a glance: a question retrieves relevant chunks from your knowledge base, which are injected into the prompt before Claude answers." },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Hallucinate** = when a model states a confident but made-up answer. **Training cutoff** = the date after which a model knows nothing, because its training data stops there. **Retrieval-Augmented Generation (RAG)** = fetching the relevant snippets of *your* data and putting them in the prompt so the model answers from facts, not memory. **Context** = the text you place in the prompt for the model to use. **Fine-tuning / retraining** = updating the model itself — expensive, and exactly what RAG lets you avoid.",
+        },
         { type: "h3", text: "Retrieve, then generate" },
         {
           type: "steps",
