@@ -19,6 +19,12 @@ export const orchestration: Module = {
           type: "p",
           text: "A single agent juggling research, coding, reviewing, and reporting carries a bloated system prompt, a confusing pile of tools, and a context window stuffed with unrelated history. **Multi-agent systems** split that load: several focused agents, each with its own role, tools, and context, coordinated toward a shared goal.",
         },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Multi-agent system** = several focused agents cooperating instead of one agent doing everything. **System prompt** = the standing instructions that define an agent's role and rules. **Context window** = the limited amount of text a model can 'see' at once — its short-term memory; cramming it with unrelated history hurts quality. **Context isolation** = giving each agent its own clean window so they don't pollute one another. **Orchestration** = coordinating who does what, and in what order.",
+        },
         { type: "h3", text: "What you gain" },
         {
           type: "list",

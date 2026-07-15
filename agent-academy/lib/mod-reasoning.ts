@@ -24,6 +24,12 @@ export const reasoning: Module = {
           type: "p",
           text: "Why does it work? Each token the model writes becomes part of its own input for the next token. Reasoning out loud literally gives the model more computation and a structured path to the answer, instead of forcing a one-shot leap.",
         },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Token** = the small chunk of text a model reads and writes (roughly a word-piece); a model generates one token at a time. **Chain-of-thought (CoT)** = having the model write its reasoning out step by step before the final answer, which raises accuracy. **Prompt** = the input text you give the model. **Scratchpad** = using that written-out reasoning as temporary working memory. **One-shot** = trying to answer in a single leap with no intermediate steps.",
+        },
         { type: "h3", text: "Three flavors" },
         {
           type: "list",

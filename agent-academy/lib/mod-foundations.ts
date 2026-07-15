@@ -67,6 +67,12 @@ while True:
           text: "The model only *emits a request* — 'call get_weather(city=\"Osaka\")'. Your harness runs the function and returns the result. That separation is what keeps you in control of every real-world side effect.",
         },
         {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**LLM (Large Language Model)** = the AI that predicts text — the engine behind ChatGPT and Claude. **Tool** = a function you let the model call (search the web, send an email, run code). **Control flow** = the order the steps run in; in an agent the *model* decides it at runtime, not your code. **Harness** = the surrounding program that runs the model, executes the tools it asks for, and loops. **Side effect** = anything that changes the real world (charges a card, deletes a file) — which is why your code, not the model, executes tools.",
+        },
+        {
           type: "p",
           text: "Hold onto this picture. The rest of the course is about making each ingredient better: smarter reasoning, well-designed tools, durable memory, and — when one agent isn't enough — many agents working together.",
         },

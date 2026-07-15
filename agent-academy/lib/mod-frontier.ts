@@ -19,6 +19,12 @@ export const frontier: Module = {
           type: "p",
           text: "A voice agent is still perceive → reason → act. What changes is the **latency budget**: in human conversation, a reply that takes longer than about a second feels wrong, and beyond two seconds callers assume the line is dead. Every design decision in voice flows from that constraint.",
         },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Jargon, decoded",
+          text: "**Latency** = the delay before a response arrives; in voice, more than ~1 second feels broken. **Latency budget** = the total delay you're allowed, divided across each step. **TTS / STT** = Text-to-Speech (turn the model's text into spoken audio) and Speech-to-Text (turn the caller's speech into text). **Streaming** = sending the answer word-by-word as it's generated instead of waiting for the whole thing. **Async** = kicking off a slow task and continuing other work instead of freezing until it finishes. **HITL** = Human-in-the-Loop, a person approving risky actions.",
+        },
         { type: "h3", text: "Two architectures" },
         {
           type: "compare",
