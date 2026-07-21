@@ -4,6 +4,9 @@ import { classic } from "./mod-classic";
 import { deeplearning } from "./mod-deeplearning";
 import { nlp } from "./mod-nlp";
 import { llms } from "./mod-llms";
+import { mlops } from "./mod-mlops";
+import { systemdesign } from "./mod-systemdesign";
+import { behavioral } from "./mod-behavioral";
 
 export const modules: Module[] = [
   foundations,
@@ -11,6 +14,9 @@ export const modules: Module[] = [
   deeplearning,
   nlp,
   llms,
+  mlops,
+  systemdesign,
+  behavioral,
 ];
 
 export interface LessonRef {
