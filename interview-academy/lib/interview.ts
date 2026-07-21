@@ -141,4 +141,39 @@ export const interviewQA: InterviewQA[] = [
     q: "How would you evaluate an LLM-powered feature?",
     a: "Because output is open-ended, evaluation is a system, not a single metric. Offline, I'd build a golden eval set of representative and adversarial prompts with expected behavior, run it on every change to catch regressions, and score with a mix of exact metrics where a ground truth exists, LLM-as-judge for scale (validated against human ratings, watching for position/verbosity bias), and periodic human review as the gold standard. Online, I'd track task success, user feedback (thumbs), escalation/deflection rate, and latency/cost, and roll out behind a canary with safety guardrails. The key message: no one number captures quality — you triangulate.",
   },
+  {
+    topic: "MLOps",
+    q: "What's the difference between MLOps and DevOps?",
+    a: "MLOps applies DevOps discipline to ML, but an ML system is defined by code + data + model, not just code — and that extra dependency reshapes everything. The same code on different data yields a different model, so you version datasets, not only code. Models decay as the world drifts, so the lifecycle includes continuous monitoring and retraining (a third pillar, continuous training, alongside CI/CD). Reproducibility needs the exact code, data, config, and environment together. So MLOps adds data/model versioning, experiment tracking, feature stores, and model monitoring on top of standard DevOps.",
+  },
+  {
+    topic: "MLOps",
+    q: "How do you monitor a model in production, and what is drift?",
+    a: "The trap is monitoring only latency and errors — a model can be perfectly 'up' while its accuracy quietly collapses. So beyond operational metrics, I monitor input feature distributions against a training baseline (using PSI or KL divergence) to catch data drift — a shift in P(X) detectable without labels — and, wherever ground-truth labels arrive, live model quality to catch concept drift, where the input→output relationship P(y|X) changes so the same features mean something new. When drift crosses a threshold I retrain on fresh data and redeploy, validating the new model against the current one before promoting — ideally automated as continuous training.",
+  },
+  {
+    topic: "MLOps",
+    q: "How would you safely roll out a new model to production?",
+    a: "In stages, optimizing for safety and evidence over speed. First a shadow deployment: run the new model on real traffic but don't act on its outputs, just log and compare — zero user risk, validates behavior and latency at scale. Then a canary: route a small slice of traffic, say 5%, watching guardrail metrics like latency and error rate. Then a properly-powered A/B test splitting traffic between the old (control) and new (treatment) models, measuring the actual business metric with a pre-registered sample size and stopping rule so I'm not fooled by peeking. Finally full rollout once it wins, with instant rollback ready. The point is that offline metrics only prove predictive quality; the live business metric is the truth.",
+  },
+  {
+    topic: "System Design",
+    q: "How do you approach an ML system design question like 'design a video recommender'?",
+    a: "I'd follow a framework and think out loud. First clarify and scope — goal, scale (users, items, QPS), latency budget, constraints — and reframe it as a concrete ML problem; this step is the most under-done and most rewarded. Then define success: offline metrics like NDCG/precision@k and, crucially, online metrics like watch-time or retention validated by A/B test. Then data and labels (implicit feedback like clicks/watch-time, plus a cold-start plan), features (user/item/context/interaction, watching for leakage), and the model — starting from a simple baseline before adding complexity. For serving at scale I'd use the two-stage pattern: cheap candidate generation via approximate nearest-neighbor retrieval over embeddings to shortlist a few hundred items, then a rich ranking model to order them, plus re-ranking for diversity. Finally monitoring, feedback loops, and retraining. The interviewer is grading structure and tradeoffs, not a memorized architecture.",
+  },
+  {
+    topic: "System Design",
+    q: "Why are production recommendation systems built in two stages?",
+    a: "You can't afford to score millions of candidate items with a heavy model on every request within a tight latency budget. So you split the work: candidate generation (retrieval) cheaply narrows millions of items to a few hundred plausible ones — typically approximate nearest-neighbor search over learned embeddings, optimized for recall and speed — and then a ranking model applies many features to precisely order just those few hundred, optimizing precision at the top. A final re-ranking step adds diversity, freshness, and business rules. This retrieval-then-ranking split is how recommenders scale while staying fast.",
+  },
+  {
+    topic: "Behavioral",
+    q: "Tell me about a time a model or project failed.",
+    a: "The structure I'd use: own the failure plainly without deflecting, give the real root cause both technically and in process, describe the fix, and — most importantly — the systemic change that prevents recurrence, then the lesson. For example: a model's accuracy degraded in production for weeks before we noticed because we'd shipped without a drift monitor — we were only watching latency and errors. The root cause was a data-drift problem plus a monitoring gap. I retrained on fresh data to recover, but the durable fix was adding input-distribution and prediction-quality monitoring with alerts, so degradation can't go unnoticed again. The lesson: a model isn't 'done' at deploy — production ML is a loop, and you monitor prediction quality, not just uptime. Ending on a systemic fix is what makes a failure story land.",
+  },
+  {
+    topic: "Behavioral",
+    q: "How do you prioritize what to work on when everything is uncertain?",
+    a: "I anchor decisions to the business metric rather than personal preference, and I make tradeoffs explicit — naming what I gain and give up. I favor the cheapest, most reversible experiment that reduces the biggest uncertainty first, which usually means shipping a simple baseline before investing in a complex model, since the baseline often reveals whether the hard work is even worth it. And I communicate the tradeoffs to stakeholders rather than deciding in a vacuum, so priorities are aligned. Concretely: quantify expected impact and effort, de-risk with quick experiments, and revisit as data comes in.",
+  },
 ];
