@@ -1,0 +1,60 @@
+import type { Pattern } from "./types";
+
+export const patterns: Pattern[] = [
+  {
+    name: "Start with a baseline",
+    tagline: "Ship the dumbest reasonable model first; earn complexity with evidence.",
+    diagram: "system-design-framework",
+    when: "Every new ML problem — a logistic regression, a heuristic, or a majority-class predictor sets the bar the fancy model must beat.",
+    watch: "Skipping the baseline hides whether your deep model actually helps; a strong baseline sometimes ends the project early (in a good way).",
+    accent: "iris",
+  },
+  {
+    name: "Split before you touch",
+    tagline: "Hold out a test set first; fit every transform on training data only.",
+    diagram: "data-splits",
+    when: "Before any preprocessing or feature engineering, to keep your evaluation honest and leak-free.",
+    watch: "Fitting scalers/imputers or selecting features on the full dataset leaks test information and inflates scores that collapse in production.",
+    accent: "teal",
+  },
+  {
+    name: "Match metric to error cost",
+    tagline: "Choose the metric from what a mistake actually costs, not habit.",
+    diagram: "confusion-matrix",
+    when: "Any classification/regression problem, especially imbalanced ones where accuracy lies.",
+    watch: "Optimizing accuracy on imbalanced data; report precision/recall/F1 or PR-AUC and tie the threshold to business cost.",
+    accent: "rose",
+  },
+  {
+    name: "Regularize to generalize",
+    tagline: "Constrain the model so it learns the signal, not the noise.",
+    diagram: "overfitting",
+    when: "Whenever validation error exceeds training error by a meaningful gap (high variance).",
+    watch: "Over-regularizing swings you into underfitting; tune the strength on validation, and prefer more data when you can get it.",
+    accent: "amber",
+  },
+  {
+    name: "Transfer, don't restart",
+    tagline: "Fine-tune a pretrained model instead of training from scratch.",
+    diagram: "llm-lifecycle",
+    when: "Limited labeled data or compute — vision, NLP, and LLM tasks almost always start from pretrained weights.",
+    watch: "Full fine-tuning is costly and can overfit small data; reach for parameter-efficient methods (LoRA) and freeze lower layers.",
+    accent: "teal",
+  },
+  {
+    name: "Ground LLMs with retrieval",
+    tagline: "Fetch relevant context and put it in the prompt — don't trust memory.",
+    diagram: "rag-pipeline",
+    when: "LLM answers must be current, cite sources, or use private/proprietary data the model was never trained on.",
+    watch: "Retrieval quality caps answer quality; bad chunks or embeddings mean confident, well-grounded-looking wrong answers.",
+    accent: "iris",
+  },
+  {
+    name: "Assume drift, monitor for it",
+    tagline: "A deployed model decays as the world shifts; watch and retrain.",
+    diagram: "mlops-loop",
+    when: "Every production model — data drift and concept drift are when, not if.",
+    watch: "Monitoring only system metrics (latency/errors) misses silent quality decay; track input distributions and, where possible, live accuracy.",
+    accent: "rose",
+  },
+];
