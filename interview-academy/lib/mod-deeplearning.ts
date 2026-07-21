@@ -1,0 +1,175 @@
+import type { Module } from "./types";
+
+export const deeplearning: Module = {
+  id: "deeplearning",
+  title: "Deep Learning",
+  blurb:
+    "Neural networks from the inside out — how backpropagation trains them, why activations and initialization matter, the optimizers and regularizers that make training stable, and the CNN and sequence architectures that power vision and language.",
+  accent: "rose",
+  lessons: [
+    {
+      slug: "neural-networks-and-backprop",
+      title: "Neural networks & backpropagation",
+      summary:
+        "What a neural network actually computes, and the single algorithm — backpropagation — that lets it learn. The most fundamental deep-learning interview topic.",
+      minutes: 11,
+      blocks: [
+        { type: "p", text: "A **neural network** is a stack of layers, each made of **neurons** that compute a weighted sum of their inputs, add a bias, and apply a non-linear **activation** function. Stack enough of them and the network can approximate very complex functions — but only if you can train the weights. That training algorithm is **backpropagation**." },
+        { type: "diagram", name: "neural-net", caption: "Inputs flow through hidden layers of weighted-sum-plus-activation neurons to an output." },
+        { type: "h2", text: "The forward pass" },
+        { type: "p", text: "Data flows left to right: each layer transforms its input with `a = activation(W·x + b)`, feeding the next layer, until the output layer produces a prediction. The prediction is compared to the truth with a **loss function**." },
+        { type: "callout", kind: "key", text: "Why the non-linear activation is essential: without it, stacking linear layers just produces another linear function — a 100-layer net would be no more expressive than one. The non-linearity is what lets depth buy you power." },
+        { type: "h2", text: "The backward pass: backpropagation" },
+        { type: "p", text: "**Backpropagation** computes how much each weight contributed to the loss — the gradient `∂Loss/∂w` for every weight — by applying the **chain rule** of calculus backward through the network, layer by layer. Those gradients are then fed to gradient descent, which nudges each weight to reduce the loss. That's the whole learning loop: forward pass → loss → backward pass → weight update, repeated over many batches." },
+        { type: "diagram", name: "backprop", caption: "Forward pass produces the loss; backprop propagates gradients back through every layer via the chain rule." },
+        { type: "callout", kind: "tip", text: "A crisp interview answer: 'Backpropagation is just the chain rule applied efficiently. It reuses the gradients computed at later layers to compute earlier ones, so the whole network's gradients cost about the same as one forward pass.' That efficiency is why deep learning is feasible at all." },
+        { type: "h2", text: "Why it can be hard to train" },
+        { type: "p", text: "Because gradients are computed by multiplying many terms together through the layers, they can **vanish** (shrink toward zero, so early layers barely learn) or **explode** (blow up, so training diverges). Managing gradient flow — through activation choice, initialization, normalization, and residual connections — is the central practical skill of deep learning, and the subject of the next lessons." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Neuron / unit** = one weighted-sum-plus-activation computation. **Weight & bias** = the learnable numbers (bias shifts the output). **Forward pass** = computing predictions; **backward pass** = computing gradients. **Chain rule** = the calculus rule for differentiating composed functions, the engine of backprop. **Parameter** = any learnable weight or bias; big models have billions." },
+      ],
+      takeaways: [
+        "A neural network is layers of neurons computing weighted-sum-plus-non-linear-activation; the non-linearity is what makes depth powerful.",
+        "The forward pass produces a prediction and a loss; backpropagation computes each weight's gradient via the chain rule.",
+        "Backprop is efficient because it reuses later-layer gradients to compute earlier ones — roughly one forward-pass of cost.",
+        "Training difficulty comes from vanishing/exploding gradients, managed via activations, initialization, and normalization.",
+      ],
+      flashcards: [
+        { front: "What is backpropagation?", back: "The algorithm that computes the gradient of the loss with respect to every weight by applying the chain rule backward through the network, so gradient descent can update the weights." },
+        { front: "Why must a neural network use non-linear activations?", back: "Without non-linearity, stacked linear layers collapse into a single linear function — depth would add no expressive power." },
+        { front: "What are vanishing and exploding gradients?", back: "When gradients multiplied through many layers shrink toward zero (early layers stop learning) or blow up (training diverges). Fixed with ReLU, good init, normalization, residuals, and clipping." },
+      ],
+      quiz: [
+        { q: "Backpropagation is fundamentally an application of…", options: ["The central limit theorem", "The chain rule of calculus", "Bayes' theorem", "Gradient boosting"], answer: 1, explain: "It applies the chain rule backward through the layers to compute each weight's contribution to the loss." },
+        { q: "Removing all activation functions from a deep network would make it…", options: ["More expressive", "Equivalent to a single linear layer", "Faster to overfit complex patterns", "Impossible to run a forward pass"], answer: 1, explain: "Composed linear layers are still linear, so the whole network reduces to one linear transformation." },
+        { q: "Gradients shrinking toward zero through many layers is called…", options: ["Exploding gradients", "Vanishing gradients", "Overfitting", "Regularization"], answer: 1, explain: "Vanishing gradients stall learning in early layers; ReLU, normalization, and residual connections mitigate it." },
+      ],
+    },
+    {
+      slug: "activations-and-gradient-flow",
+      title: "Activations, initialization & gradient flow",
+      summary:
+        "Why ReLU won, how weight initialization and normalization keep gradients healthy, and the concrete tricks that make deep networks trainable.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "The difference between a network that trains and one that stalls is usually **gradient flow** — keeping gradients in a healthy range as they pass through many layers. Three levers control it: the activation function, weight initialization, and normalization." },
+        { type: "h2", text: "Activation functions" },
+        { type: "diagram", name: "activations", caption: "ReLU (left) is cheap and avoids saturation; sigmoid and tanh squash into flat regions where gradients vanish." },
+        { type: "compare", caption: "The activations you must be able to compare.", columns: ["Activation", "Shape / range", "Note"], rows: [
+          { label: "Sigmoid", cells: ["S-curve, (0,1)", "Saturates → vanishing gradients; used for output probabilities"] },
+          { label: "Tanh", cells: ["S-curve, (−1,1)", "Zero-centered but still saturates"] },
+          { label: "ReLU", cells: ["max(0, x)", "Default hidden activation: cheap, no positive-side saturation"] },
+          { label: "Leaky ReLU / GELU", cells: ["ReLU variants", "Fix 'dying ReLU'; GELU is common in Transformers"] },
+        ]},
+        { type: "callout", kind: "key", text: "Why ReLU became the default: sigmoid and tanh flatten out for large inputs, so their gradient is nearly zero there — deep networks using them barely learn (vanishing gradients). ReLU's gradient is a constant 1 for positive inputs, letting gradients flow through many layers, and it's trivially cheap to compute." },
+        { type: "p", text: "The catch: **dying ReLU** — a neuron stuck always outputting zero (negative inputs) stops learning entirely. **Leaky ReLU** (a small slope for negatives) and **GELU** address this." },
+        { type: "h2", text: "Weight initialization" },
+        { type: "p", text: "If weights start too large, activations and gradients explode; too small, they vanish. Principled schemes keep the variance of signals stable across layers: **Xavier/Glorot** initialization for tanh/sigmoid, **He** initialization for ReLU. Never initialize all weights to zero — every neuron in a layer would learn the same thing (a symmetry-breaking failure)." },
+        { type: "h2", text: "Batch normalization" },
+        { type: "p", text: "**Batch normalization** normalizes each layer's inputs across the mini-batch (zero mean, unit variance) with learnable scale/shift. It smooths the optimization landscape, allows higher learning rates, speeds up convergence, and has a mild regularizing effect. **Layer normalization** (normalizing across features per example instead) is the variant used in Transformers, where batch statistics are awkward." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Saturation** = when an activation flattens out so its gradient ≈ 0 and learning stalls. **Dying ReLU** = a unit permanently outputting 0 and no longer learning. **Xavier/He init** = variance-preserving weight initializations for tanh vs ReLU networks. **Symmetry breaking** = why weights must start random — identical weights learn identically. **Internal covariate shift** = the shifting distribution of layer inputs that batch norm was designed to tame." },
+      ],
+      takeaways: [
+        "ReLU is the default hidden activation because it avoids the vanishing gradients that sigmoid/tanh cause by saturating.",
+        "'Dying ReLU' units output zero forever; Leaky ReLU and GELU mitigate it (GELU is common in Transformers).",
+        "Proper initialization (Xavier for tanh, He for ReLU) keeps signal variance stable; never initialize all weights to zero.",
+        "Batch norm stabilizes and speeds training; layer norm is its Transformer-friendly variant.",
+      ],
+      flashcards: [
+        { front: "Why did ReLU replace sigmoid/tanh in hidden layers?", back: "Sigmoid/tanh saturate — their gradients vanish for large inputs, stalling deep networks. ReLU has a constant gradient of 1 for positive inputs and is cheap, so gradients flow through many layers." },
+        { front: "What does batch normalization do?", back: "Normalizes layer inputs across the mini-batch (learnable scale/shift), smoothing optimization, enabling higher learning rates, speeding convergence, and mildly regularizing. Layer norm is the Transformer variant." },
+        { front: "Why can't you initialize all weights to zero?", back: "Every neuron in a layer would compute identical outputs and receive identical gradients (no symmetry breaking), so they'd never differentiate. Use random init (Xavier/He)." },
+      ],
+      quiz: [
+        { q: "The main reason sigmoid activations hurt deep networks is…", options: ["They're too expensive", "They saturate, causing vanishing gradients", "They output negative values", "They can't represent probabilities"], answer: 1, explain: "For large |input| the sigmoid flattens, so its gradient is near zero and early layers barely learn." },
+        { q: "For a ReLU network, the recommended weight initialization is…", options: ["All zeros", "Xavier/Glorot", "He initialization", "All ones"], answer: 2, explain: "He initialization accounts for ReLU's behavior to keep activation variance stable across layers." },
+        { q: "Batch normalization primarily helps by…", options: ["Adding more parameters to memorize data", "Stabilizing layer input distributions to ease optimization", "Removing the need for a loss function", "Replacing backpropagation"], answer: 1, explain: "It normalizes each layer's inputs across the batch, smoothing the loss landscape and allowing higher learning rates." },
+      ],
+    },
+    {
+      slug: "optimizers-and-regularization",
+      title: "Optimizers & regularizing deep nets",
+      summary:
+        "Beyond plain SGD — momentum and Adam — plus the regularization stack (dropout, weight decay, early stopping, augmentation) that keeps big networks from memorizing.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "Deep networks have millions of parameters, so two things matter enormously: an **optimizer** that navigates a bumpy loss landscape efficiently, and **regularization** that stops all that capacity from memorizing the training data." },
+        { type: "h2", text: "From SGD to Adam" },
+        { type: "diagram", name: "gradient-descent", caption: "Optimizers differ in how they choose each step down the loss surface — momentum and adaptivity make the path faster and smoother." },
+        { type: "list", items: [
+          "**SGD** — plain mini-batch gradient descent. Simple; can be slow and get stuck oscillating in ravines.",
+          "**Momentum** — accumulates a velocity from past gradients, damping oscillations and accelerating along consistent directions (like a ball rolling downhill).",
+          "**RMSProp / AdaGrad** — scale the step per parameter by recent gradient magnitude, so rarely-updated parameters get bigger steps.",
+          "**Adam** — combines momentum and per-parameter scaling. Fast, robust, and forgiving of the learning rate — the common default for deep learning.",
+        ]},
+        { type: "callout", kind: "tip", text: "Nuanced answer worth having: 'Adam usually trains fastest and is the safe default, but well-tuned SGD with momentum sometimes generalizes slightly better, which is why some vision papers still use it.' Showing you know the tradeoff — not just the default — signals depth." },
+        { type: "p", text: "A **learning-rate schedule** (warmup then decay, or cosine annealing) often matters as much as the optimizer: start small to stabilize, ramp up, then decay to settle into a good minimum." },
+        { type: "h2", text: "Regularizing deep networks" },
+        { type: "p", text: "The bias–variance tradeoff from the foundations module applies with full force here — big networks overfit easily. The deep-learning regularization stack:" },
+        { type: "compare", caption: "The regularization toolkit for neural networks.", columns: ["Technique", "How it works"], rows: [
+          { label: "Dropout", cells: ["Randomly zero a fraction of neurons each step, so the net can't rely on any single path"] },
+          { label: "Weight decay (L2)", cells: ["Penalize large weights, keeping the function smoother"] },
+          { label: "Early stopping", cells: ["Halt training when validation loss stops improving"] },
+          { label: "Data augmentation", cells: ["Synthesize varied training examples (flip/crop images, paraphrase text)"] },
+          { label: "Batch norm", cells: ["Normalization that also mildly regularizes"] },
+        ]},
+        { type: "callout", kind: "key", text: "Dropout is the signature deep-learning regularizer. During training it randomly drops neurons so the network learns redundant, robust representations; at test time all neurons are used (scaled appropriately). It's like training an ensemble of sub-networks that share weights." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Optimizer** = the rule for turning gradients into weight updates (SGD, Adam). **Momentum** = using past gradients to smooth and speed the path. **Weight decay** = L2 regularization applied during optimization. **LR schedule** = how the learning rate changes over training. **Data augmentation** = expanding the dataset with label-preserving transformations." },
+      ],
+      takeaways: [
+        "Adam (momentum + per-parameter step scaling) is the robust default optimizer; tuned SGD+momentum can generalize slightly better.",
+        "A learning-rate schedule (warmup + decay) often matters as much as the optimizer choice.",
+        "Big networks overfit easily; the regularization stack is dropout, weight decay, early stopping, augmentation, and batch norm.",
+        "Dropout — randomly disabling neurons in training — is the signature deep-learning regularizer, acting like a weight-sharing ensemble.",
+      ],
+      flashcards: [
+        { front: "What does Adam combine?", back: "Momentum (using past gradients) and per-parameter adaptive learning rates (RMSProp-style scaling), giving fast, robust convergence forgiving of the base learning rate." },
+        { front: "How does dropout regularize?", back: "It randomly zeroes a fraction of neurons each training step so the network can't over-rely on any path, learning redundant robust features — effectively an ensemble of sub-networks sharing weights." },
+        { front: "Name four ways to regularize a neural network", back: "Dropout, weight decay (L2), early stopping, data augmentation — plus batch normalization's mild regularizing effect and, most reliably, more data." },
+      ],
+      quiz: [
+        { q: "The common default optimizer for deep learning is…", options: ["Plain batch gradient descent", "Adam", "k-means", "Newton's method"], answer: 1, explain: "Adam combines momentum and adaptive per-parameter step sizes, making it fast and robust to the learning rate." },
+        { q: "Dropout is applied…", options: ["Only at test time", "During training, disabling random neurons", "To the input labels", "Only to the output layer bias"], answer: 1, explain: "Dropout randomly zeroes neurons during training; at inference all neurons are used with appropriate scaling." },
+        { q: "Data augmentation reduces overfitting by…", options: ["Shrinking the network", "Creating varied, label-preserving training examples", "Removing the loss function", "Increasing the learning rate"], answer: 1, explain: "Transformations (flips, crops, paraphrases) expand effective dataset size and variety, improving generalization." },
+      ],
+    },
+    {
+      slug: "cnns-and-sequence-models",
+      title: "CNNs & sequence models",
+      summary:
+        "The two architectural families before Transformers — convolutional networks for grids like images, and recurrent networks for sequences — and why each was designed the way it is.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "Fully-connected networks ignore the *structure* of data. Two specialized architectures exploit structure: **CNNs** for grid-like data (images) and **RNNs** for sequential data (text, time series). Understanding their design motivates why the Transformer later replaced RNNs." },
+        { type: "h2", text: "Convolutional Neural Networks (CNNs)" },
+        { type: "p", text: "A CNN slides small learnable **filters (kernels)** across the image, computing local weighted sums to produce **feature maps**. This encodes two powerful priors: **locality** (nearby pixels relate) and **translation invariance** (a cat is a cat wherever it appears). **Pooling** layers downsample to shrink the representation and add robustness to small shifts." },
+        { type: "diagram", name: "cnn", caption: "Convolution → pooling, stacked: early layers detect edges, deeper layers detect objects." },
+        { type: "list", items: [
+          "**Parameter sharing** — the same filter is reused across the whole image, so a CNN has vastly fewer parameters than a fully-connected net on pixels, and learns position-independent features.",
+          "**Hierarchy** — stacking conv layers builds features from edges → textures → parts → objects.",
+          "**Uses** — image classification, detection, segmentation; the ideas also transfer to audio and other grid data.",
+        ]},
+        { type: "h2", text: "Recurrent Neural Networks (RNNs)" },
+        { type: "p", text: "An **RNN** processes a sequence one element at a time, maintaining a **hidden state** that carries information forward — a form of memory. This suits text and time series. But vanilla RNNs struggle with **long-range dependencies** because gradients vanish over many steps. **LSTMs** and **GRUs** add gates that control what to remember and forget, handling much longer contexts." },
+        { type: "diagram", name: "rnn-vs-transformer", caption: "RNNs process sequences step-by-step (hard to parallelize); Transformers attend to all positions at once." },
+        { type: "callout", kind: "key", text: "The RNN limitation that motivated Transformers: because each step depends on the previous one, RNNs are **inherently sequential** — you can't parallelize across the sequence during training — and they still lose long-range information. Transformers (next module) removed recurrence entirely with attention, unlocking parallel training at massive scale." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Filter / kernel** = a small weight grid slid across the input to detect a local pattern. **Feature map** = the output of applying a filter across the input. **Pooling** = downsampling (e.g. taking the max in each region). **Hidden state** = an RNN's running memory of the sequence so far. **LSTM/GRU** = gated RNN cells that manage long-term memory to fight vanishing gradients." },
+      ],
+      takeaways: [
+        "CNNs slide shared filters over grid data, encoding locality and translation invariance, and build a hierarchy of features from edges to objects.",
+        "Parameter sharing makes CNNs efficient and position-independent — the reason they dominate vision.",
+        "RNNs carry a hidden state through a sequence; LSTMs/GRUs add gates to handle long-range dependencies.",
+        "RNNs are inherently sequential and lose long-range info — the limitations that Transformers and attention were built to overcome.",
+      ],
+      flashcards: [
+        { front: "What two priors do CNNs encode?", back: "Locality (nearby pixels are related, via small filters) and translation invariance (a pattern is recognized wherever it appears, via parameter sharing and pooling)." },
+        { front: "Why do LSTMs/GRUs exist?", back: "Vanilla RNNs lose long-range information because gradients vanish over many time steps. LSTMs and GRUs add gates that control remembering and forgetting, handling much longer contexts." },
+        { front: "What RNN limitation motivated the Transformer?", back: "RNNs are inherently sequential (each step needs the previous one), so training can't be parallelized across the sequence, and they still struggle with long-range dependencies. Attention removed recurrence." },
+      ],
+      quiz: [
+        { q: "Parameter sharing in a CNN means…", options: ["All layers use one weight", "The same filter is applied across the whole image", "Weights never change", "There is only one neuron"], answer: 1, explain: "A filter is reused across all positions, drastically cutting parameters and giving translation-invariant feature detection." },
+        { q: "An RNN's hidden state serves as…", options: ["A loss function", "A running memory of the sequence so far", "A pooling operation", "A random initializer"], answer: 1, explain: "The hidden state carries information from earlier elements forward, giving the RNN a form of memory." },
+        { q: "Compared to RNNs, Transformers are advantageous mainly because they…", options: ["Use fewer parameters always", "Process all sequence positions in parallel", "Require no training data", "Cannot model long-range dependencies"], answer: 1, explain: "Attention lets Transformers process the whole sequence at once, enabling parallel training and better long-range modeling." },
+      ],
+    },
+  ],
+};

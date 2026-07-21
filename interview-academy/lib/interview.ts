@@ -61,4 +61,44 @@ export const interviewQA: InterviewQA[] = [
     q: "What does AUC measure and when is it not enough?",
     a: "AUC is the area under the ROC curve, which plots true-positive rate against false-positive rate as you sweep the threshold. It's a single, threshold-independent number for how well the model ranks positives above negatives: 1.0 is perfect, 0.5 is random. It's great for comparing classifiers, but on heavily imbalanced data ROC-AUC can look deceptively good because the false-positive rate has a huge negative denominator — there the precision–recall curve (PR-AUC) is more informative, since it focuses on the rare positive class.",
   },
+  {
+    topic: "Classic ML",
+    q: "Why is logistic regression called regression if it's used for classification?",
+    a: "Because it's a linear regression model of the log-odds of the positive class. It computes a linear score w·x, then passes it through the sigmoid to produce a probability in (0,1), which you threshold into a class. So the 'regression' is happening in log-odds space; the classification comes from thresholding the resulting probability. It's trained with cross-entropy loss, and its coefficients are interpretable as changes in log-odds — which is why it's still favored in regulated domains.",
+  },
+  {
+    topic: "Classic ML",
+    q: "Explain the difference between bagging and boosting.",
+    a: "Both are ensemble methods, but they combine models oppositely. Bagging trains many models independently on bootstrap resamples and averages them, which reduces variance — random forests are bagging over decision trees, with random feature subsets added to decorrelate the trees. Boosting trains models sequentially, each one correcting the errors of the ensemble so far, which reduces bias — gradient boosting and XGBoost work this way. Bagging parallelizes and is very robust; boosting usually reaches higher accuracy but is more sensitive to hyperparameters and overfitting.",
+  },
+  {
+    topic: "Classic ML",
+    q: "What is the kernel trick in SVMs?",
+    a: "An SVM finds the maximum-margin boundary between classes. The kernel trick lets it draw non-linear boundaries by implicitly mapping the data into a higher-dimensional space where a linear separator exists — without ever computing those high-dimensional coordinates. A kernel function (e.g. RBF/Gaussian) computes the inner products in that space directly, so you get the expressive power of high dimensions at the cost of the original ones. It's why SVMs can separate data that isn't linearly separable in its raw form.",
+  },
+  {
+    topic: "Classic ML",
+    q: "How do you choose the number of clusters k in k-means?",
+    a: "There's no single correct k, so I'd triangulate. Quantitatively: the elbow method (plot within-cluster variance against k and look for the bend where extra clusters stop helping) and the silhouette score (how well-separated the clusters are). I'd also check stability across random initializations (using k-means++). But most importantly I'd anchor k to the business need — if the goal is five marketing segments, k around five is the useful answer even if the metrics are ambiguous.",
+  },
+  {
+    topic: "Deep Learning",
+    q: "Explain backpropagation as you would to a smart non-expert.",
+    a: "A network makes a prediction (the forward pass) and we measure how wrong it is with a loss. Backpropagation figures out how much each individual weight contributed to that error by applying the chain rule of calculus backward through the layers — from the loss toward the inputs. That gives us a gradient for every weight, and gradient descent nudges each one a little in the direction that reduces the error. The clever part is efficiency: it reuses the gradients from later layers to compute earlier ones, so the whole backward pass costs about the same as one forward pass — which is what makes training deep networks feasible.",
+  },
+  {
+    topic: "Deep Learning",
+    q: "Why is ReLU the default activation instead of sigmoid or tanh?",
+    a: "Sigmoid and tanh saturate: for large positive or negative inputs they flatten out, so their gradient is nearly zero, and in a deep network those tiny gradients multiply together and vanish — early layers barely learn. ReLU (max(0,x)) has a constant gradient of 1 for positive inputs, so gradients flow through many layers, and it's trivially cheap to compute and produces sparse activations. The tradeoff is 'dying ReLU' — neurons stuck outputting zero — which Leaky ReLU and GELU address; GELU is the common choice in Transformers.",
+  },
+  {
+    topic: "Deep Learning",
+    q: "What causes vanishing gradients and how do you fix them?",
+    a: "Backprop multiplies gradients across layers; if those terms are consistently less than one — as they are with saturating activations like sigmoid — the product shrinks exponentially toward zero, so early layers stop learning. Fixes: use non-saturating activations (ReLU family), principled initialization (He for ReLU), normalization (batch/layer norm) to keep activations well-scaled, residual/skip connections that give gradients a shortcut path, and for RNNs, gated cells (LSTM/GRU). Exploding gradients — the opposite — are handled with gradient clipping.",
+  },
+  {
+    topic: "Deep Learning",
+    q: "How does dropout prevent overfitting?",
+    a: "During training, dropout randomly sets a fraction of neurons to zero on each forward pass, so the network can't rely on any single neuron or path and must learn redundant, robust representations. It's effectively training a huge ensemble of sub-networks that share weights, then averaging them at test time (when all neurons are active, scaled appropriately). It's the signature regularizer for deep nets, alongside weight decay, early stopping, and data augmentation.",
+  },
 ];
