@@ -2,11 +2,15 @@ import type { Module, Lesson } from "./types";
 import { foundations } from "./mod-foundations";
 import { classic } from "./mod-classic";
 import { deeplearning } from "./mod-deeplearning";
+import { nlp } from "./mod-nlp";
+import { llms } from "./mod-llms";
 
 export const modules: Module[] = [
   foundations,
   classic,
   deeplearning,
+  nlp,
+  llms,
 ];
 
 export interface LessonRef {
