@@ -101,4 +101,44 @@ export const interviewQA: InterviewQA[] = [
     q: "How does dropout prevent overfitting?",
     a: "During training, dropout randomly sets a fraction of neurons to zero on each forward pass, so the network can't rely on any single neuron or path and must learn redundant, robust representations. It's effectively training a huge ensemble of sub-networks that share weights, then averaging them at test time (when all neurons are active, scaled appropriately). It's the signature regularizer for deep nets, alongside weight decay, early stopping, and data augmentation.",
   },
+  {
+    topic: "Transformers",
+    q: "Explain self-attention as you'd whiteboard it.",
+    a: "Each token is projected into three vectors: a query (what it's looking for), a key (what it offers), and a value (the content it carries). To update a token, I take the dot product of its query with every token's key to get relevance scores, scale by √d for stable gradients, softmax them into weights that sum to one, and take the weighted sum of the values. So each token becomes a blend of the tokens it found relevant. It's 'self'-attention because Q, K, and V all come from the same sequence, so every token can attend to every other — which is how Transformers capture long-range context. The cost is quadratic in sequence length.",
+  },
+  {
+    topic: "Transformers",
+    q: "Why did Transformers replace RNNs?",
+    a: "Three reasons. First, parallelism: RNNs process a sequence one step at a time because each step depends on the previous hidden state, so you can't parallelize across the sequence; Transformers process all positions at once, which maps perfectly onto GPUs and made internet-scale training feasible. Second, long-range dependencies: attention connects any two tokens directly, whereas RNN information degrades over many steps. Third, that scalability is exactly what unlocked billion-parameter models. The trade is quadratic compute in sequence length, which motivates efficient long-context research.",
+  },
+  {
+    topic: "Transformers",
+    q: "What's the difference between BERT and GPT?",
+    a: "They're two Transformer families. BERT is an encoder pretrained with masked language modeling — it hides ~15% of tokens and predicts them using context from both sides, so it builds bidirectional representations that excel at understanding tasks like classification, NER, and embeddings. GPT is a decoder pretrained on next-token prediction (causal, left-to-right), which is exactly the skill needed to generate text, so it powers chatbots and code generation. Shorthand: BERT reads (bidirectional, understanding), GPT writes (causal, generation). A third design, encoder-decoder (T5, BART), suits input→output tasks like translation.",
+  },
+  {
+    topic: "Transformers",
+    q: "Why do Transformers need positional encodings?",
+    a: "Self-attention is order-agnostic — it treats the input as a set of tokens, computing all-pairs relevances with no inherent notion of sequence. Without position information, 'dog bites man' and 'man bites dog' would be indistinguishable. Positional encodings inject each token's position into its representation — via fixed sinusoids in the original paper, or learned or rotary (RoPE) embeddings in modern models — so the model can use word order.",
+  },
+  {
+    topic: "LLMs",
+    q: "Walk me through how a modern LLM is trained.",
+    a: "Three stages. Pretraining: self-supervised next-token prediction on a massive corpus, which instills grammar, facts, and reasoning and produces a knowledgeable but not instruction-following base model — this is most of the compute. Supervised fine-tuning: train on curated instruction→response pairs so it behaves like a helpful assistant. RLHF: collect human rankings of responses, train a reward model to predict those preferences, then use RL (PPO) to optimize the LLM toward high-reward responses without drifting too far from the SFT model — this aligns it to be helpful, honest, and harmless. DPO is a newer, simpler alternative to the reward-model-plus-RL step.",
+  },
+  {
+    topic: "LLMs",
+    q: "When would you use RAG versus fine-tuning?",
+    a: "They solve different problems. RAG is for knowledge — when the model needs current, private, or citable facts. You retrieve relevant documents and put them in the prompt, so the model answers from real data; it's cheap, updatable (change the docs, not the model), and can cite sources. Fine-tuning is for behavior — a consistent style, output format, or a specialized task the model struggles to follow via prompting. RAG changes what the model knows; fine-tuning changes how it behaves. They're complementary, and production systems often do both, with prompting as the first thing to try before either.",
+  },
+  {
+    topic: "LLMs",
+    q: "Why do LLMs hallucinate, and how do you reduce it?",
+    a: "An LLM is trained to produce the most plausible next token, not to state truth — it has no built-in notion of whether something is factually correct, and when it lacks knowledge it will still generate fluent, confident text. To reduce it: ground the model with RAG so it answers from retrieved evidence and cites sources; give it tools (search, calculators, code execution) for verifiable facts; instruct it to say 'I don't know' when the context lacks the answer; lower temperature for factual tasks; and evaluate rigorously with an eval set that probes for fabrication. You reduce hallucination, you don't fully eliminate it — so high-stakes uses need verification.",
+  },
+  {
+    topic: "LLMs",
+    q: "How would you evaluate an LLM-powered feature?",
+    a: "Because output is open-ended, evaluation is a system, not a single metric. Offline, I'd build a golden eval set of representative and adversarial prompts with expected behavior, run it on every change to catch regressions, and score with a mix of exact metrics where a ground truth exists, LLM-as-judge for scale (validated against human ratings, watching for position/verbosity bias), and periodic human review as the gold standard. Online, I'd track task success, user feedback (thumbs), escalation/deflection rate, and latency/cost, and roll out behind a canary with safety guardrails. The key message: no one number captures quality — you triangulate.",
+  },
 ];
