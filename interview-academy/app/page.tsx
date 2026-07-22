@@ -9,12 +9,15 @@ import {
   ArrowRight,
   Sparkles,
   Brain,
+  Sigma,
   Trees,
   Network,
   Languages,
   Bot,
   Rocket,
   LayoutGrid,
+  Code2,
+  Scale,
   MessagesSquare,
   Layers,
   Workflow,
@@ -31,12 +34,15 @@ const accent: Record<string, { dot: string; ring: string; text: string; chip: st
 
 const moduleIcon: Record<string, React.ReactNode> = {
   foundations: <Brain size={20} />,
+  stats: <Sigma size={20} />,
   classic: <Trees size={20} />,
   deeplearning: <Network size={20} />,
   nlp: <Languages size={20} />,
   llms: <Bot size={20} />,
   mlops: <Rocket size={20} />,
   systemdesign: <LayoutGrid size={20} />,
+  coding: <Code2 size={20} />,
+  responsible: <Scale size={20} />,
   behavioral: <MessagesSquare size={20} />,
 };
 
