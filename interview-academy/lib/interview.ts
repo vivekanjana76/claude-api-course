@@ -197,6 +197,26 @@ export const interviewQA: InterviewQA[] = [
     a: "You can't afford to score millions of candidate items with a heavy model on every request within a tight latency budget. So you split the work: candidate generation (retrieval) cheaply narrows millions of items to a few hundred plausible ones — typically approximate nearest-neighbor search over learned embeddings, optimized for recall and speed — and then a ranking model applies many features to precisely order just those few hundred, optimizing precision at the top. A final re-ranking step adds diversity, freshness, and business rules. This retrieval-then-ranking split is how recommenders scale while staying fast.",
   },
   {
+    topic: "Coding",
+    q: "Why is vectorization important, and how would you speed up a slow Python ML loop?",
+    a: "Explicit Python loops are slow because each iteration goes through the interpreter. Vectorization replaces them with NumPy array operations that execute in optimized, compiled C over the whole array at once — often 10 to 100 times faster — and the code is shorter and clearer. So to speed up a slow loop I'd express the computation as array operations: replace a per-element sum-of-squares with np.sum(arr**2), a distance loop with np.linalg.norm, and use broadcasting to apply per-column operations across all rows without looping. If it still needs to scale, I'd look at chunking, better algorithms/data structures, or tools like Numba, but vectorization is the first and biggest win.",
+  },
+  {
+    topic: "Coding",
+    q: "How would you implement k-means from scratch?",
+    a: "k-means alternates two steps until convergence. First initialize k centroids (randomly, or better, k-means++). Then repeat: the assignment step labels each point by its nearest centroid — I'd compute the distance from every point to every centroid and take the argmin, vectorized with broadcasting; and the update step moves each centroid to the mean of the points assigned to it. I stop when the centroids stop moving (or hit a max iteration count). Edge cases to mention: an empty cluster (keep the old centroid or reinitialize), feature scaling beforehand since it's distance-based, and sensitivity to initialization, which is why you run it several times or use k-means++.",
+  },
+  {
+    topic: "Coding",
+    q: "What's the time complexity of brute-force k-NN, and why does it matter?",
+    a: "For a single query it's O(n·d) — you compute the distance to all n training points, each of dimension d — and O(k) or O(n log n) to pick the k smallest depending on method. Over m queries it's O(m·n·d), which becomes prohibitive at scale. That's exactly why production systems don't do brute-force nearest-neighbor: they use approximate nearest-neighbor indexes like HNSW or IVF (the same structures behind vector databases in RAG) to trade a little accuracy for massive speedups. Connecting the complexity to why ANN indexes exist is the point I'd make.",
+  },
+  {
+    topic: "Coding",
+    q: "How do you approach a live coding problem you're unsure how to solve?",
+    a: "I keep communicating and work structurally rather than freezing. First I clarify the problem, input sizes, and edge cases so I'm solving the right thing. Then I state a brute-force baseline out loud, even a slow one, and its complexity — a working slow solution beats a stuck perfect one — and I look for the bottleneck to optimize, often with a hash map for O(1) lookups or a heap for top-k. I code cleanly while narrating my reasoning so the interviewer can nudge me, then test with a normal case and edge cases like empty input or duplicates. The round grades problem-solving and communication as much as the final code, so thinking aloud is essential even when I'm unsure.",
+  },
+  {
     topic: "Behavioral",
     q: "Tell me about a time a model or project failed.",
     a: "The structure I'd use: own the failure plainly without deflecting, give the real root cause both technically and in process, describe the fix, and — most importantly — the systemic change that prevents recurrence, then the lesson. For example: a model's accuracy degraded in production for weeks before we noticed because we'd shipped without a drift monitor — we were only watching latency and errors. The root cause was a data-drift problem plus a monitoring gap. I retrained on fresh data to recover, but the durable fix was adding input-distribution and prediction-quality monitoring with alerts, so degradation can't go unnoticed again. The lesson: a model isn't 'done' at deploy — production ML is a loop, and you monitor prediction quality, not just uptime. Ending on a systemic fix is what makes a failure story land.",

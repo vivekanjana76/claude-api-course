@@ -7,6 +7,7 @@ import { nlp } from "./mod-nlp";
 import { llms } from "./mod-llms";
 import { mlops } from "./mod-mlops";
 import { systemdesign } from "./mod-systemdesign";
+import { coding } from "./mod-coding";
 import { behavioral } from "./mod-behavioral";
 
 export const modules: Module[] = [
@@ -18,6 +19,7 @@ export const modules: Module[] = [
   llms,
   mlops,
   systemdesign,
+  coding,
   behavioral,
 ];
 
