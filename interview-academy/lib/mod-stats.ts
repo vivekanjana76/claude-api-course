@@ -1,0 +1,190 @@
+import type { Module } from "./types";
+
+export const stats: Module = {
+  id: "stats",
+  title: "Statistics & Probability",
+  blurb:
+    "The math interviewers screen hardest for, especially in data-science and ML rounds. Probability and Bayes, distributions and the Central Limit Theorem, hypothesis testing and p-values, and estimation — with the intuition to answer, not just recite.",
+  accent: "teal",
+  lessons: [
+    {
+      slug: "probability-and-bayes",
+      title: "Probability & Bayes' theorem",
+      summary:
+        "Conditional probability, independence, and the single most-tested idea in ML interviews — Bayes' theorem — including the base-rate trap that catches almost everyone.",
+      minutes: 11,
+      blocks: [
+        { type: "p", text: "Probability is the language of uncertainty, and machine learning is applied probability — so interviews probe it directly. The must-know foundation is **conditional probability** and **Bayes' theorem**, which underpins Naive Bayes, A/B testing, and how you should reason about evidence." },
+        { type: "h2", text: "The building blocks" },
+        { type: "list", items: [
+          "**Conditional probability** — `P(A|B)` is the probability of A *given* B has happened: `P(A|B) = P(A and B) / P(B)`.",
+          "**Independence** — A and B are independent if knowing one tells you nothing about the other: `P(A|B) = P(A)`, equivalently `P(A and B) = P(A)·P(B)`.",
+          "**Mutually exclusive** — both can't happen at once (`P(A and B)=0`) — not the same as independent; a common mix-up.",
+        ]},
+        { type: "h2", text: "Bayes' theorem" },
+        { type: "p", text: "Bayes' theorem tells you how to **update a belief when new evidence arrives** — the essence of learning from data:" },
+        { type: "diagram", name: "bayes-theorem", caption: "Posterior ∝ likelihood × prior. New evidence updates a prior belief into a posterior." },
+        { type: "code", lang: "text", caption: "Bayes' theorem — know every term", code: "P(A|B) = P(B|A) · P(A) / P(B)\n\nP(A|B)  posterior — belief in A after seeing B\nP(B|A)  likelihood — how expected B is if A is true\nP(A)    prior — belief in A before evidence\nP(B)    evidence — total probability of seeing B" },
+        { type: "h2", text: "The base-rate trap (a classic interview question)" },
+        { type: "p", text: "A disease affects **1%** of people. A test is **90% accurate** (90% true-positive rate, 10% false-positive rate). You test positive — what's the chance you actually have the disease? Most people say ~90%. The real answer is about **16%**." },
+        { type: "p", text: "Why: out of 1,000 people, 10 have the disease (≈9 test positive), but 990 don't and 10% of *them* — 99 people — also test positive. So of ~108 positives, only 9 are real: `9 / 108 ≈ 8–16%` depending on exact rates. The **base rate** (how rare the disease is) dominates — a lesson that reappears in fraud detection, spam, and any rare-event problem." },
+        { type: "callout", kind: "key", text: "The intuition to state out loud: when the thing you're testing for is rare, even an accurate test produces mostly false positives, because there are so many more negatives to generate them. This is exactly why precision suffers on imbalanced data — the same idea from the evaluation lesson, seen through probability." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**P(A|B)** = probability of A given B. **Prior** = your belief before evidence. **Posterior** = your updated belief after evidence. **Likelihood** = how probable the evidence is under a hypothesis. **Base rate** = how common something is in the population. **Independent** = one event's outcome doesn't affect another's; **mutually exclusive** = they can't co-occur." },
+      ],
+      takeaways: [
+        "Conditional probability P(A|B) = P(A and B)/P(B); independence means P(A|B)=P(A), distinct from mutually exclusive.",
+        "Bayes' theorem updates a prior belief with new evidence into a posterior: P(A|B) = P(B|A)·P(A)/P(B).",
+        "The base-rate trap: for rare events, even an accurate test yields mostly false positives — a positive result may still mean low true probability.",
+        "This is the probabilistic view of why precision collapses on imbalanced data.",
+      ],
+      flashcards: [
+        { front: "State Bayes' theorem and name each term", back: "P(A|B) = P(B|A)·P(A)/P(B). Posterior (updated belief) = likelihood (evidence under A) × prior (belief before) / evidence (total probability of B)." },
+        { front: "Independent vs mutually exclusive", back: "Independent: one event doesn't affect the other, P(A and B)=P(A)P(B). Mutually exclusive: they can't both occur, P(A and B)=0. Mutually exclusive events are actually dependent." },
+        { front: "Why can a positive result on an accurate test still mean low disease probability?", back: "The base-rate effect: if the disease is rare, the large number of healthy people generates many false positives that swamp the few true positives — so posterior probability stays low." },
+      ],
+      quiz: [
+        { q: "Bayes' theorem is used to…", options: ["Cluster data", "Update a prior belief with new evidence into a posterior", "Reduce dimensionality", "Initialize weights"], answer: 1, explain: "It combines prior belief and the likelihood of the evidence to produce an updated posterior probability." },
+        { q: "A rare disease (1%) with a 90%-accurate test: a positive result implies actual disease probability that is…", options: ["~90%", "Much lower than 90% due to base rate", "Exactly 50%", "100%"], answer: 1, explain: "False positives from the large healthy majority dominate, so the posterior is far below the test's accuracy." },
+        { q: "If A and B are mutually exclusive, they are…", options: ["Always independent", "Necessarily dependent", "Equally likely", "Uncorrelated"], answer: 1, explain: "If one occurring means the other cannot, knowing one changes the other's probability — so they're dependent, not independent." },
+      ],
+    },
+    {
+      slug: "distributions-and-clt",
+      title: "Distributions & the Central Limit Theorem",
+      summary:
+        "The distributions that show up constantly, what a normal distribution's spread means, and the CLT — the theorem that makes most of statistical inference possible.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "A **probability distribution** describes how likely each value of a random variable is. Interviewers expect fluency with a few key ones and, above all, the **Central Limit Theorem** that ties sampling to the normal distribution." },
+        { type: "h2", text: "Distributions you should recognize" },
+        { type: "compare", caption: "The distributions that recur in ML interviews.", columns: ["Distribution", "Models", "Example"], rows: [
+          { label: "Normal (Gaussian)", cells: ["Continuous, symmetric bell curve", "Heights, measurement noise, aggregated effects"] },
+          { label: "Bernoulli / Binomial", cells: ["A single / repeated yes-no trial", "Coin flips, click vs no-click, conversion"] },
+          { label: "Poisson", cells: ["Counts of rare events in a fixed interval", "Requests per second, defects per batch"] },
+          { label: "Uniform", cells: ["All values equally likely", "A fair die, random initialization"] },
+          { label: "Exponential", cells: ["Time between events", "Time until next arrival / failure"] },
+        ]},
+        { type: "h2", text: "Reading a normal distribution" },
+        { type: "p", text: "The normal distribution is defined by its **mean** μ (center) and **standard deviation** σ (spread). The **68–95–99.7 rule** is worth memorizing: about 68% of data lies within ±1σ of the mean, 95% within ±2σ, and 99.7% within ±3σ." },
+        { type: "diagram", name: "normal-distribution", caption: "Mean sets the center, standard deviation the width; the 68–95–99.7 rule quantifies the spread." },
+        { type: "list", items: [
+          "**Mean** — the average; sensitive to outliers.",
+          "**Median** — the middle value; robust to outliers (report it for skewed data like income).",
+          "**Variance / standard deviation** — spread around the mean; σ is in the data's units, σ² is variance.",
+          "**Skew** — asymmetry; a long right tail (income) pulls the mean above the median.",
+        ]},
+        { type: "h2", text: "The Central Limit Theorem" },
+        { type: "p", text: "The **CLT** states that if you take many samples and compute their means, the distribution of those **sample means is approximately normal** — regardless of the original data's distribution — as the sample size grows (rule of thumb: n ≥ 30). This is the theorem that lets us build confidence intervals and run hypothesis tests on almost any data." },
+        { type: "callout", kind: "key", text: "Why the CLT matters so much: it means we can reason about averages using the well-understood normal distribution even when the underlying data is weird or unknown. Nearly all of classical inference — confidence intervals, t-tests, A/B testing — rests on it. If asked 'why can we assume normality?', the CLT is the answer." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Random variable** = a quantity whose value is uncertain. **PDF** = probability density function, the curve's height. **μ / σ** = mean / standard deviation. **Variance** = σ², average squared deviation from the mean. **Skew** = asymmetry of a distribution. **CLT** = sample means tend toward normal as n grows. **i.i.d.** = independent and identically distributed samples." },
+      ],
+      takeaways: [
+        "Know normal, Bernoulli/binomial, Poisson, uniform, and exponential — and what each models.",
+        "A normal distribution is set by mean (center) and standard deviation (spread); the 68–95–99.7 rule quantifies it.",
+        "Mean is outlier-sensitive; median is robust — report the median for skewed data.",
+        "The CLT: sample means are approximately normal regardless of the source distribution (n≥30), which underpins confidence intervals and hypothesis tests.",
+      ],
+      flashcards: [
+        { front: "What does the Central Limit Theorem say?", back: "The distribution of sample means approaches a normal distribution as sample size grows (n≥30), regardless of the population's distribution — enabling confidence intervals and hypothesis tests." },
+        { front: "The 68–95–99.7 rule", back: "For a normal distribution, ~68% of data falls within ±1σ of the mean, ~95% within ±2σ, and ~99.7% within ±3σ." },
+        { front: "When would you report the median instead of the mean?", back: "For skewed data or data with outliers (e.g. income, latency) — the median is robust, while the mean gets pulled toward the long tail." },
+      ],
+      quiz: [
+        { q: "The Central Limit Theorem is about the distribution of…", options: ["Raw data points", "Sample means", "Variances", "Medians"], answer: 1, explain: "It states that sample means become approximately normal as n grows, regardless of the underlying distribution." },
+        { q: "The number of website requests per second is best modeled by a…", options: ["Normal distribution", "Poisson distribution", "Uniform distribution", "Bernoulli distribution"], answer: 1, explain: "Poisson models counts of events in a fixed interval, like arrivals per second." },
+        { q: "For heavily right-skewed income data, the better summary of a 'typical' value is the…", options: ["Mean", "Median", "Maximum", "Variance"], answer: 1, explain: "The median resists the pull of the long right tail; the mean would overstate the typical income." },
+      ],
+    },
+    {
+      slug: "hypothesis-testing",
+      title: "Hypothesis testing & p-values",
+      summary:
+        "The framework behind every A/B test — null and alternative hypotheses, what a p-value really means (and the misconception to avoid), significance, power, and the two error types.",
+      minutes: 11,
+      blocks: [
+        { type: "p", text: "**Hypothesis testing** is how you decide whether an observed effect is real or just noise — the statistical engine under A/B testing. Interviewers probe it because p-values are so widely misunderstood; stating them correctly is a strong signal." },
+        { type: "h2", text: "The setup" },
+        { type: "list", items: [
+          "**Null hypothesis (H₀)** — the default 'nothing is going on' claim (e.g. 'the new model has no effect on conversion').",
+          "**Alternative hypothesis (H₁)** — the effect you suspect ('the new model changes conversion').",
+          "**Significance level (α)** — the risk of a false alarm you'll tolerate, usually 0.05.",
+        ]},
+        { type: "p", text: "You assume H₀ is true, then ask: how surprising is my observed data under that assumption?" },
+        { type: "diagram", name: "hypothesis-test", caption: "Under H₀, extreme results are unlikely; if your result falls in the tail (p < α), you reject H₀." },
+        { type: "h2", text: "What a p-value actually is" },
+        { type: "p", text: "The **p-value** is the probability of observing a result **at least as extreme** as yours, *assuming the null hypothesis is true*. A small p-value means your data would be very unlikely if there were no real effect — so you **reject H₀**." },
+        { type: "callout", kind: "warn", text: "The misconception that sinks candidates: a p-value is NOT 'the probability the null hypothesis is true,' and NOT 'the probability the result was due to chance.' It's P(data this extreme | H₀ true) — a statement about the data given H₀, not about H₀ given the data. Say it precisely and you stand out." },
+        { type: "p", text: "If p < α (e.g. p = 0.03 < 0.05), the result is **statistically significant** and you reject the null. Otherwise you 'fail to reject' — note you never *prove* the null, you just lack evidence against it." },
+        { type: "h2", text: "The two errors, and power" },
+        { type: "compare", caption: "Two ways a test can be wrong.", columns: ["", "H₀ is actually true", "H₀ is actually false"], rows: [
+          { label: "You reject H₀", cells: ["Type I error (false positive) — rate α", "Correct ✓"] },
+          { label: "You keep H₀", cells: ["Correct ✓", "Type II error (false negative) — rate β"] },
+        ]},
+        { type: "list", items: [
+          "**Type I error (α)** — a false positive: declaring an effect that isn't there.",
+          "**Type II error (β)** — a false negative: missing a real effect.",
+          "**Statistical power (1−β)** — the chance of detecting a real effect. Bigger sample sizes and effect sizes increase power. You do a **power analysis** *before* an A/B test to size it.",
+        ]},
+        { type: "callout", kind: "tip", text: "Watch for practical vs statistical significance. With a huge sample, a trivially small effect can be statistically significant yet worthless in practice. And beware multiple comparisons — test 20 things at α=0.05 and you'll expect one false positive by chance (correct with Bonferroni or FDR)." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**H₀ / H₁** = null / alternative hypothesis. **α (significance level)** = tolerated false-positive rate. **p-value** = P(result this extreme | H₀ true). **Type I / II error** = false positive / false negative. **Power (1−β)** = probability of detecting a true effect. **Statistically significant** = p < α. **Multiple comparisons** = inflated false positives from many simultaneous tests." },
+      ],
+      takeaways: [
+        "Hypothesis testing decides if an effect is real: assume the null (no effect), then measure how surprising the data is.",
+        "A p-value is P(data at least this extreme | H₀ true) — NOT the probability the null is true. Reject H₀ if p < α.",
+        "Type I error (α) is a false positive; Type II error (β) is a false negative; power (1−β) is the chance of catching a real effect.",
+        "Distinguish statistical from practical significance, and correct for multiple comparisons.",
+      ],
+      flashcards: [
+        { front: "What is a p-value (precisely)?", back: "The probability of observing a result at least as extreme as yours, assuming the null hypothesis is true. It is NOT the probability that H₀ is true or that the result was 'due to chance'." },
+        { front: "Type I vs Type II error", back: "Type I (α): false positive — declaring an effect that isn't real. Type II (β): false negative — missing a real effect. Power = 1−β, the chance of detecting a true effect." },
+        { front: "Statistical vs practical significance", back: "Statistical significance (p<α) says an effect is unlikely to be noise; practical significance asks if it's big enough to matter. Huge samples can make trivial effects statistically significant." },
+      ],
+      quiz: [
+        { q: "A p-value of 0.03 means…", options: ["There's a 3% chance the null is true", "If the null were true, data this extreme would occur 3% of the time", "The effect is 3% large", "There's a 97% chance of success"], answer: 1, explain: "The p-value is P(result this extreme | H₀ true) — a statement about the data given the null, not about the null itself." },
+        { q: "Declaring an effect that doesn't actually exist is a…", options: ["Type II error", "Type I error", "Power failure", "Bias"], answer: 1, explain: "A false positive — rejecting a true null — is a Type I error, controlled by α." },
+        { q: "Testing 20 independent hypotheses at α=0.05, the expected number of false positives by chance is about…", options: ["0", "1", "5", "20"], answer: 1, explain: "20 × 0.05 = 1 — the multiple-comparisons problem, why you correct with Bonferroni/FDR." },
+      ],
+    },
+    {
+      slug: "estimation-and-causation",
+      title: "Estimation, MLE & correlation vs causation",
+      summary:
+        "How models actually pick their parameters (maximum likelihood), what a confidence interval means, and the correlation-vs-causation distinction that trips up so many analyses.",
+      minutes: 10,
+      blocks: [
+        { type: "p", text: "The last statistical pillar: how we **estimate** unknown quantities from data, how confident we are, and the single most important caveat in all of data analysis — that correlation is not causation." },
+        { type: "h2", text: "Maximum Likelihood Estimation (MLE)" },
+        { type: "p", text: "**MLE** answers 'what parameter values make my observed data most probable?' You write the **likelihood** — the probability of the data as a function of the parameters — and pick the parameters that maximize it (in practice, maximizing the log-likelihood). It's not just theory: minimizing **cross-entropy** loss is exactly MLE for classification, and minimizing **MSE** is MLE for regression under Gaussian noise. So the losses from the foundations module are MLE in disguise." },
+        { type: "callout", kind: "key", text: "The connecting insight worth stating: training a model by minimizing a loss is usually maximum likelihood estimation. Cross-entropy = maximizing the likelihood of the correct labels; MSE = maximizing likelihood under an assumption of Gaussian errors. This links 'loss functions' to 'probability' — a favorite depth check." },
+        { type: "p", text: "A **Bayesian** alternative, **MAP** (maximum a posteriori), also incorporates a prior — and adding an L2 penalty to a loss is equivalent to a Gaussian prior on the weights (Ridge = MAP). Mentioning this shows real depth." },
+        { type: "h2", text: "Confidence intervals" },
+        { type: "p", text: "A point estimate (e.g. 'conversion is 5.2%') hides uncertainty. A **confidence interval** gives a range: 'we're 95% confident the true rate is between 4.8% and 5.6%.' The correct interpretation is subtle — a 95% CI means *if we repeated the experiment many times, 95% of such intervals would contain the true value* — not that there's a 95% probability the true value is in this specific interval." },
+        { type: "h2", text: "Correlation vs causation" },
+        { type: "p", text: "**Correlation** measures how two variables move together (from −1 to +1); it says nothing about one *causing* the other. The classic example: ice-cream sales correlate with drowning deaths — but neither causes the other; a **confounder** (hot weather) drives both." },
+        { type: "list", items: [
+          "**Confounding variable** — a hidden factor that influences both variables, creating a spurious correlation.",
+          "**Reverse causation** — X may cause Y, or Y may cause X; correlation can't tell you the direction.",
+          "**Establishing causation** — needs a **randomized controlled experiment** (like an A/B test), which breaks confounding by randomizing, or careful causal-inference techniques when experiments aren't possible.",
+        ]},
+        { type: "callout", kind: "tip", text: "When an interviewer shows you a correlation and asks for a conclusion, the sharp move is to resist a causal claim: 'these are correlated, but I'd want a randomized experiment before saying one causes the other — there could be a confounder or reverse causation.' It signals scientific rigor." },
+        { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Estimator** = a rule for guessing a parameter from data. **Likelihood** = probability of the data given the parameters. **MLE** = pick parameters that maximize it. **MAP** = MLE plus a prior (Bayesian). **Confidence interval** = a range with a stated long-run coverage. **Confounder** = a hidden cause of both variables. **Randomized controlled trial** = the gold standard for causation." },
+      ],
+      takeaways: [
+        "MLE picks the parameters that make the observed data most probable; minimizing cross-entropy/MSE loss is MLE in disguise.",
+        "Adding L2 regularization is equivalent to a Gaussian prior (MAP estimation) — loss functions connect directly to probability.",
+        "A confidence interval expresses uncertainty as a range with long-run coverage, not a probability about one specific interval.",
+        "Correlation ≠ causation; confounders and reverse causation mislead, and only randomized experiments (A/B tests) reliably establish cause.",
+      ],
+      flashcards: [
+        { front: "What is Maximum Likelihood Estimation?", back: "Choosing the parameter values that make the observed data most probable, by maximizing the (log-)likelihood. Minimizing cross-entropy (classification) or MSE (regression under Gaussian noise) is exactly MLE." },
+        { front: "How do you establish causation from data?", back: "Correlation can't; you need a randomized controlled experiment (like an A/B test) that randomizes to break confounding, or rigorous causal-inference methods when experiments aren't feasible." },
+        { front: "What is a confounding variable?", back: "A hidden factor that influences both variables of interest, creating a spurious correlation — e.g. hot weather driving both ice-cream sales and drownings." },
+      ],
+      quiz: [
+        { q: "Minimizing cross-entropy loss is equivalent to…", options: ["Maximum likelihood estimation", "Reducing variance", "PCA", "Clustering"], answer: 0, explain: "Cross-entropy minimization maximizes the likelihood of the correct labels — it's MLE for classification." },
+        { q: "Ice-cream sales correlate with drownings. The best conclusion is…", options: ["Ice cream causes drowning", "A confounder (hot weather) likely drives both", "Drowning causes ice-cream sales", "The data is wrong"], answer: 1, explain: "A confounding variable creates the spurious correlation; correlation alone can't establish causation." },
+        { q: "The only reliable way to establish causation is generally…", options: ["A larger correlation", "A randomized controlled experiment", "A bigger dataset", "A lower p-value"], answer: 1, explain: "Randomization breaks confounding, isolating the effect of the treatment — the basis of A/B testing." },
+      ],
+    },
+  ],
+};

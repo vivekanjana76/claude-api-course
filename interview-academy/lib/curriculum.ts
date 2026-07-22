@@ -1,5 +1,6 @@
 import type { Module, Lesson } from "./types";
 import { foundations } from "./mod-foundations";
+import { stats } from "./mod-stats";
 import { classic } from "./mod-classic";
 import { deeplearning } from "./mod-deeplearning";
 import { nlp } from "./mod-nlp";
@@ -10,6 +11,7 @@ import { behavioral } from "./mod-behavioral";
 
 export const modules: Module[] = [
   foundations,
+  stats,
   classic,
   deeplearning,
   nlp,

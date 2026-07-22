@@ -664,6 +664,157 @@ function SystemDesignFramework() {
   );
 }
 
+// Bayes' theorem as a formula + the medical-test intuition.
+function BayesTheorem() {
+  return (
+    <Frame h={250}>
+      <rect x={120} y={30} width={560} height={64} rx={12} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.6} />
+      <text x={400} y={60} textAnchor="middle" fontFamily="var(--font-mono)" fontSize={20} fontWeight={700} fill={C.iris}>P(A|B) = P(B|A) · P(A) / P(B)</text>
+      <text x={400} y={82} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>posterior = likelihood × prior / evidence</text>
+      <text x={400} y={128} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={600} fill={C.soft}>Update a belief with new evidence</text>
+      <Node x={60} y={150} w={150} h={54} label="Prior" sub="P(disease) = 1%" fill={C.card} stroke={C.muted} />
+      <Arrow x1={210} y1={177} x2={255} y2={177} color={C.teal} />
+      <Node x={255} y={150} w={175} h={54} label="+ Evidence" sub="test is positive" fill={C.tealSoft} stroke={C.teal} text={C.teal} />
+      <Arrow x1={430} y1={177} x2={475} y2={177} color={C.teal} />
+      <Node x={475} y={150} w={175} h={54} label="Posterior" sub="P(disease | +) ≈ 16%" accent fill={C.irisSoft} />
+      <text x={400} y={232} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>Base rates dominate: even a good test on a rare disease yields many false positives.</text>
+    </Frame>
+  );
+}
+
+// Normal distribution with the 68-95-99.7 rule.
+function NormalDistribution() {
+  // bell curve path
+  const pts: string[] = [];
+  for (let i = 0; i <= 100; i++) {
+    const x = 100 + i * 6;
+    const z = (i - 50) / 12.5;
+    const y = 230 - 170 * Math.exp(-0.5 * z * z);
+    pts.push(`${i === 0 ? "M" : "L"}${x},${y}`);
+  }
+  const bands = [
+    { z: 1, c: C.iris, label: "68%", off: 12.5 },
+    { z: 2, c: C.teal, label: "95%", off: 25 },
+    { z: 3, c: C.amber, label: "99.7%", off: 37.5 },
+  ];
+  return (
+    <Frame h={280}>
+      <Arrow x1={90} y1={230} x2={720} y2={230} color={C.muted} />
+      {[-3, -2, -1, 0, 1, 2, 3].map((s) => (
+        <g key={s}>
+          <line x1={400 + s * 75} y1={230} x2={400 + s * 75} y2={236} stroke={C.muted} strokeWidth={1.2} />
+          <text x={400 + s * 75} y={252} textAnchor="middle" fontFamily="var(--font-mono)" fontSize={11} fill={C.muted}>{s === 0 ? "μ" : `${s > 0 ? "+" : ""}${s}σ`}</text>
+        </g>
+      ))}
+      <path d={pts.join(" ")} fill="none" stroke={C.soft} strokeWidth={2.4} />
+      <line x1={400} y1={60} x2={400} y2={230} stroke={C.line} strokeWidth={1.3} strokeDasharray="4 4" />
+      {bands.map((b, i) => (
+        <text key={i} x={400} y={120 + i * 30} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={600} fill={b.c}>{`±${b.z}σ → ${b.label}`}</text>
+      ))}
+      <text x={400} y={30} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fill={C.muted}>The 68–95–99.7 rule: share of data within 1/2/3 standard deviations of the mean</text>
+    </Frame>
+  );
+}
+
+// Hypothesis test: null distribution with rejection region and p-value.
+function HypothesisTest() {
+  const pts: string[] = [];
+  for (let i = 0; i <= 100; i++) {
+    const x = 120 + i * 5.6;
+    const z = (i - 50) / 14;
+    const y = 210 - 150 * Math.exp(-0.5 * z * z);
+    pts.push(`${i === 0 ? "M" : "L"}${x},${y}`);
+  }
+  // rejection region right tail (from i=78 → x)
+  const tail: string[] = ["M556,210"];
+  for (let i = 78; i <= 100; i++) {
+    const x = 120 + i * 5.6;
+    const z = (i - 50) / 14;
+    const y = 210 - 150 * Math.exp(-0.5 * z * z);
+    tail.push(`L${x},${y}`);
+  }
+  tail.push("L680,210 Z");
+  return (
+    <Frame h={270}>
+      <Arrow x1={110} y1={210} x2={720} y2={210} color={C.muted} />
+      <path d={pts.join(" ")} fill="none" stroke={C.iris} strokeWidth={2.4} />
+      <path d={tail.join(" ")} fill={C.rose} opacity={0.28} stroke={C.rose} strokeWidth={1.2} />
+      <text x={400} y={120} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={600} fill={C.iris}>Null hypothesis H₀</text>
+      <text x={400} y={140} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.muted}>&quot;no real effect&quot;</text>
+      <line x1={556} y1={60} x2={556} y2={210} stroke={C.rose} strokeWidth={1.3} strokeDasharray="4 4" />
+      <text x={620} y={95} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={600} fill={C.rose}>rejection</text>
+      <text x={620} y={112} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={600} fill={C.rose}>region (α)</text>
+      <text x={556} y={45} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.rose}>critical value</text>
+      <text x={400} y={245} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>p-value = P(a result this extreme | H₀ true). If p &lt; α (e.g. 0.05), reject H₀.</text>
+    </Frame>
+  );
+}
+
+// Big-O complexity growth curves.
+function BigO() {
+  const curves = [
+    { f: (x: number) => 200, c: C.teal, label: "O(1)", lx: 620, ly: 205 },
+    { f: (x: number) => 205 - 22 * Math.log2(x + 1), c: C.iris, label: "O(log n)", lx: 620, ly: 150 },
+    { f: (x: number) => 205 - x * 3.4, c: C.amber, label: "O(n)", lx: 470, ly: 45 },
+    { f: (x: number) => 205 - x * Math.log2(x + 1) * 1.15, c: C.rose, label: "O(n log n)", lx: 330, ly: 40 },
+    { f: (x: number) => 205 - x * x * 0.34, c: "#B01B4A", label: "O(n²)", lx: 205, ly: 40 },
+  ];
+  const build = (f: (x: number) => number) => {
+    const p: string[] = [];
+    for (let x = 0; x <= 44; x++) {
+      const y = Math.max(30, f(x));
+      p.push(`${x === 0 ? "M" : "L"}${110 + x * 13},${y}`);
+    }
+    return p.join(" ");
+  };
+  return (
+    <Frame h={250}>
+      <Arrow x1={100} y1={210} x2={710} y2={210} color={C.muted} />
+      <Arrow x1={110} y1={215} x2={110} y2={25} color={C.muted} />
+      <Cap x={400} y={238} text="input size n →" />
+      <text x={66} y={120} fontFamily="var(--font-sans)" fontSize={11} fill={C.muted} transform="rotate(-90 66 120)">operations →</text>
+      {curves.map((c, i) => (
+        <g key={i}>
+          <path d={build(c.f)} fill="none" stroke={c.c} strokeWidth={2.4} />
+          <text x={c.lx} y={c.ly} fontFamily="var(--font-mono)" fontSize={12} fontWeight={700} fill={c.c}>{c.label}</text>
+        </g>
+      ))}
+    </Frame>
+  );
+}
+
+// Fairness: same model, different error rates across two groups.
+function FairnessMetrics() {
+  const groups = [
+    { name: "Group A", tpr: 0.90, fpr: 0.10, c: C.iris },
+    { name: "Group B", tpr: 0.65, fpr: 0.30, c: C.rose },
+  ];
+  return (
+    <Frame h={250}>
+      <text x={400} y={30} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={600} fill={C.soft}>One model can be accurate overall yet unfair across groups</text>
+      {groups.map((g, i) => {
+        const x = 90 + i * 360;
+        return (
+          <g key={i}>
+            <text x={x + 150} y={62} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={g.c}>{g.name}</text>
+            {/* TPR bar */}
+            <text x={x} y={100} fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>True-positive rate</text>
+            <rect x={x} y={108} width={300} height={18} rx={6} fill={C.canvas} stroke={C.line} strokeWidth={1} />
+            <rect x={x} y={108} width={300 * g.tpr} height={18} rx={6} fill={g.c} opacity={0.75} />
+            <text x={x + 300 * g.tpr + 8} y={122} fontFamily="var(--font-mono)" fontSize={11} fill={g.c}>{Math.round(g.tpr * 100)}%</text>
+            {/* FPR bar */}
+            <text x={x} y={158} fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>False-positive rate</text>
+            <rect x={x} y={166} width={300} height={18} rx={6} fill={C.canvas} stroke={C.line} strokeWidth={1} />
+            <rect x={x} y={166} width={300 * g.fpr} height={18} rx={6} fill={C.amber} opacity={0.75} />
+            <text x={x + 300 * g.fpr + 8} y={180} fontFamily="var(--font-mono)" fontSize={11} fill={C.amber}>{Math.round(g.fpr * 100)}%</text>
+          </g>
+        );
+      })}
+      <text x={400} y={222} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>Equalized odds asks these rates to match across groups — often at odds with other fairness definitions.</text>
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => React.ReactElement> = {
   "ml-workflow": MlWorkflow,
   "learning-types": LearningTypes,
@@ -685,6 +836,11 @@ const REGISTRY: Record<DiagramName, () => React.ReactElement> = {
   "agent-loop": AgentLoop,
   "mlops-loop": MlopsLoop,
   "system-design-framework": SystemDesignFramework,
+  "bayes-theorem": BayesTheorem,
+  "normal-distribution": NormalDistribution,
+  "hypothesis-test": HypothesisTest,
+  "big-o": BigO,
+  "fairness-metrics": FairnessMetrics,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

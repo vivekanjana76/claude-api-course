@@ -37,7 +37,12 @@ export type DiagramName =
   | "rag-pipeline"
   | "agent-loop"
   | "mlops-loop"
-  | "system-design-framework";
+  | "system-design-framework"
+  | "bayes-theorem"
+  | "normal-distribution"
+  | "hypothesis-test"
+  | "big-o"
+  | "fairness-metrics";
 
 export interface Flashcard {
   front: string;

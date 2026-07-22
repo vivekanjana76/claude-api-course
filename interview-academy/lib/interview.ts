@@ -62,6 +62,36 @@ export const interviewQA: InterviewQA[] = [
     a: "AUC is the area under the ROC curve, which plots true-positive rate against false-positive rate as you sweep the threshold. It's a single, threshold-independent number for how well the model ranks positives above negatives: 1.0 is perfect, 0.5 is random. It's great for comparing classifiers, but on heavily imbalanced data ROC-AUC can look deceptively good because the false-positive rate has a huge negative denominator — there the precision–recall curve (PR-AUC) is more informative, since it focuses on the rare positive class.",
   },
   {
+    topic: "Statistics",
+    q: "What is a p-value, really?",
+    a: "A p-value is the probability of observing a result at least as extreme as the one you got, assuming the null hypothesis is true. Small p-value means your data would be very surprising if there were no real effect, so you reject the null. The critical thing is what it's NOT: it is not the probability that the null hypothesis is true, and not the probability the result was 'due to chance.' It's a statement about the data given the null — P(data this extreme | H₀) — not about the hypothesis given the data. If p is below your significance level α (say 0.05), the result is statistically significant.",
+  },
+  {
+    topic: "Statistics",
+    q: "Explain the Central Limit Theorem and why it matters.",
+    a: "The Central Limit Theorem says that if you take many independent samples and compute their means, the distribution of those sample means is approximately normal as the sample size grows — usually n≥30 is enough — regardless of the shape of the original population distribution. It matters because it lets us use the well-understood normal distribution to reason about averages even when the underlying data is non-normal or unknown. Nearly all of classical inference — confidence intervals, t-tests, A/B testing — depends on it. It's the answer to 'why can we assume normality here?'",
+  },
+  {
+    topic: "Statistics",
+    q: "A disease affects 1% of people and a test is 90% accurate. You test positive — what's the chance you have it?",
+    a: "Far lower than 90% — this is the base-rate trap. Take 1,000 people: 10 have the disease and about 9 test positive; 990 don't, but a 10% false-positive rate means about 99 of them also test positive. So of roughly 108 positives, only 9 are real — around 8–16% depending on exact rates. The intuition to state: when the condition is rare, the huge number of healthy people generates so many false positives that they swamp the true positives. It's Bayes' theorem in action, and the same reason precision suffers on imbalanced data.",
+  },
+  {
+    topic: "Statistics",
+    q: "What's the difference between correlation and causation, and how do you establish causation?",
+    a: "Correlation measures how two variables move together, from −1 to +1, but says nothing about one causing the other. Two variables can correlate because of a confounder — a hidden factor driving both, like hot weather driving both ice-cream sales and drownings — or because of reverse causation, where the direction is opposite to what you assume. To establish causation you generally need a randomized controlled experiment, such as an A/B test: randomization breaks confounding by making the groups comparable, isolating the treatment's effect. When experiments aren't feasible, careful causal-inference methods can help, but they require strong assumptions.",
+  },
+  {
+    topic: "Statistics",
+    q: "What are Type I and Type II errors, and what is statistical power?",
+    a: "A Type I error is a false positive — rejecting the null hypothesis when it's actually true — and its rate is α, the significance level you set (often 0.05). A Type II error is a false negative — failing to detect a real effect — with rate β. Statistical power is 1−β: the probability of correctly detecting a true effect. Power rises with larger sample sizes and larger true effect sizes, which is why you run a power analysis before an A/B test to decide how much data you need. There's a tradeoff: making α stricter to avoid false positives lowers power, raising the false-negative rate.",
+  },
+  {
+    topic: "Statistics",
+    q: "How does minimizing a loss function relate to probability?",
+    a: "Most model training is maximum likelihood estimation in disguise. MLE picks the parameters that make the observed data most probable. For classification, minimizing cross-entropy loss is exactly maximizing the likelihood of the correct labels. For regression, minimizing mean squared error is MLE under the assumption of Gaussian noise. And adding an L2 regularization penalty corresponds to putting a Gaussian prior on the weights, which turns it into MAP (maximum a posteriori) estimation. So 'minimize this loss' and 'find the most probable parameters given the data' are usually the same thing — a nice bridge between the optimization and probability views of ML.",
+  },
+  {
     topic: "Classic ML",
     q: "Why is logistic regression called regression if it's used for classification?",
     a: "Because it's a linear regression model of the log-odds of the positive class. It computes a linear score w·x, then passes it through the sigmoid to produce a probability in (0,1), which you threshold into a class. So the 'regression' is happening in log-odds space; the classification comes from thresholding the resulting probability. It's trained with cross-entropy loss, and its coefficients are interpretable as changes in log-odds — which is why it's still favored in regulated domains.",
