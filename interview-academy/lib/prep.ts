@@ -28,19 +28,20 @@ export const stages: PrepStage[] = [
   {
     id: "foundations",
     phase: "Phase 1",
-    title: "Fundamentals & evaluation",
+    title: "Fundamentals, stats & evaluation",
     accent: "iris",
-    modules: ["foundations"],
+    modules: ["foundations", "stats"],
     summary:
-      "Almost every interview screens these first. If you can reason cleanly about learning types, the bias–variance tradeoff, training, and — above all — evaluation, you frame everything after it well.",
+      "Almost every interview screens these first. If you can reason cleanly about learning types, the bias–variance tradeoff, training, evaluation, and the core statistics (Bayes, the CLT, p-values), you frame everything after it well.",
     mustKnow: [
       { q: "Contrast supervised, unsupervised, and reinforcement learning.", hint: "Labels→supervised (class vs number); structure→unsupervised; reward→RL. Place the problem first." },
       { q: "Explain the bias–variance tradeoff and how you'd diagnose each.", hint: "Bias=underfit (bad on train+test); variance=overfit (gap). Compare train vs validation error." },
       { q: "Why is accuracy misleading, and what would you use instead?", hint: "Imbalance trap; use precision/recall/F1, AUC/PR-AUC, tied to the cost of each error." },
-      { q: "Walk through gradient descent and the role of the learning rate.", hint: "θ:=θ−η∇J; too small stalls, too large diverges; mini-batch + Adam in practice." },
       { q: "What is data leakage and how do you avoid it?", hint: "Test/future info in training; split first, fit transforms on train folds only." },
+      { q: "What is a p-value (precisely), and what's the base-rate trap?", hint: "P(data this extreme | H₀), NOT P(H₀). Rare events → accurate tests still give mostly false positives." },
+      { q: "State the CLT and why loss-minimization is MLE.", hint: "Sample means → normal (n≥30); cross-entropy/MSE minimization = maximum likelihood." },
     ],
-    oneThing: "Generalization to unseen data is the whole game — and the metric you judge by, measured honestly, is what proves it.",
+    oneThing: "Generalization to unseen data is the whole game — measured honestly with the right metric, and reasoned about with probability.",
   },
   {
     id: "classic",
@@ -113,19 +114,20 @@ export const stages: PrepStage[] = [
   {
     id: "engineering",
     phase: "Phase 6",
-    title: "MLOps & system design",
+    title: "Engineering, coding & responsibility",
     accent: "teal",
-    modules: ["mlops", "systemdesign"],
+    modules: ["mlops", "systemdesign", "coding", "responsible"],
     summary:
-      "For ML-engineer and senior roles, deploying and designing beats deriving math. Expect an open-ended 'design an ML system for X' and production-reliability questions.",
+      "For ML-engineer and senior roles, deploying, designing, coding, and shipping responsibly beat deriving math. Expect an open-ended 'design an ML system for X', a live coding round, and — increasingly — fairness and LLM-security questions.",
     mustKnow: [
       { q: "What's your framework for an ML system design question?", hint: "Clarify→metrics→data→features→model (baseline first)→serve/scale→monitor. Think out loud." },
       { q: "What is model drift and how do you detect it?", hint: "Data vs concept drift; monitor input distributions and live quality; trigger retraining (CT)." },
-      { q: "Batch vs online vs streaming inference — tradeoffs?", hint: "Latency vs cost vs freshness; precompute vs real-time; feature availability drives it." },
       { q: "How would you A/B test a new model safely?", hint: "Shadow/canary first, then split traffic, guardrail metrics, statistical significance before rollout." },
-      { q: "Design a recommendation / search-ranking system.", hint: "Candidate generation → ranking; features, cold start, feedback loops, offline+online metrics." },
+      { q: "Implement k-means or gradient descent from scratch (vectorized).", hint: "State steps → loop with stopping condition → vectorize inner compute → mention edge cases." },
+      { q: "How can a model be biased, and how do you detect/mitigate it?", hint: "Data/proxy/feedback bias; measure across groups (removing the attribute fails); pre/in/post-process." },
+      { q: "What is prompt injection and how do you defend against it?", hint: "Untrusted text hijacks the model; least privilege, isolate input, validate output — defense in depth." },
     ],
-    oneThing: "Production ML is a loop, not a launch: what you tested must be what you ship, and monitoring feeds the next model.",
+    oneThing: "Production ML is a loop, not a launch — and shipping responsibly (fair, explainable, secure) is now part of the job, not an afterthought.",
   },
   {
     id: "behavioral",
@@ -156,4 +158,8 @@ export const rapidFire: string[] = [
   "How would you tell if a live model has started to drift?",
   "Why is a strong baseline the most valuable model in a project?",
   "Precision or recall for a cancer screen — and what's the cost of being wrong?",
+  "State a p-value correctly in one sentence — and what it is NOT.",
+  "Why won't dropping the 'race' feature make a model fair?",
+  "Why is self-attention O(n²), and why does that matter for coding it?",
+  "In one line: SHAP vs LIME.",
 ];
