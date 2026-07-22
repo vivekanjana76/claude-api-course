@@ -8,6 +8,7 @@ import { llms } from "./mod-llms";
 import { mlops } from "./mod-mlops";
 import { systemdesign } from "./mod-systemdesign";
 import { coding } from "./mod-coding";
+import { responsible } from "./mod-responsible";
 import { behavioral } from "./mod-behavioral";
 
 export const modules: Module[] = [
@@ -20,6 +21,7 @@ export const modules: Module[] = [
   mlops,
   systemdesign,
   coding,
+  responsible,
   behavioral,
 ];
 
