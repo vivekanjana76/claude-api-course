@@ -91,4 +91,24 @@ export const interviewQA: InterviewQA[] = [
     q: "Name a few of the biggest cloud cost levers.",
     a: "Right-size instances to actual usage; use reserved/savings plans or spot for the right workloads; apply storage lifecycle tiering; minimize egress and cross-region transfer; turn off idle/dev resources on a schedule; and set budgets and billing alerts from day one. Tagging resources makes cost attributable per team or project.",
   },
+  {
+    topic: "Databases",
+    q: "How do you choose between a relational and a NoSQL database?",
+    a: "Start from the data and access pattern, not the hype. Choose relational (RDS/Aurora/Azure SQL) when data is structured and related and you need ACID transactions — payments, orders, inventory. Choose NoSQL when you need horizontal scale, flexible schemas, or a specific shape (key–value sessions, document catalogs, wide-column time-series, graph relationships) and your access patterns are known and simple. The trap is picking NoSQL for 'scale' then discovering you need JOINs and strong consistency you gave up.",
+  },
+  {
+    topic: "Databases",
+    q: "What's the difference between a Multi-AZ standby and a read replica?",
+    a: "A Multi-AZ standby is a synchronous copy in another Availability Zone kept purely for automatic failover — it improves availability and you don't read from it. A read replica is an asynchronous copy you point read-only traffic at to scale reads off the primary; it can lag, so avoid reading your own just-written data from one. They solve different problems and are often used together.",
+  },
+  {
+    topic: "Databases",
+    q: "Walk me through adding a cache in front of a database.",
+    a: "The common pattern is cache-aside: the app checks an in-memory cache (Redis via ElastiCache or Azure Cache for Redis) first; on a hit it returns instantly, on a miss it reads the database, stores the result in the cache, and returns it. Manage staleness with a TTL and/or explicit invalidation when the underlying row changes. Crucially the cache is not the source of truth — it can evict or lose data — so the database stays authoritative and the app must tolerate a cold cache.",
+  },
+  {
+    topic: "Databases",
+    q: "Name the four NoSQL families and a use case for each.",
+    a: "Key–value (DynamoDB, Redis) for sessions/carts/profiles fetched by key; document (MongoDB, Cosmos DB) for catalogs and varied JSON records; wide-column (Cassandra, Bigtable) for high-write time-series, IoT, and logs; and graph (Neptune, Cosmos Gremlin) for relationship-heavy data like social networks, fraud rings, and recommendations.",
+  },
 ];
