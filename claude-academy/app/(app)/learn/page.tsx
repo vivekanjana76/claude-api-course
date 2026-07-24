@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { modules } from "@/lib/curriculum";
-import { useProgress } from "@/lib/progress";
+import { useProgress, useMastery } from "@/lib/progress";
 import { ContinueLearning } from "@/components/ContinueLearning";
-import { Clock, ArrowRight, CheckCircle2 } from "lucide-react";
+import { MasteryRing } from "@/components/MasteryRing";
+import { Clock, ArrowRight, CheckCircle2, Target } from "lucide-react";
 
 const accentText: Record<string, string> = {
   clay: "text-clay-dark",
@@ -21,6 +22,7 @@ const accentBar: Record<string, string> = {
 
 export default function CurriculumPage() {
   const { done } = useProgress();
+  const { scores, quizzesTaken, avgPct } = useMastery();
 
   return (
     <div className="max-w-3xl mx-auto px-6 lg:px-10 py-12">
@@ -36,6 +38,22 @@ export default function CurriculumPage() {
       <div className="mb-10">
         <ContinueLearning />
       </div>
+
+      {quizzesTaken > 0 && (
+        <div className="mb-10 flex items-center gap-4 rounded-xl border border-sage/40 bg-sage/10 px-5 py-4">
+          <MasteryRing correct={avgPct} total={100} size={44} />
+          <div>
+            <p className="font-medium text-ink">
+              Quiz mastery: {avgPct}% average
+            </p>
+            <p className="text-sm text-ink-muted">
+              Across {quizzesTaken} {quizzesTaken === 1 ? "quiz" : "quizzes"} taken.
+              Retake any lesson&apos;s quiz to raise its best score.
+            </p>
+          </div>
+          <Target size={18} className="ml-auto text-sage shrink-0" />
+        </div>
+      )}
 
       <div className="space-y-10">
         {modules.map((m, mi) => {
@@ -66,6 +84,7 @@ export default function CurriculumPage() {
               <div className="space-y-2 pl-4">
                 {m.lessons.map((l, li) => {
                   const isDone = done[l.slug];
+                  const score = scores[l.slug];
                   return (
                     <Link
                       key={l.slug}
@@ -87,6 +106,9 @@ export default function CurriculumPage() {
                         </div>
                         <p className="text-sm text-ink-muted line-clamp-1">{l.summary}</p>
                       </div>
+                      {score && (
+                        <MasteryRing correct={score.correct} total={score.total} />
+                      )}
                       <span className="flex items-center gap-1 text-xs text-ink-faint shrink-0">
                         <Clock size={12} /> {l.minutes}m
                       </span>
