@@ -33,7 +33,9 @@ export type DiagramName =
   | "network-topology"
   | "dns-resolution"
   | "availability-multi-az"
-  | "well-architected";
+  | "well-architected"
+  | "database-types"
+  | "caching-layer";
 
 export interface Flashcard {
   front: string;

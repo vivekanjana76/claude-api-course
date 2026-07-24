@@ -624,6 +624,70 @@ function WellArchitected() {
   );
 }
 
+// Relational vs the four NoSQL families.
+function DatabaseTypes() {
+  const nosql = [
+    { t: "Key–value", s: "DynamoDB · Redis", d: "fast lookups by key" },
+    { t: "Document", s: "MongoDB · Cosmos DB", d: "flexible JSON documents" },
+    { t: "Wide-column", s: "Cassandra · Bigtable", d: "huge write-heavy tables" },
+    { t: "Graph", s: "Neptune · Cosmos Gremlin", d: "relationships & traversal" },
+  ];
+  return (
+    <Frame h={300}>
+      {/* relational */}
+      <rect x={45} y={54} width={230} height={200} rx={14} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.8} />
+      <text x={160} y={84} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={16} fontWeight={700} fill={C.iris}>Relational (SQL)</text>
+      <text x={160} y={104} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>RDS · Aurora · Azure SQL</text>
+      <foreignObject x={60} y={118} width={200} height={120}>
+        <div style={{ fontFamily: "var(--font-sans)", fontSize: 11.5, color: "#293445", textAlign: "center", lineHeight: 1.6 }}>
+          Rows &amp; columns · fixed schema · JOINs · <b>ACID</b> transactions. The default when data is structured and consistency matters.
+        </div>
+      </foreignObject>
+
+      {/* nosql families */}
+      {nosql.map((k, i) => {
+        const x = 320 + (i % 2) * 235;
+        const y = 54 + Math.floor(i / 2) * 102;
+        return (
+          <g key={i}>
+            <rect x={x} y={y} width={215} height={88} rx={12} fill={C.card} stroke={C.teal} strokeWidth={1.6} />
+            <text x={x + 107} y={y + 28} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={14} fontWeight={700} fill={C.teal}>{k.t}</text>
+            <text x={x + 107} y={y + 47} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>{k.s}</text>
+            <text x={x + 107} y={y + 68} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontStyle="italic" fill={C.soft}>{k.d}</text>
+          </g>
+        );
+      })}
+      <text x={430} y={40} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={600} fill={C.teal}>NoSQL — pick the shape that fits your access pattern</text>
+      <Cap x={160} y={278} text="SQL for structured, consistent data; NoSQL for scale & flexible shapes." />
+    </Frame>
+  );
+}
+
+// Cache-aside read path.
+function CachingLayer() {
+  return (
+    <Frame h={240}>
+      <Node x={40} y={95} w={130} h={56} label="App" sub="needs data" accent />
+      <Node x={320} y={45} w={160} h={56} label="Cache" sub="Redis · ElastiCache" fill={C.tealSoft} stroke={C.teal} text={C.teal} />
+      <Node x={320} y={150} w={160} h={56} label="Database" sub="RDS · Aurora" fill={C.irisSoft} stroke={C.iris} text={C.iris} />
+
+      {/* 1: check cache */}
+      <Arrow x1={172} y1={110} x2={316} y2={80} color={C.teal} flow />
+      <text x={235} y={82} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={C.teal}>1 · check cache</text>
+
+      {/* 2: miss → db */}
+      <Arrow x1={172} y1={128} x2={316} y2={176} color={C.iris} dashed />
+      <text x={232} y={165} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>2 · on miss, read DB</text>
+
+      {/* 3: populate cache */}
+      <Arrow x1={400} y1={148} x2={400} y2={104} color={C.muted} dashed />
+      <text x={505} y={130} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>3 · populate cache</text>
+
+      <Cap x={400} y={228} text="Cache-aside: hits are fast & cheap; misses fall through to the database, then refill the cache. Set a TTL to bound staleness." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "cloud-service-models": ServiceModels,
   "shared-responsibility": SharedResponsibility,
@@ -641,6 +705,8 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "dns-resolution": DnsResolution,
   "availability-multi-az": AvailabilityMultiAz,
   "well-architected": WellArchitected,
+  "database-types": DatabaseTypes,
+  "caching-layer": CachingLayer,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

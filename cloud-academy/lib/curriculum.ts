@@ -3,12 +3,14 @@ import { foundations } from "./mod-foundations";
 import { compute } from "./mod-compute";
 import { storage } from "./mod-storage";
 import { networking } from "./mod-networking";
+import { databases } from "./mod-databases";
 
 export const modules: Module[] = [
   foundations,
   compute,
   storage,
   networking,
+  databases,
 ];
 
 export interface LessonRef {
