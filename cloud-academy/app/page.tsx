@@ -45,6 +45,7 @@ export default function Home() {
         </div>
         <nav className="hidden sm:flex items-center gap-6 text-sm text-ink-soft">
           <Link href="/learn" className="hover:text-iris transition-colors">Curriculum</Link>
+          <Link href="/prep" className="hover:text-iris transition-colors">Prep</Link>
           <Link href="/patterns" className="hover:text-iris transition-colors">Patterns</Link>
           <Link href="/interview" className="hover:text-iris transition-colors">Interview Q&amp;A</Link>
           <Link href="/glossary" className="hover:text-iris transition-colors">Glossary</Link>
