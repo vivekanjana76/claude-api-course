@@ -1,10 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { QuizQuestion } from "@/lib/types";
+import { recordQuizScore } from "@/lib/progress";
 import { Check, X, RotateCcw } from "lucide-react";
 
-export function Quiz({ questions }: { questions: QuizQuestion[] }) {
+export function Quiz({
+  questions,
+  slug,
+}: {
+  questions: QuizQuestion[];
+  slug?: string;
+}) {
   const [picks, setPicks] = useState<(number | null)[]>(
     questions.map(() => null),
   );
@@ -21,6 +28,12 @@ export function Quiz({ questions }: { questions: QuizQuestion[] }) {
   const answered = picks.filter((p) => p !== null).length;
   const correct = picks.filter((p, i) => p === questions[i].answer).length;
   const allDone = answered === questions.length;
+
+  // Persist the (best) score once every question is answered.
+  useEffect(() => {
+    if (slug && allDone) recordQuizScore(slug, correct, questions.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allDone]);
 
   const reset = () => setPicks(questions.map(() => null));
 
@@ -82,14 +95,21 @@ export function Quiz({ questions }: { questions: QuizQuestion[] }) {
 
       {allDone && (
         <div className="flex items-center justify-between rounded-xl border border-iris/30 bg-iris-50 px-5 py-4">
-          <span className="font-display text-lg text-ink">
-            You scored {correct} / {questions.length}
-          </span>
+          <div>
+            <span className="font-display text-lg text-ink">
+              You scored {correct} / {questions.length}
+            </span>
+            {slug && (
+              <p className="text-xs text-ink-muted mt-0.5">
+                Your best score is saved to the curriculum.
+              </p>
+            )}
+          </div>
           <button
             onClick={reset}
             className="flex items-center gap-1.5 text-sm text-iris-dark hover:text-iris font-medium"
           >
-            <RotateCcw size={14} /> Try again
+            <RotateCcw size={14} /> Retake quiz
           </button>
         </div>
       )}
