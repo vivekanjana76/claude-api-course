@@ -688,6 +688,73 @@ function CachingLayer() {
   );
 }
 
+// IAM: identities → policy → resources.
+function IamModel() {
+  const ids = [
+    { t: "User", s: "a person" },
+    { t: "Group", s: "many users" },
+    { t: "Role", s: "assumed temporarily" },
+  ];
+  return (
+    <Frame h={280}>
+      <text x={110} y={34} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.iris}>Identities</text>
+      {ids.map((k, i) => (
+        <g key={i}>
+          <rect x={30} y={54 + i * 62} width={160} height={48} rx={11} fill={C.card} stroke={C.iris} strokeWidth={1.6} />
+          <text x={110} y={74 + i * 62} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={14} fontWeight={700} fill={C.ink}>{k.t}</text>
+          <text x={110} y={91 + i * 62} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>{k.s}</text>
+        </g>
+      ))}
+
+      {/* policy */}
+      <rect x={300} y={90} width={190} height={104} rx={12} fill={C.amberSoft} stroke={C.amber} strokeWidth={1.8} />
+      <text x={395} y={118} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={14} fontWeight={700} fill={C.amber}>Policy</text>
+      <text x={395} y={138} textAnchor="middle" fontFamily="var(--font-mono)" fontSize={10} fill={C.soft}>Allow / Deny</text>
+      <text x={395} y={154} textAnchor="middle" fontFamily="var(--font-mono)" fontSize={10} fill={C.soft}>action · resource</text>
+      <text x={395} y={176} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontStyle="italic" fill={C.muted}>attached to identities</text>
+
+      {/* resources */}
+      <text x={660} y={34} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.teal}>Resources</text>
+      {["S3 bucket", "EC2 / VM", "Database"].map((r, i) => (
+        <g key={i}>
+          <rect x={585} y={54 + i * 62} width={165} height={48} rx={11} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.5} />
+          <text x={667} y={82 + i * 62} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={600} fill={C.ink}>{r}</text>
+        </g>
+      ))}
+
+      <Arrow x1={192} y1={140} x2={298} y2={140} color={C.iris} />
+      <Arrow x1={492} y1={140} x2={583} y2={140} color={C.teal} flow />
+      <Cap x={400} y={258} text="Grant the minimum permissions needed — least privilege. Prefer roles (temporary credentials) over long-lived keys." />
+    </Frame>
+  );
+}
+
+// Encryption in transit vs at rest.
+function EncryptionFlow() {
+  return (
+    <Frame h={260}>
+      {/* in transit */}
+      <text x={200} y={38} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.iris}>In transit — TLS/HTTPS</text>
+      <Node x={40} y={70} w={130} h={54} label="Client" />
+      <Node x={230} y={70} w={130} h={54} label="Server" />
+      <Arrow x1={172} y1={88} x2={228} y2={88} color={C.iris} flow />
+      <text x={200} y={112} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>encrypted channel</text>
+      <text x={200} y={150} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontStyle="italic" fill={C.soft}>protects data moving over the network</text>
+
+      {/* at rest */}
+      <text x={600} y={38} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.teal}>At rest — KMS / Key Vault</text>
+      <Node x={440} y={70} w={120} h={54} label="Data" sub="plaintext" />
+      <rect x={600} y={70} width={120} height={54} rx={12} fill={C.amberSoft} stroke={C.amber} strokeWidth={1.8} />
+      <text x={660} y={92} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.amber}>Key</text>
+      <text x={660} y={110} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>KMS-managed</text>
+      <Arrow x1={562} y1={97} x2={598} y2={97} color={C.amber} />
+      <text x={600} y={150} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontStyle="italic" fill={C.soft}>encrypts stored disks, objects & backups</text>
+
+      <Cap x={400} y={230} text="Encrypt data in transit (TLS) and at rest (provider-managed keys). At rest is often on by default; TLS is your job to enforce." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "cloud-service-models": ServiceModels,
   "shared-responsibility": SharedResponsibility,
@@ -707,6 +774,8 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "well-architected": WellArchitected,
   "database-types": DatabaseTypes,
   "caching-layer": CachingLayer,
+  "iam-model": IamModel,
+  "encryption-flow": EncryptionFlow,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
