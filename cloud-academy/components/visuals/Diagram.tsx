@@ -755,6 +755,72 @@ function EncryptionFlow() {
   );
 }
 
+// Event source triggers a function that writes downstream.
+function ServerlessEvent() {
+  const sources = [
+    { t: "HTTP request", y: 52 },
+    { t: "File upload", y: 108 },
+    { t: "Queue message", y: 164 },
+  ];
+  return (
+    <Frame h={250}>
+      <text x={110} y={32} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.amber}>Event sources</text>
+      {sources.map((s, i) => (
+        <g key={i}>
+          <rect x={30} y={s.y} width={160} height={40} rx={10} fill={C.card} stroke={C.amber} strokeWidth={1.5} />
+          <text x={110} y={s.y + 25} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={600} fill={C.ink}>{s.t}</text>
+          <Arrow x1={192} y1={s.y + 20} x2={318} y2={120} color={C.line} />
+        </g>
+      ))}
+
+      {/* function */}
+      <rect x={320} y={86} width={170} height={78} rx={14} fill={C.irisSoft} stroke={C.iris} strokeWidth={2} />
+      <text x={405} y={118} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={15} fontWeight={700} fill={C.iris}>Function</text>
+      <text x={405} y={138} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>Lambda / Azure Functions</text>
+      <text x={405} y={153} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fontStyle="italic" fill={C.muted}>runs on demand, then stops</text>
+
+      {/* downstream */}
+      {["Database", "Storage", "Notify"].map((d, i) => (
+        <g key={i}>
+          <rect x={600} y={52 + i * 56} width={160} height={40} rx={10} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.5} />
+          <text x={680} y={77 + i * 56} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={600} fill={C.ink}>{d}</text>
+          <Arrow x1={492} y1={120} x2={598} y2={72 + i * 56} color={C.iris} flow />
+        </g>
+      ))}
+      <Cap x={400} y={230} text="No servers to manage: an event triggers the function, it runs, you pay only for that execution." />
+    </Frame>
+  );
+}
+
+// Orchestrator schedules containers across a pool of nodes.
+function ContainerOrchestration() {
+  return (
+    <Frame h={280}>
+      <rect x={280} y={30} width={240} height={58} rx={13} fill={C.irisSoft} stroke={C.iris} strokeWidth={2} />
+      <text x={400} y={54} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={15} fontWeight={700} fill={C.iris}>Orchestrator</text>
+      <text x={400} y={73} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>ECS / EKS / AKS — schedules, heals, scales</text>
+
+      {[0, 1, 2].map((n) => {
+        const x = 55 + n * 245;
+        return (
+          <g key={n}>
+            <rect x={x} y={140} width={200} height={120} rx={12} fill={C.canvas} stroke={C.line} strokeWidth={1.5} />
+            <text x={x + 100} y={162} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.soft}>Node {n + 1}</text>
+            {[0, 1].map((c) => (
+              <g key={c}>
+                <rect x={x + 18 + c * 92} y={178} width={74} height={64} rx={9} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.4} />
+                <text x={x + 55 + c * 92} y={214} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={C.teal}>container</text>
+              </g>
+            ))}
+            <Arrow x1={400} y1={90} x2={x + 100} y2={136} color={C.line} dashed />
+          </g>
+        );
+      })}
+      <Cap x={400} y={274} text="You declare the desired state; the orchestrator places containers on nodes and restarts them if they die." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "cloud-service-models": ServiceModels,
   "shared-responsibility": SharedResponsibility,
@@ -776,6 +842,8 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "caching-layer": CachingLayer,
   "iam-model": IamModel,
   "encryption-flow": EncryptionFlow,
+  "serverless-event": ServerlessEvent,
+  "container-orchestration": ContainerOrchestration,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

@@ -131,4 +131,24 @@ export const interviewQA: InterviewQA[] = [
     q: "Where should application secrets live, and what if one leaks into Git?",
     a: "Secrets belong in a secrets manager (AWS Secrets Manager / Azure Key Vault) — stored encrypted, access-controlled via IAM, fetched at runtime, and ideally auto-rotated. Never commit them to source control, bake them into images, or paste them into plain config. If a secret ever touches Git, rotate it immediately — deleting the commit isn't enough, because it may already have been cloned or scraped by bots within minutes.",
   },
+  {
+    topic: "Serverless",
+    q: "When would you choose serverless, and when would you avoid it?",
+    a: "Choose serverless (Lambda/Functions) for spiky or unpredictable traffic, event glue (uploads, queue messages, webhooks, schedules), and when you want to ship without managing servers — it scales to zero and costs nothing at idle. Avoid it for steady high-throughput services, where past a cost crossover an always-on container/VM is cheaper; for long-running or CPU-heavy jobs that exceed execution-time limits; and for latency-critical paths sensitive to cold starts. Deep use of one cloud's triggers also increases lock-in. Real systems mix serverless and containers per workload.",
+  },
+  {
+    topic: "Serverless",
+    q: "What is a cold start and how do you mitigate it?",
+    a: "A cold start is the latency added when the platform must initialize a fresh environment for a function that hasn't run recently — the first request pays it, warm ones don't. Mitigate by keeping functions small with lean dependencies and fast-starting runtimes, using provisioned/pre-warmed concurrency for latency-critical paths, and keeping latency-sensitive endpoints on containers when tail latency budgets are tight.",
+  },
+  {
+    topic: "Containers",
+    q: "Why do containers need an orchestrator?",
+    a: "One container on one host is easy; production means many services, each with several replicas, spread across a fleet of machines. An orchestrator (ECS, or Kubernetes via EKS/AKS/GKE) automates the coordination: scheduling containers onto nodes, restarting crashed ones, rescheduling off failed nodes, scaling replicas, rolling out new versions with rollback, and giving stable endpoints that load-balance across healthy pods. You declare desired state and it continuously reconciles reality to match.",
+  },
+  {
+    topic: "Containers",
+    q: "How do you choose between ECS, Fargate, and managed Kubernetes?",
+    a: "ECS is AWS's simpler proprietary orchestrator — a good default when you're on AWS and don't need Kubernetes. Fargate is serverless containers (no nodes to manage) and runs under ECS or EKS. Managed Kubernetes (EKS/AKS/GKE) gives you the portable, ecosystem-rich open standard with fine-grained control, at the cost of real complexity. Rule of thumb: Kubernetes when you need cross-cloud portability, specific ecosystem tooling, or fine control; ECS/Fargate when you just want to run containers simply. Don't adopt Kubernetes for a handful of services purely because it's popular.",
+  },
 ];

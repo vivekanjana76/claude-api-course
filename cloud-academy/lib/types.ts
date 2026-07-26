@@ -37,7 +37,9 @@ export type DiagramName =
   | "database-types"
   | "caching-layer"
   | "iam-model"
-  | "encryption-flow";
+  | "encryption-flow"
+  | "serverless-event"
+  | "container-orchestration";
 
 export interface Flashcard {
   front: string;
