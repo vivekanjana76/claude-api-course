@@ -99,7 +99,7 @@ export default function LessonPage({ params }: { params: { slug: string } }) {
           <HelpCircle size={18} className="text-amber-dark" />
           <h2 className="font-display text-xl font-semibold text-ink">Check yourself</h2>
         </div>
-        <Quiz questions={lesson.quiz} />
+        <Quiz questions={lesson.quiz} slug={lesson.slug} />
       </section>
 
       {/* complete + nav */}
