@@ -9,3 +9,19 @@ Welcome to Anthropic's educational courses. This repository currently contains f
 5. [Tool use](./tool_use/README.md) - teaches everything you need to know to implement tool use successfully in your workflows with Claude.
 
 **Please note that these courses often favor our lowest-cost model, Claude 3 Haiku, to keep API costs down for students following along with the materials. Feel free to use other Claude models if you prefer.**
+
+---
+
+## Interactive Learning Academies
+
+This repository also hosts a set of **self-teaching web apps** — beautiful, visual, beginner-friendly courses built with Next.js 14, TypeScript, and Tailwind. Each has typed lesson content, SVG diagrams, flashcards, quizzes with mastery tracking, a glossary, interview Q&A, and a ⌘K command palette. Run any of them with `npm install && npm run dev`.
+
+| Academy | Folder | Covers |
+| --- | --- | --- |
+| 🟠 **Claude Academy** | [`claude-academy/`](./claude-academy/) | The Anthropic API, prompting, tool use, RAG, agents, evals — plus an interview `/prep` dossier |
+| 🟣 **Agent Academy** | [`agent-academy/`](./agent-academy/) | Agentic AI: agents vs workflows, orchestration patterns, tools, CrewAI, production — plus an intuition-drill `/prep` page |
+| 🔵 **Cloud Academy** | [`cloud-academy/`](./cloud-academy/) | Cloud computing on AWS & Azure: foundations, compute, storage, networking, databases, security, serverless, containers/Kubernetes |
+| 🟢 **DevOps Academy** | [`devops-academy/`](./devops-academy/) | Docker, Kubernetes, CI/CD, Terraform/IaC, GitOps, observability, DevSecOps |
+| 🔴 **Interview Academy** | [`interview-academy/`](./interview-academy/) | AI/ML job-interview prep: foundations, classic ML, deep learning, NLP/LLMs, MLOps, system design, coding, stats, behavioral, responsible AI |
+
+Every academy follows a shared **"Jargon, decoded"** convention — inline callouts that translate jargon into plain language so beginners are never lost.
