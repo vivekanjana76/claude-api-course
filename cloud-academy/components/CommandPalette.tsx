@@ -27,6 +27,7 @@ interface SearchItem {
 
 const PAGES: { title: string; subtitle: string; href: string }[] = [
   { title: "Curriculum", subtitle: "All modules and lessons", href: "/learn" },
+  { title: "Intuition Prep", subtitle: "Rapid drills, acronym decoder, cheat-sheet", href: "/prep" },
   { title: "Pattern Catalog", subtitle: "Cloud architecture patterns", href: "/patterns" },
   { title: "Interview Q&A", subtitle: "Practice questions and answers", href: "/interview" },
   { title: "Glossary", subtitle: "Key terms and definitions", href: "/glossary" },
