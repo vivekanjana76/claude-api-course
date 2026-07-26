@@ -7,6 +7,8 @@ import { databases } from "./mod-databases";
 import { security } from "./mod-security";
 import { serverless } from "./mod-serverless";
 import { containers } from "./mod-containers";
+import { iac } from "./mod-iac";
+import { observability } from "./mod-observability";
 
 export const modules: Module[] = [
   foundations,
@@ -17,6 +19,8 @@ export const modules: Module[] = [
   security,
   serverless,
   containers,
+  iac,
+  observability,
 ];
 
 export interface LessonRef {
