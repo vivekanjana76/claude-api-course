@@ -35,7 +35,9 @@ export type DiagramName =
   | "availability-multi-az"
   | "well-architected"
   | "database-types"
-  | "caching-layer";
+  | "caching-layer"
+  | "iam-model"
+  | "encryption-flow";
 
 export interface Flashcard {
   front: string;

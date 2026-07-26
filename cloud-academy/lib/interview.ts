@@ -111,4 +111,24 @@ export const interviewQA: InterviewQA[] = [
     q: "Name the four NoSQL families and a use case for each.",
     a: "Key–value (DynamoDB, Redis) for sessions/carts/profiles fetched by key; document (MongoDB, Cosmos DB) for catalogs and varied JSON records; wide-column (Cassandra, Bigtable) for high-write time-series, IoT, and logs; and graph (Neptune, Cosmos Gremlin) for relationship-heavy data like social networks, fraud rings, and recommendations.",
   },
+  {
+    topic: "Security",
+    q: "What is least privilege and why does it matter?",
+    a: "Least privilege means granting an identity only the minimum permissions it needs, starting from zero and adding specific allows. It matters because it contains the blast radius of any compromise: if a credential leaks, it can only touch what it was narrowly allowed to. It's the single highest-leverage IAM practice — broad 'just give admin' grants are how a single stolen key ends up owning the whole account.",
+  },
+  {
+    topic: "Security",
+    q: "Why prefer IAM roles over long-lived access keys?",
+    a: "A role hands out temporary credentials that automatically expire, so a leaked one has a short useful life; a static access key works forever until someone notices and revokes it. Services like EC2 and Lambda should assume a role rather than carry embedded keys, and roles also enable clean cross-account access. The rule of thumb: no long-lived keys on servers if a role can do the job.",
+  },
+  {
+    topic: "Security",
+    q: "How do you protect data in the cloud?",
+    a: "On two fronts. In transit: enforce TLS/HTTPS everywhere, including internal service-to-service traffic. At rest: encrypt disks, object storage, database volumes, and backups — often on by default — with keys held in a managed service (AWS KMS / Azure Key Vault) that rotates them and logs every use. Secrets like passwords and API keys go in a secrets manager, never in Git or container images. Layer these with least-privilege IAM and audit logging for defense in depth.",
+  },
+  {
+    topic: "Security",
+    q: "Where should application secrets live, and what if one leaks into Git?",
+    a: "Secrets belong in a secrets manager (AWS Secrets Manager / Azure Key Vault) — stored encrypted, access-controlled via IAM, fetched at runtime, and ideally auto-rotated. Never commit them to source control, bake them into images, or paste them into plain config. If a secret ever touches Git, rotate it immediately — deleting the commit isn't enough, because it may already have been cloned or scraped by bots within minutes.",
+  },
 ];
