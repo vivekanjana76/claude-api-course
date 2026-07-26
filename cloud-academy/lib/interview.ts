@@ -151,4 +151,29 @@ export const interviewQA: InterviewQA[] = [
     q: "How do you choose between ECS, Fargate, and managed Kubernetes?",
     a: "ECS is AWS's simpler proprietary orchestrator — a good default when you're on AWS and don't need Kubernetes. Fargate is serverless containers (no nodes to manage) and runs under ECS or EKS. Managed Kubernetes (EKS/AKS/GKE) gives you the portable, ecosystem-rich open standard with fine-grained control, at the cost of real complexity. Rule of thumb: Kubernetes when you need cross-cloud portability, specific ecosystem tooling, or fine control; ECS/Fargate when you just want to run containers simply. Don't adopt Kubernetes for a handful of services purely because it's popular.",
   },
+  {
+    topic: "DevOps",
+    q: "What is Infrastructure as Code and why use it?",
+    a: "IaC means defining your cloud resources in version-controlled text files (Terraform, CloudFormation, Bicep) and applying them automatically, instead of clicking a console. It makes environments reproducible (spin up an identical staging or DR), reviewable (changes go through pull requests), auditable (the files document what exists), and safe (previewed and revertible). The key discipline is treating the code as the single source of truth and avoiding manual console changes that cause drift.",
+  },
+  {
+    topic: "DevOps",
+    q: "Explain the plan/apply workflow and why state matters.",
+    a: "Tools like Terraform keep a state file recording what they've created. On each run they compare your code to state to reality and produce a plan — a preview of exactly what will be created, changed, or destroyed. You review that plan (ideally in a PR) and then apply it, so only the diff is executed and you catch destructive changes before they happen. State must be stored remotely with locking so concurrent applies don't corrupt it, and never committed to Git since it can contain sensitive details.",
+  },
+  {
+    topic: "DevOps",
+    q: "Compare blue-green and canary deployments.",
+    a: "Both ship new versions without downtime. Blue-green runs two full environments — the live one (blue) and the new one (green) — then switches traffic all at once, giving instant rollback by switching back, at the cost of running double the resources briefly. Canary releases the new version to a small percentage of traffic, watches metrics, and gradually ramps up, which is the safest option and catches problems early but needs more orchestration. Rolling updates (replace instances gradually) are the simplest middle ground.",
+  },
+  {
+    topic: "Cost",
+    q: "What are the biggest levers for controlling a cloud bill?",
+    a: "Right-size resources to actual usage (idle oversized instances are the top waste); use reserved instances or savings plans for steady baseline load and spot instances for interruptible batch work; apply storage lifecycle tiering; turn off idle dev/test environments on a schedule; and watch sneaky costs like data egress and cross-region transfer, idle load balancers, and unattached disks. Underpinning all of it: tag resources so cost is attributable, and set budgets and billing alerts from day one so runaway spend pages you early. Making cost a shared, continuous concern is the FinOps discipline.",
+  },
+  {
+    topic: "Observability",
+    q: "What are the three pillars of observability and how do you use them?",
+    a: "Metrics (numbers over time like latency and error rate), logs (timestamped records of discrete events), and traces (a single request's end-to-end path across services). You alert on metrics because they're cheap and threshold-friendly, then investigate with logs and traces to find what happened and where the time went. Ground alerts in SLOs — explicit targets like 99.9% of requests under 300ms — so you page on user-facing symptoms rather than noise, avoiding alert fatigue. CloudWatch/Azure Monitor cover metrics and logs; X-Ray/Application Insights and OpenTelemetry handle tracing.",
+  },
 ];

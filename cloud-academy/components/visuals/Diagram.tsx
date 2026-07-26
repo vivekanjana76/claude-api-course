@@ -821,6 +821,63 @@ function ContainerOrchestration() {
   );
 }
 
+// IaC workflow: code → plan → apply → cloud, with state.
+function IacWorkflow() {
+  const steps = [
+    { t: "Write code", s: "*.tf / template", c: C.iris },
+    { t: "Plan", s: "preview diff", c: C.amber },
+    { t: "Apply", s: "make it real", c: C.teal },
+  ];
+  return (
+    <Frame h={230}>
+      {steps.map((s, i) => {
+        const x = 40 + i * 210;
+        return (
+          <g key={i}>
+            <Node x={x} y={70} w={170} h={64} label={s.t} sub={s.s} fill={C.card} stroke={s.c} text={s.c} />
+            {i < steps.length - 1 && <Arrow x1={x + 172} y1={102} x2={x + 208} y2={102} flow />}
+          </g>
+        );
+      })}
+      {/* cloud */}
+      <rect x={670} y={70} width={90} height={64} rx={12} fill={C.irisSoft} stroke={C.iris} strokeWidth={2} />
+      <text x={715} y={107} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.iris}>Cloud</text>
+      <Arrow x1={632} y1={102} x2={668} y2={102} color={C.teal} flow />
+
+      {/* state */}
+      <rect x={250} y={168} width={170} height={42} rx={11} fill={C.canvas} stroke={C.line} strokeWidth={1.5} strokeDasharray="5 4" />
+      <text x={335} y={194} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={600} fill={C.muted}>State file</text>
+      <line x1={125} y1={136} x2={300} y2={168} stroke={C.line} strokeWidth={1.3} strokeDasharray="4 4" />
+      <Cap x={555} y={196} text="State records what exists, so the tool applies only the diff and detects drift." />
+    </Frame>
+  );
+}
+
+// The three pillars of observability.
+function ObservabilityPillars() {
+  const pillars = [
+    { t: "Metrics", s: "numbers over time", d: "CPU, latency, error rate", c: C.iris },
+    { t: "Logs", s: "discrete events", d: "what happened, when", c: C.teal },
+    { t: "Traces", s: "request journeys", d: "across services", c: C.amber },
+  ];
+  return (
+    <Frame h={250}>
+      {pillars.map((p, i) => {
+        const x = 45 + i * 245;
+        return (
+          <g key={i}>
+            <rect x={x} y={50} width={220} height={130} rx={14} fill={C.card} stroke={p.c} strokeWidth={1.8} />
+            <text x={x + 110} y={86} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={17} fontWeight={700} fill={p.c}>{p.t}</text>
+            <text x={x + 110} y={108} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>{p.s}</text>
+            <text x={x + 110} y={140} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontStyle="italic" fill={C.soft}>{p.d}</text>
+          </g>
+        );
+      })}
+      <Cap x={400} y={210} text="Metrics tell you something is wrong; logs and traces tell you why and where." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "cloud-service-models": ServiceModels,
   "shared-responsibility": SharedResponsibility,
@@ -844,6 +901,8 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "encryption-flow": EncryptionFlow,
   "serverless-event": ServerlessEvent,
   "container-orchestration": ContainerOrchestration,
+  "iac-workflow": IacWorkflow,
+  "observability-pillars": ObservabilityPillars,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

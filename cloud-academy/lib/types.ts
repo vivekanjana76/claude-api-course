@@ -39,7 +39,9 @@ export type DiagramName =
   | "iam-model"
   | "encryption-flow"
   | "serverless-event"
-  | "container-orchestration";
+  | "container-orchestration"
+  | "iac-workflow"
+  | "observability-pillars";
 
 export interface Flashcard {
   front: string;
