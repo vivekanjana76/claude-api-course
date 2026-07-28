@@ -1,7 +1,8 @@
 import type { Module, Lesson } from "./types";
 import { foundations } from "./mod-foundations";
+import { iam } from "./mod-iam";
 
-export const modules: Module[] = [foundations];
+export const modules: Module[] = [foundations, iam];
 
 export interface LessonRef {
   lesson: Lesson;
