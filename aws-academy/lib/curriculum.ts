@@ -3,8 +3,9 @@ import { foundations } from "./mod-foundations";
 import { iam } from "./mod-iam";
 import { compute } from "./mod-compute";
 import { storage } from "./mod-storage";
+import { networking } from "./mod-networking";
 
-export const modules: Module[] = [foundations, iam, compute, storage];
+export const modules: Module[] = [foundations, iam, compute, storage, networking];
 
 export interface LessonRef {
   lesson: Lesson;
