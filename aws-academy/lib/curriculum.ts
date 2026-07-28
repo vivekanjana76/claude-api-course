@@ -2,8 +2,9 @@ import type { Module, Lesson } from "./types";
 import { foundations } from "./mod-foundations";
 import { iam } from "./mod-iam";
 import { compute } from "./mod-compute";
+import { storage } from "./mod-storage";
 
-export const modules: Module[] = [foundations, iam, compute];
+export const modules: Module[] = [foundations, iam, compute, storage];
 
 export interface LessonRef {
   lesson: Lesson;
