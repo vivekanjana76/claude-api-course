@@ -7,6 +7,7 @@ import { networking } from "./mod-networking";
 import { databases } from "./mod-databases";
 import { serverless } from "./mod-serverless";
 import { containers } from "./mod-containers";
+import { iac } from "./mod-iac";
 
 export const modules: Module[] = [
   foundations,
@@ -17,6 +18,7 @@ export const modules: Module[] = [
   databases,
   serverless,
   containers,
+  iac,
 ];
 
 export interface LessonRef {
