@@ -5,6 +5,7 @@ import { compute } from "./mod-compute";
 import { storage } from "./mod-storage";
 import { networking } from "./mod-networking";
 import { databases } from "./mod-databases";
+import { serverless } from "./mod-serverless";
 
 export const modules: Module[] = [
   foundations,
@@ -13,6 +14,7 @@ export const modules: Module[] = [
   storage,
   networking,
   databases,
+  serverless,
 ];
 
 export interface LessonRef {
