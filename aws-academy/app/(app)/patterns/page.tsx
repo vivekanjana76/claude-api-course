@@ -27,11 +27,11 @@ export default function PatternsPage() {
         <span className="font-medium text-sm uppercase tracking-wider">Quick reference</span>
       </div>
       <h1 className="font-display text-4xl font-semibold text-ink mb-3 tracking-tight">
-        Cloud Architecture Pattern Catalog
+        AWS Reference Architecture Catalog
       </h1>
       <p className="text-ink-soft leading-relaxed mb-10">
-        The recurring shapes of cloud systems. For each: a diagram, when to reach for it,
-        and what to watch out for. Use it as a design cheat-sheet.
+        The recurring shapes of AWS systems — the ones you&apos;ll be asked to draw on a
+        whiteboard. For each: a diagram, when to reach for it, and what to watch out for.
       </p>
 
       <div className="space-y-8">
