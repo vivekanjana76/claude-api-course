@@ -11,6 +11,7 @@ import { iac } from "./mod-iac";
 import { observability } from "./mod-observability";
 import { security } from "./mod-security";
 import { architecture } from "./mod-architecture";
+import { role } from "./mod-role";
 
 export const modules: Module[] = [
   foundations,
@@ -25,6 +26,7 @@ export const modules: Module[] = [
   observability,
   security,
   architecture,
+  role,
 ];
 
 export interface LessonRef {
