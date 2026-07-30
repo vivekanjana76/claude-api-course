@@ -60,14 +60,14 @@ export default function PrepPage() {
         </span>
       </div>
       <h1 className="font-display text-4xl font-semibold text-ink mb-3 tracking-tight">
-        Sharpen your cloud instincts
+        Sharpen your AWS instincts
       </h1>
       <p className="text-ink-soft leading-relaxed mb-8">
         Interviews and real design reviews don&apos;t test whether you can
-        recite definitions — they test the judgment calls. Drill the four that
+        recite definitions — they test the judgment calls. Drill the five that
         come up most: <em>which compute?</em>, <em>which data store?</em>,{" "}
-        <em>where does the security control go?</em>, and <em>what does that
-        acronym actually mean?</em>
+        <em>where does the security control go?</em>, <em>what would you check
+        next?</em>, and <em>what does that acronym actually mean?</em>
       </p>
 
       {/* tabs */}
@@ -364,9 +364,9 @@ function Decoder() {
   return (
     <div>
       <p className="text-ink-soft leading-relaxed mb-6">
-        The cloud is an ocean of acronyms. Flip each card to translate the ones
-        you&apos;ll hear in job posts and architecture reviews into the plain
-        idea underneath.
+        AWS is an ocean of acronyms. Flip each card to translate the ones
+        you&apos;ll hear in job posts, design reviews, and incident channels
+        into the plain idea underneath.
       </p>
       <Flashcards cards={cards} />
     </div>

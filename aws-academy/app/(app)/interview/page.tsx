@@ -34,8 +34,9 @@ export default function InterviewPage() {
       </div>
       <h1 className="font-display text-4xl font-semibold text-ink mb-3 tracking-tight">Interview Q&amp;A</h1>
       <p className="text-ink-soft leading-relaxed mb-8">
-        The cloud questions you&apos;ll actually be asked — foundations, compute, storage,
-        networking, and architecture — with crisp model answers. Read them, then try answering in your own words.
+        The AWS questions you&apos;ll actually be asked — foundations, IAM &amp; security,
+        networking, compute, data, operations, architecture, and cost — with model answers
+        at the depth an interviewer expects. Read them, then try answering in your own words.
       </p>
 
       {/* search */}
