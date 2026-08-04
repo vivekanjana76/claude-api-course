@@ -11,9 +11,9 @@ export function Logo({ size = 28 }: { size?: number }) {
         {/* top face */}
         <path d="M12 3.2 20 7.6 12 12 4 7.6Z" fill="#FF9900" />
         {/* left face */}
-        <path d="M4 7.6 12 12v8.8L4 16.4Z" fill="#D9600A" />
+        <path d="M4 7.6 12 12v8.8L4 16.4Z" fill="#B54F07" />
         {/* right face */}
-        <path d="M20 7.6 12 12v8.8l8-4.4Z" fill="#A8460A" />
+        <path d="M20 7.6 12 12v8.8l8-4.4Z" fill="#8F3D06" />
         {/* smile swoosh under the cube */}
         <path
           d="M3 20.6c3 1.7 6 2.5 9 2.5s6-.8 9-2.5"

@@ -22,7 +22,7 @@ body {
 
 /* Visible keyboard focus for accessibility — mouse clicks stay clean */
 :focus-visible {
-  outline: 2px solid #D9600A;
+  outline: 2px solid #B54F07;
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -32,7 +32,7 @@ body {
 
 /* Subtle rack/grid texture — a faint dotted lattice */
 .circuit-grid {
-  background-image: radial-gradient(rgba(217, 96, 10, 0.07) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(181, 79, 7, 0.07) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
@@ -44,7 +44,7 @@ body {
 }
 
 ::selection {
-  background: #D9600A;
+  background: #B54F07;
   color: #FFFDFB;
 }
 
@@ -77,7 +77,7 @@ body {
   background: #E7E0D7;
   padding: 0.1em 0.4em;
   border-radius: 4px;
-  color: #A8460A;
+  color: #8F3D06;
 }
 
 @keyframes draw {

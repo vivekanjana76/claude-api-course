@@ -19,7 +19,7 @@ npm run dev        # http://localhost:3000
 | **13 modules / 51 lessons** | ~8.5 hours of focused reading |
 | **43 custom SVG diagrams** | Regions & AZs, VPC anatomy, IAM policy evaluation, KMS envelope encryption, Lambda lifecycle, ECS vs EKS, DR strategies, cost levers, and more |
 | **203 flashcards / 151 quiz questions** | Per-module mastery tracking with a progress ring |
-| **206-term glossary** | Every service, acronym, and piece of AWS jargon in the course |
+| **219-term glossary** | Every service, acronym, and piece of AWS jargon in the course, fully cross-linked |
 | **46 interview Q&As** | Model answers at the depth an interviewer actually expects |
 | **18 reference architectures** | The patterns you'll be asked to draw on a whiteboard |
 | **43 intuition drills** | Five skills including a *Narrow the failure* troubleshooting round |

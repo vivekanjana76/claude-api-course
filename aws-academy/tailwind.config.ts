@@ -17,17 +17,20 @@ const config: Config = {
           200: "#E7E0D7",
           300: "#D6CCC0",
         },
-        // AWS "squid ink" family
+        // AWS "squid ink" family — muted/faint darkened to meet WCAG AA
         ink: {
           DEFAULT: "#1B2430",
           soft: "#33404F",
-          muted: "#6A7684",
-          faint: "#A0AAB5",
+          muted: "#626E7C",
+          faint: "#78838F",
         },
-        // primary — AWS orange (token name "iris" kept so shared components need no churn)
+        // primary — AWS orange (token name "iris" kept so shared components need no churn).
+        // DEFAULT is dark enough for AA as body text on canvas (4.7:1) and for
+        // canvas-50 text on an iris button (5.1:1); `light` keeps the bright
+        // #FF9900 brand orange for the logo and dark backgrounds.
         iris: {
-          DEFAULT: "#D9600A",
-          dark: "#A8460A",
+          DEFAULT: "#B54F07",
+          dark: "#8F3D06",
           light: "#FF9900",
           50: "#FDEDE0",
         },
@@ -40,14 +43,14 @@ const config: Config = {
         },
         // accent — AWS storage/analytics green
         amber: {
-          DEFAULT: "#6E9B0F",
+          DEFAULT: "#5E840C",
           dark: "#4F7009",
           light: "#9DC93C",
           50: "#EFF6DC",
         },
         // accent — AWS security red
         rose: {
-          DEFAULT: "#DD344C",
+          DEFAULT: "#C92A41",
           dark: "#A8253A",
           light: "#F0798C",
           50: "#FCE7EA",

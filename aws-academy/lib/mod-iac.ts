@@ -45,7 +45,7 @@ export const iac: Module = {
         { type: "callout", kind: "warn", text: "**`UPDATE_ROLLBACK_FAILED` is the CloudFormation state everyone eventually meets.** It usually means a resource was changed outside the stack, so rollback can't reconcile. The fix is `continue-update-rollback` with the problem resources skipped — and then removing whatever caused the manual drift." },
         { type: "h2", text: "Terraform on AWS" },
         { type: "code", lang: "hcl", caption: "Remote state, a module, and a plan-first workflow", code: `terraform {
-  required_version = ">= 1.6"
+  required_version = ">= 1.11"      # use_lockfile below needs 1.10+
   required_providers {
     aws = { source = "hashicorp/aws", version = "~> 5.0" }
   }

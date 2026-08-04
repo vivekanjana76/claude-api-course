@@ -228,7 +228,7 @@ arn:aws:dynamodb:us-east-1:123456789012:table/Orders
         { type: "callout", kind: "key", text: "Think of it as **intersecting ceilings**: SCP ∩ boundary ∩ session policy ∩ identity policy. The effective permission is what survives every layer — and any single explicit Deny vetoes everything." },
         { type: "h2", text: "The three ceiling mechanisms, compared" },
         { type: "compare", caption: "They look similar and do different jobs.", columns: ["Mechanism", "Set by", "Applies to", "Typical use"], rows: [
-          { label: "SCP", cells: ["Org admins", "All principals in member accounts (except the management account's root)", "Region restrictions, blocking root usage, protecting CloudTrail/Config"] },
+          { label: "SCP", cells: ["Org admins", "Every principal in member accounts — the management account is exempt entirely", "Region restrictions, blocking root usage, protecting CloudTrail/Config"] },
           { label: "Permission boundary", cells: ["Account/security admins", "One user or role", "Letting developers create roles safely — the boundary caps what those roles can do"] },
           { label: "Session policy", cells: ["Whoever calls AssumeRole", "That session only", "Temporarily narrowing a broad role for a specific task"] },
         ]},

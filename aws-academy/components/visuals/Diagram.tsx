@@ -4,17 +4,17 @@ import type { DiagramName } from "@/lib/types";
 const C = {
   ink: "#1B2430",
   soft: "#33404F",
-  muted: "#6A7684",
+  muted: "#626E7C",
   line: "#D6CCC0",
   canvas: "#F7F4F0",
   card: "#FFFFFF",
-  iris: "#D9600A", // AWS orange (primary)
+  iris: "#B54F07", // AWS orange (primary)
   irisSoft: "#FDEDE0",
   teal: "#0972D3", // AWS console blue
   tealSoft: "#E4F0FB",
-  amber: "#6E9B0F", // AWS storage green
+  amber: "#5E840C", // AWS storage green
   amberSoft: "#EFF6DC",
-  rose: "#DD344C", // AWS security red
+  rose: "#C92A41", // AWS security red
   roseSoft: "#FCE7EA",
 };
 

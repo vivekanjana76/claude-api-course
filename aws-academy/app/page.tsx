@@ -266,15 +266,15 @@ function HeroArt() {
         <svg viewBox="0 0 400 360" width="100%">
           {/* region outline */}
           <rect x="30" y="70" width="340" height="250" rx="16" fill="none" stroke="#D6CCC0" strokeWidth="1.5" strokeDasharray="6 6" />
-          <text x="46" y="60" fontFamily="var(--font-display)" fontSize="12" fontWeight="600" fill="#D9600A">VPC · us-east-1 · 2 AZs</text>
+          <text x="46" y="60" fontFamily="var(--font-display)" fontSize="12" fontWeight="600" fill="#B54F07">VPC · us-east-1 · 2 AZs</text>
 
           {/* users */}
-          <rect x="150" y="12" width="100" height="34" rx="9" fill="#FFFFFF" stroke="#6A7684" strokeWidth="1.4" />
+          <rect x="150" y="12" width="100" height="34" rx="9" fill="#FFFFFF" stroke="#626E7C" strokeWidth="1.4" />
           <text x="200" y="34" textAnchor="middle" fontFamily="var(--font-sans)" fontSize="12" fontWeight="600" fill="#1B2430">Users</text>
 
           {/* load balancer */}
-          <rect x="130" y="90" width="140" height="42" rx="10" fill="#FDEDE0" stroke="#D9600A" strokeWidth="2" />
-          <text x="200" y="116" textAnchor="middle" fontFamily="var(--font-sans)" fontSize="12.5" fontWeight="600" fill="#D9600A">ALB</text>
+          <rect x="130" y="90" width="140" height="42" rx="10" fill="#FDEDE0" stroke="#B54F07" strokeWidth="2" />
+          <text x="200" y="116" textAnchor="middle" fontFamily="var(--font-sans)" fontSize="12.5" fontWeight="600" fill="#B54F07">ALB</text>
           <line x1="200" y1="46" x2="200" y2="88" stroke="#D6CCC0" strokeWidth="1.5" strokeDasharray="5 5" className="animate-flow" />
 
           {/* AZ a */}
@@ -282,7 +282,7 @@ function HeroArt() {
           <text x="118" y="182" textAnchor="middle" fontFamily="var(--font-sans)" fontSize="11.5" fontWeight="700" fill="#065299">us-east-1a</text>
           <rect x="68" y="194" width="100" height="38" rx="8" fill="#FFFFFF" stroke="#0972D3" strokeWidth="1.3" />
           <text x="118" y="217" textAnchor="middle" fontFamily="var(--font-sans)" fontSize="11.5" fill="#1B2430">EC2 / ECS</text>
-          <rect x="68" y="244" width="100" height="38" rx="8" fill="#FFFFFF" stroke="#D9600A" strokeWidth="1.3" />
+          <rect x="68" y="244" width="100" height="38" rx="8" fill="#FFFFFF" stroke="#B54F07" strokeWidth="1.3" />
           <text x="118" y="267" textAnchor="middle" fontFamily="var(--font-sans)" fontSize="11" fill="#1B2430">RDS primary</text>
 
           {/* AZ b */}
@@ -290,14 +290,14 @@ function HeroArt() {
           <text x="282" y="182" textAnchor="middle" fontFamily="var(--font-sans)" fontSize="11.5" fontWeight="700" fill="#065299">us-east-1b</text>
           <rect x="232" y="194" width="100" height="38" rx="8" fill="#FFFFFF" stroke="#0972D3" strokeWidth="1.3" />
           <text x="282" y="217" textAnchor="middle" fontFamily="var(--font-sans)" fontSize="11.5" fill="#1B2430">EC2 / ECS</text>
-          <rect x="232" y="244" width="100" height="38" rx="8" fill="#FFFFFF" stroke="#6E9B0F" strokeWidth="1.3" />
+          <rect x="232" y="244" width="100" height="38" rx="8" fill="#FFFFFF" stroke="#5E840C" strokeWidth="1.3" />
           <text x="282" y="267" textAnchor="middle" fontFamily="var(--font-sans)" fontSize="11" fill="#1B2430">RDS standby</text>
 
           {/* LB to app tiers */}
           <line x1="180" y1="132" x2="118" y2="192" stroke="#0972D3" strokeWidth="1.5" className="animate-flow" />
           <line x1="220" y1="132" x2="282" y2="192" stroke="#0972D3" strokeWidth="1.5" className="animate-flow" />
           {/* db replication */}
-          <line x1="168" y1="263" x2="232" y2="263" stroke="#6E9B0F" strokeWidth="1.4" strokeDasharray="4 4" />
+          <line x1="168" y1="263" x2="232" y2="263" stroke="#5E840C" strokeWidth="1.4" strokeDasharray="4 4" />
         </svg>
       </div>
       <div className="absolute -bottom-4 -right-3 rotate-3 rounded-xl bg-canvas-50 border border-canvas-300 px-4 py-2 shadow-md text-xs font-mono text-ink-soft hidden sm:block">

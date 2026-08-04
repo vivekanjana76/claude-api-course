@@ -29,19 +29,21 @@ const calloutStyle: Record<
     label: "Tip",
     iconColor: "text-teal-dark",
   },
+  // "warn" uses rose (red): in this palette `amber` holds AWS storage-green,
+  // which reads as success, not caution.
   warn: {
-    bg: "bg-amber/10",
-    border: "border-amber/40",
+    bg: "bg-rose/10",
+    border: "border-rose/40",
     icon: <AlertTriangle size={17} />,
     label: "Watch out",
-    iconColor: "text-amber-dark",
+    iconColor: "text-rose-dark",
   },
   story: {
-    bg: "bg-rose/10",
-    border: "border-rose/30",
+    bg: "bg-amber/10",
+    border: "border-amber/30",
     icon: <Sparkles size={17} />,
     label: "In practice",
-    iconColor: "text-rose-dark",
+    iconColor: "text-amber-dark",
   },
 };
 
