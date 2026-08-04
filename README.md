@@ -23,5 +23,8 @@ This repository also hosts a set of **self-teaching web apps** — beautiful, vi
 | 🔵 **Cloud Academy** | [`cloud-academy/`](./cloud-academy/) | Cloud computing on AWS & Azure: foundations, compute, storage, networking, databases, security, serverless, containers/Kubernetes |
 | 🟢 **DevOps Academy** | [`devops-academy/`](./devops-academy/) | Docker, Kubernetes, CI/CD, Terraform/IaC, GitOps, observability, DevSecOps |
 | 🔴 **Interview Academy** | [`interview-academy/`](./interview-academy/) | AI/ML job-interview prep: foundations, classic ML, deep learning, NLP/LLMs, MLOps, system design, coding, stats, behavioral, responsible AI |
+| 🟧 **AWS Academy** | [`aws-academy/`](./aws-academy/) | Everything an **AWS Cloud Engineer** needs: IAM, EC2, S3, VPC, RDS & DynamoDB, Lambda, ECS/EKS, Terraform & CloudFormation, CI/CD, CloudWatch, security, cost, migration — plus certifications and interview prep |
 
 Every academy follows a shared **"Jargon, decoded"** convention — inline callouts that translate jargon into plain language so beginners are never lost.
+
+> **Cloud Academy vs AWS Academy:** Cloud Academy teaches cloud *concepts* across AWS and Azure side by side. AWS Academy goes deep on AWS alone, at the depth the Cloud Engineer job actually requires — 13 modules, 51 lessons, 43 diagrams.
