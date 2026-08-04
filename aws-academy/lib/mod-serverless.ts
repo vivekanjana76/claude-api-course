@@ -191,7 +191,7 @@ Resources:
           { label: "AppSync (GraphQL)", cells: ["Clients need flexible queries, real-time subscriptions, and offline sync"] },
           { label: "CloudFront + origin", cells: ["Global caching and edge security are the priority"] },
         ]},
-        { type: "callout", kind: "warn", text: "API Gateway has a **29-second integration timeout**. A Lambda configured for 60 seconds behind it will still return a 504 at 29. For long operations, return `202 Accepted` immediately with a job ID and let the client poll or receive a webhook — a pattern worth reaching for before you hit the wall." },
+        { type: "callout", kind: "warn", text: "API Gateway has a **29-second default integration timeout** (raisable on REST APIs via a quota request; HTTP APIs cap at 30 seconds and cannot be raised). A Lambda configured for 60 seconds behind it will still return a 504 at 29. For long operations, return `202 Accepted` immediately with a job ID and let the client poll or receive a webhook — a pattern worth reaching for before you hit the wall." },
         { type: "callout", kind: "note", title: "Jargon, decoded", text: "**Stage** = a deployed version of an API (dev/prod) with its own URL and settings. **Authorizer** = the component deciding whether a caller may proceed. **JWT** (JSON Web Token) = a signed token carrying identity claims. **Usage plan** = per-key quotas and rate limits. **Burst** vs **rate** = how many requests can arrive at once vs sustained per second. **SAM** (Serverless Application Model) = a CloudFormation extension with concise serverless resource types. **Function URL** = a built-in HTTPS endpoint on a Lambda, no gateway required." },
       ],
       takeaways: [
@@ -203,13 +203,13 @@ Resources:
       ],
       flashcards: [
         { front: "HTTP API vs REST API", back: "HTTP APIs are ~70% cheaper and lower latency for the common case. REST APIs add request/response transformation, API keys and usage plans, response caching, private endpoints, and WAF." },
-        { front: "What's API Gateway's integration timeout?", back: "29 seconds. Longer work needs an asynchronous pattern — return 202 with a job ID and let the client poll or be notified." },
+        { front: "What's API Gateway's integration timeout?", back: "29 seconds by default — raisable on REST APIs by quota request, hard-capped at 30 s on HTTP APIs. Longer work needs an asynchronous pattern: return 202 with a job ID and let the client poll or be notified." },
         { front: "Which authorizer needs no code?", back: "The JWT authorizer — it validates tokens from Cognito or any OIDC issuer natively. Lambda authorizers are for custom or legacy schemes." },
         { front: "When is AppSync a better choice than API Gateway?", back: "When clients need flexible GraphQL queries, real-time subscriptions, or offline sync with conflict resolution." },
       ],
       quiz: [
         { q: "You need per-customer quotas and rate limits on a partner API. What do you use?", options: ["HTTP API with JWT", "REST API with usage plans and API keys", "A Lambda Function URL", "AppSync"], answer: 1, explain: "Usage plans tied to API keys are a REST API feature and are the standard mechanism for per-customer quotas." },
-        { q: "A request takes 45 seconds to process behind API Gateway. What happens?", options: ["It works fine", "504 at 29 seconds", "Lambda retries it", "The gateway queues it"], answer: 1, explain: "API Gateway's integration timeout is 29 seconds regardless of the Lambda timeout — switch to an async accept-and-poll design." },
+        { q: "A request takes 45 seconds to process behind API Gateway. What happens?", options: ["It works fine", "504 at 29 seconds", "Lambda retries it", "The gateway queues it"], answer: 1, explain: "The default integration timeout is 29 seconds regardless of the Lambda timeout, so the caller gets a 504. Raising the REST quota buys a little headroom; 45 s of work wants an async accept-and-poll design." },
         { q: "Which is the cheapest way to protect Lambda from malformed payloads?", options: ["Validate inside the function", "Request validation with a JSON schema at the gateway", "A WAF rule per field", "A Lambda authorizer"], answer: 1, explain: "Gateway-level request validation rejects bad payloads before any Lambda invocation is billed or executed." },
       ],
     },
