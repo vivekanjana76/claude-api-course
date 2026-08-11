@@ -315,11 +315,48 @@ function ModelLandscape() {
   );
 }
 
+function FailureModes() {
+  const cells = [
+    { x: 40, label: "Knowledge cutoff", sub: "confident but out of date", fix: "→ retrieval", c: C.teal, s: C.tealSoft },
+    { x: 232, label: "Plausible continuation", sub: "invented cites, APIs, IDs", fix: "→ grounding + validation", c: C.iris, s: C.irisSoft },
+    { x: 424, label: "Context dilution", sub: "ignores part of the prompt", fix: "→ shorten, reorder, split", c: C.amber, s: C.amberSoft },
+    { x: 616, label: "Capability gap", sub: "same edge case, every time", fix: "→ examples or fine-tune", c: C.rose, s: C.roseSoft },
+  ];
+  return (
+    <Frame h={280}>
+      <text x={400} y={38} textAnchor="middle" fontFamily="var(--font-display)" fontSize={14} fontWeight={700} fill={C.ink}>
+        &ldquo;It hallucinated&rdquo; is four different bugs
+      </text>
+      {cells.map((c) => (
+        <g key={c.label}>
+          <rect x={c.x} y={68} width={148} height={110} rx={13} fill={c.s} stroke={c.c} strokeWidth={1.8} />
+          <text x={c.x + 74} y={96} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={c.c}>
+            {c.label}
+          </text>
+          <text x={c.x + 74} y={118} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>
+            {c.sub}
+          </text>
+          <line x1={c.x + 24} y1={134} x2={c.x + 124} y2={134} stroke={c.c} strokeWidth={1} opacity={0.4} />
+          <text x={c.x + 74} y={156} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={600} fill={C.ink}>
+            {c.fix}
+          </text>
+        </g>
+      ))}
+      <rect x={40} y={200} width={724} height={40} rx={10} fill={C.card} stroke={C.line} strokeWidth={1.4} strokeDasharray="5 4" />
+      <text x={402} y={225} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.soft}>
+        Diagnose which one you have before you change anything — the four fixes are not interchangeable.
+      </text>
+      <Cap x={400} y={268} text="Most stuck teams are applying the fix for one column to a failure from another." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
   "llm-io": LlmIo,
   "model-landscape": ModelLandscape,
+  "failure-modes": FailureModes,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
