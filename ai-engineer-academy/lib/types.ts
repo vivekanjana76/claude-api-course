@@ -28,7 +28,12 @@ export type DiagramName =
   | "prompt-anatomy"
   | "context-budget"
   | "structured-output-loop"
-  | "reasoning-dial";
+  | "reasoning-dial"
+  // embeddings & retrieval
+  | "embedding-space"
+  | "chunking-strategies"
+  | "ann-index"
+  | "hybrid-rerank";
 
 export interface Flashcard {
   front: string;
