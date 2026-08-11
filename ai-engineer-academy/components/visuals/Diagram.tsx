@@ -549,6 +549,180 @@ function ReasoningDial() {
   );
 }
 
+function EmbeddingSpace() {
+  const pts = [
+    { x: 190, y: 110, label: "cancel my plan", c: C.iris },
+    { x: 226, y: 138, label: "end subscription", c: C.iris },
+    { x: 164, y: 152, label: "stop being billed", c: C.iris },
+    { x: 400, y: 96, label: "upgrade tier", c: C.teal },
+    { x: 438, y: 130, label: "add seats", c: C.teal },
+    { x: 610, y: 190, label: "eu data regions", c: C.amber },
+    { x: 648, y: 148, label: "sso setup", c: C.amber },
+  ];
+  return (
+    <Frame h={310}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Similar meaning → nearby points
+      </text>
+      <rect x={40} y={52} width={720} height={182} rx={14} fill={C.card} stroke={C.line} strokeWidth={1.4} />
+      {/* neighbourhood halo */}
+      <ellipse cx={195} cy={133} rx={92} ry={62} fill={C.irisSoft} opacity={0.85} />
+      <ellipse cx={419} cy={113} rx={78} ry={50} fill={C.tealSoft} opacity={0.85} />
+      <ellipse cx={629} cy={169} rx={80} ry={56} fill={C.amberSoft} opacity={0.85} />
+      {pts.map((p) => (
+        <g key={p.label}>
+          <circle cx={p.x} cy={p.y} r={5.5} fill={p.c} />
+          <text x={p.x} y={p.y - 12} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>
+            {p.label}
+          </text>
+        </g>
+      ))}
+      {/* the query */}
+      <circle cx={205} cy={128} r={9} fill="none" stroke={C.iris} strokeWidth={2.4} />
+      <text x={205} y={214} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.iris}>
+        query lands here
+      </text>
+      <text x={419} y={200} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.teal}>
+        billing, different intent
+      </text>
+      <text x={629} y={220} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.amber}>
+        unrelated topics
+      </text>
+      <rect x={40} y={250} width={720} height={34} rx={9} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.4} />
+      <text x={400} y={272} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.soft}>
+        Weak spots: exact IDs (INV-90412), negation (&ldquo;without a renewal clause&rdquo;), and numeric comparison.
+      </text>
+    </Frame>
+  );
+}
+
+function ChunkingStrategies() {
+  const strategies = [
+    { label: "Fixed size", c: C.rose, cuts: [0.24, 0.48, 0.72], note: "cuts mid-sentence, mid-table" },
+    { label: "Fixed + overlap", c: C.amber, cuts: [0.26, 0.5, 0.74], note: "boundaries survive, still arbitrary" },
+    { label: "Structure-aware", c: C.iris, cuts: [0.18, 0.44, 0.79], note: "follows headings and sections" },
+    { label: "Small-to-big", c: C.teal, cuts: [0.14, 0.3, 0.44, 0.62, 0.79], note: "search small, return the parent" },
+  ];
+  return (
+    <Frame h={330}>
+      <text x={400} y={32} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Four ways to cut the same document
+      </text>
+      {strategies.map((s, i) => {
+        const y = 52 + i * 68;
+        return (
+          <g key={s.label}>
+            <text x={44} y={y + 24} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={s.c}>
+              {s.label}
+            </text>
+            <rect x={186} y={y} width={480} height={36} rx={7} fill={C.canvas} stroke={s.c} strokeWidth={1.6} />
+            {s.cuts.map((c, j) => (
+              <line
+                key={j}
+                x1={186 + 480 * c}
+                y1={y}
+                x2={186 + 480 * c}
+                y2={y + 36}
+                stroke={s.c}
+                strokeWidth={2}
+                strokeDasharray={i === 1 ? "4 3" : undefined}
+              />
+            ))}
+            {i === 3 && (
+              <rect x={186} y={y + 40} width={480} height={12} rx={4} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.2} />
+            )}
+            <text x={678} y={y + 23} fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>
+              {s.note}
+            </text>
+          </g>
+        );
+      })}
+      <Cap x={400} y={318} text="Chunk on the author's own units of meaning — headings, clauses, functions — whenever the document has them." />
+    </Frame>
+  );
+}
+
+function AnnIndex() {
+  const layers = [
+    { y: 78, n: 3, label: "layer 2 — sparse, long hops" },
+    { y: 148, n: 6, label: "layer 1 — medium" },
+    { y: 218, n: 12, label: "layer 0 — every vector" },
+  ];
+  return (
+    <Frame h={320}>
+      <text x={400} y={36} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        HNSW: search coarse, then fine
+      </text>
+      {layers.map((l, li) => (
+        <g key={l.y}>
+          <rect x={140} y={l.y - 26} width={520} height={52} rx={11} fill={C.card} stroke={C.line} strokeWidth={1.3} />
+          <text x={128} y={l.y + 4} textAnchor="end" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>
+            L{2 - li}
+          </text>
+          {Array.from({ length: l.n }).map((_, i) => {
+            const x = 170 + (i * 460) / (l.n - 1);
+            const onPath = (li === 0 && i === 1) || (li === 1 && i === 3) || (li === 2 && i === 7);
+            return (
+              <circle key={i} cx={x} cy={l.y} r={onPath ? 7 : 4.5} fill={onPath ? C.iris : C.line} />
+            );
+          })}
+          <text x={676} y={l.y + 4} fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>
+            {l.label.split("—")[1]}
+          </text>
+        </g>
+      ))}
+      {/* descent path */}
+      <path d="M323 78 L 446 148 L 598 218" fill="none" stroke={C.iris} strokeWidth={2.2} strokeDasharray="6 4" className="animate-flow" />
+      <text x={196} y={272} fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.teal}>
+        ef_search = how many candidates you explore → your live recall/latency dial
+      </text>
+      <Cap x={400} y={300} text="Approximate means you can silently miss results — always measure recall@k against exact search." />
+    </Frame>
+  );
+}
+
+function HybridRerank() {
+  return (
+    <Frame h={330}>
+      <Node x={30} y={40} w={140} h={54} label="Query" sub="rewritten if a follow-up" accent />
+
+      <rect x={214} y={22} width={190} height={50} rx={11} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.7} />
+      <text x={309} y={44} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={C.teal}>Vector search</text>
+      <text x={309} y={60} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>meaning · top 50</text>
+
+      <rect x={214} y={92} width={190} height={50} rx={11} fill={C.amberSoft} stroke={C.amber} strokeWidth={1.7} />
+      <text x={309} y={114} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={C.amber}>BM25 keyword</text>
+      <text x={309} y={130} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>exact terms · top 50</text>
+
+      <Arrow x1={172} y1={62} x2={210} y2={47} color={C.teal} />
+      <Arrow x1={172} y1={72} x2={210} y2={117} color={C.amber} />
+
+      <Node x={438} y={52} w={140} h={60} label="RRF fuse" sub="rank, not score" />
+      <Arrow x1={406} y1={47} x2={434} y2={72} color={C.muted} />
+      <Arrow x1={406} y1={117} x2={434} y2={92} color={C.muted} />
+
+      <Node x={612} y={52} w={158} h={60} label="Rerank" sub="cross-encoder → 5–10" accent />
+      <Arrow x1={580} y1={82} x2={608} y2={82} color={C.iris} />
+
+      {/* funnel numbers */}
+      <text x={309} y={172} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.muted}>~100 candidates</text>
+      <text x={508} y={172} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.muted}>50 fused</text>
+      <text x={691} y={172} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.iris}>5–10 sent</text>
+
+      <rect x={30} y={200} width={356} height={78} rx={12} fill={C.card} stroke={C.teal} strokeWidth={1.5} />
+      <text x={48} y={224} fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.teal}>Retrieval optimises recall</text>
+      <text x={48} y={245} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>Is the right passage in the set at all?</text>
+      <text x={48} y={264} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>If not, nothing downstream can save you.</text>
+
+      <rect x={414} y={200} width={356} height={78} rx={12} fill={C.card} stroke={C.iris} strokeWidth={1.5} />
+      <text x={432} y={224} fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.iris}>Reranking optimises precision</text>
+      <text x={432} y={245} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>Is it at position 1 instead of 30?</text>
+      <text x={432} y={264} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>Usually the biggest single RAG win.</text>
+      <Cap x={400} y={308} text="Retrieve wide, narrow hard. Retrieving only 5 up front loses the answers ranked 6–50 forever." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -559,6 +733,10 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "context-budget": ContextBudget,
   "structured-output-loop": StructuredOutputLoop,
   "reasoning-dial": ReasoningDial,
+  "embedding-space": EmbeddingSpace,
+  "chunking-strategies": ChunkingStrategies,
+  "ann-index": AnnIndex,
+  "hybrid-rerank": HybridRerank,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

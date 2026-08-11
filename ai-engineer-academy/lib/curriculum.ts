@@ -1,10 +1,12 @@
 import type { Module, Lesson } from "./types";
 import { foundations } from "./mod-foundations";
 import { prompting } from "./mod-prompting";
+import { retrieval } from "./mod-retrieval";
 
 export const modules: Module[] = [
   foundations,
   prompting,
+  retrieval,
 ];
 
 export interface LessonRef {
