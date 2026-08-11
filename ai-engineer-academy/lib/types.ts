@@ -33,7 +33,12 @@ export type DiagramName =
   | "embedding-space"
   | "chunking-strategies"
   | "ann-index"
-  | "hybrid-rerank";
+  | "hybrid-rerank"
+  // rag
+  | "rag-pipeline"
+  | "agentic-rag"
+  | "graph-rag"
+  | "rag-triad";
 
 export interface Flashcard {
   front: string;
