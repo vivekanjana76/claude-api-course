@@ -351,12 +351,214 @@ function FailureModes() {
   );
 }
 
+function PromptAnatomy() {
+  const parts = [
+    { label: "Role / system prompt", sub: "who it is, standing rules", c: C.iris, stable: true },
+    { label: "Tool definitions", sub: "only the ones this request needs", c: C.iris, stable: true },
+    { label: "Context / documents", sub: "delimited, reranked, few", c: C.teal, stable: false },
+    { label: "Examples (few-shot)", sub: "format + edge cases", c: C.teal, stable: false },
+    { label: "Output contract", sub: "a literal schema, not prose", c: C.amber, stable: false },
+    { label: "The input", sub: "last, adjacent to generation", c: C.amber, stable: false },
+  ];
+  return (
+    <Frame h={340}>
+      <text x={252} y={30} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13} fontWeight={700} fill={C.ink}>
+        Order by stability, top to bottom
+      </text>
+      {parts.map((p, i) => {
+        const y = 44 + i * 46;
+        return (
+          <g key={p.label}>
+            <rect x={64} y={y} width={376} height={38} rx={9} fill={p.stable ? C.irisSoft : C.card} stroke={p.c} strokeWidth={1.6} />
+            <text x={80} y={y + 17} fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={p.c}>
+              {p.label}
+            </text>
+            <text x={80} y={y + 31} fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>
+              {p.sub}
+            </text>
+          </g>
+        );
+      })}
+      {/* cache bracket */}
+      <path d="M452 46 h14 v86 h-14" fill="none" stroke={C.iris} strokeWidth={1.8} />
+      <text x={474} y={84} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>
+        cacheable prefix
+      </text>
+      <text x={474} y={101} fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>
+        identical across requests →
+      </text>
+      <text x={474} y={116} fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>
+        big input-cost + TTFT win
+      </text>
+
+      <rect x={468} y={162} width={290} height={112} rx={11} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.6} />
+      <text x={484} y={184} fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.rose}>
+        The classic own goal
+      </text>
+      <text x={484} y={205} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>
+        A timestamp or request ID at the
+      </text>
+      <text x={484} y={221} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>
+        very top changes one token — and
+      </text>
+      <text x={484} y={237} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>
+        invalidates the entire cached prefix
+      </text>
+      <text x={484} y={253} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>
+        on every single request.
+      </text>
+      <Cap x={400} y={324} text="The same ordering that reads clearly to a model is the ordering that caches well." />
+    </Frame>
+  );
+}
+
+function ContextBudget() {
+  const blocks = [
+    { label: "system + policies", w: 70, c: C.iris, s: C.irisSoft },
+    { label: "tools", w: 55, c: C.iris, s: C.irisSoft },
+    { label: "conversation history", w: 130, c: C.teal, s: C.tealSoft },
+    { label: "retrieved documents", w: 230, c: C.teal, s: C.tealSoft },
+    { label: "tool results", w: 105, c: C.amber, s: C.amberSoft },
+    { label: "reply headroom", w: 100, c: C.rose, s: C.roseSoft },
+  ];
+  let x = 50;
+  return (
+    <Frame h={300}>
+      <text x={400} y={38} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        One context window, allocated on purpose
+      </text>
+      {blocks.map((b) => {
+        const bx = x;
+        x += b.w + 4;
+        return (
+          <g key={b.label}>
+            <rect x={bx} y={62} width={b.w} height={54} rx={8} fill={b.s} stroke={b.c} strokeWidth={1.6} />
+            <text
+              x={bx + b.w / 2}
+              y={94}
+              textAnchor="middle"
+              fontFamily="var(--font-sans)"
+              fontSize={9.5}
+              fontWeight={600}
+              fill={b.c}
+            >
+              {b.label.length > 16 ? b.label.split(" ")[0] : b.label}
+            </text>
+          </g>
+        );
+      })}
+      <line x1={50} y1={128} x2={750} y2={128} stroke={C.line} strokeWidth={1.4} />
+      <text x={50} y={146} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>
+        0 tokens
+      </text>
+      <text x={750} y={146} textAnchor="end" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>
+        context limit
+      </text>
+
+      {[
+        { x: 50, t: "SELECT", d: "retrieve just in time,", d2: "not just in case", c: C.iris },
+        { x: 230, t: "COMPRESS", d: "summarise, dedupe,", d2: "strip boilerplate", c: C.teal },
+        { x: 410, t: "ORDER", d: "stable first,", d2: "decisive last", c: C.amber },
+        { x: 590, t: "EVICT", d: "drop what is no", d2: "longer load-bearing", c: C.rose },
+      ].map((o) => (
+        <g key={o.t}>
+          <rect x={o.x} y={176} width={160} height={72} rx={11} fill={C.card} stroke={o.c} strokeWidth={1.6} />
+          <text x={o.x + 80} y={200} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={o.c}>
+            {o.t}
+          </text>
+          <text x={o.x + 80} y={219} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>
+            {o.d}
+          </text>
+          <text x={o.x + 80} y={234} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>
+            {o.d2}
+          </text>
+        </g>
+      ))}
+      <Cap x={400} y={282} text="Ask of any block: what would break if we deleted this? If nobody can say, delete it." />
+    </Frame>
+  );
+}
+
+function StructuredOutputLoop() {
+  return (
+    <Frame h={310}>
+      <Node x={30} y={70} w={150} h={62} label="Constrain" sub="tool / grammar" accent />
+      <Arrow x1={182} y1={101} x2={214} y2={101} color={C.teal} />
+      <Node x={216} y={70} w={150} h={62} label="Parse" sub="into a typed model" />
+      <Arrow x1={368} y1={101} x2={400} y2={101} color={C.teal} />
+      <Node x={402} y={70} w={160} h={62} label="Validate" sub="schema + semantics" />
+      <Arrow x1={564} y1={101} x2={596} y2={101} color={C.teal} />
+      <Node x={598} y={70} w={172} h={62} label="Use it" sub="downstream, safely" fill={C.tealSoft} stroke={C.teal} />
+
+      {/* repair path */}
+      <path d="M482 134 v34 h-260 v-34" fill="none" stroke={C.amber} strokeWidth={1.8} strokeDasharray="6 5" />
+      <rect x={286} y={152} width={196} height={34} rx={9} fill={C.amberSoft} stroke={C.amber} strokeWidth={1.6} />
+      <text x={384} y={173} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.amber}>
+        repair once, with the error
+      </text>
+
+      {/* fail path */}
+      <path d="M562 134 v88 h-140" fill="none" stroke={C.rose} strokeWidth={1.8} />
+      <rect x={230} y={204} width={192} height={36} rx={9} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.6} />
+      <text x={326} y={226} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.rose}>
+        second failure → fail loudly
+      </text>
+      <text x={442} y={262} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>
+        human queue · fallback model · null result — never a hopeful parse
+      </text>
+      <Cap x={400} y={296} text="A grammar guarantees the output parses. Only semantic checks tell you it is right." />
+    </Frame>
+  );
+}
+
+function ReasoningDial() {
+  return (
+    <Frame h={330}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Accuracy vs thinking tokens, by task type
+      </text>
+      {/* axes */}
+      <line x1={110} y1={270} x2={700} y2={270} stroke={C.line} strokeWidth={2} />
+      <line x1={110} y1={60} x2={110} y2={270} stroke={C.line} strokeWidth={2} />
+      <text x={405} y={296} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>
+        thinking tokens (billed as output, generated sequentially) →
+      </text>
+      <text x={-165} y={30} transform="rotate(-90)" textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.muted}>
+        accuracy →
+      </text>
+
+      {/* hard task curve — rises */}
+      <path d="M110 250 C 260 250, 330 110, 690 88" fill="none" stroke={C.iris} strokeWidth={2.6} />
+      <text x={556} y={78} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>
+        planning · multi-step maths · debugging
+      </text>
+
+      {/* easy task curve — flat */}
+      <path d="M110 128 C 300 126, 480 126, 690 126" fill="none" stroke={C.teal} strokeWidth={2.6} strokeDasharray="7 5" />
+      <text x={498} y={148} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.teal}>
+        extraction · classification · lookup
+      </text>
+
+      {/* cost line */}
+      <path d="M110 268 L 690 190" fill="none" stroke={C.amber} strokeWidth={2} strokeDasharray="4 4" />
+      <text x={596} y={210} fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.amber}>
+        cost &amp; latency
+      </text>
+      <Cap x={400} y={320} text="Same dial, opposite economics — which is why reasoning effort is a routing decision, not a global setting." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
   "llm-io": LlmIo,
   "model-landscape": ModelLandscape,
   "failure-modes": FailureModes,
+  "prompt-anatomy": PromptAnatomy,
+  "context-budget": ContextBudget,
+  "structured-output-loop": StructuredOutputLoop,
+  "reasoning-dial": ReasoningDial,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

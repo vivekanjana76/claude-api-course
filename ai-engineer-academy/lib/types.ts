@@ -23,7 +23,12 @@ export type DiagramName =
   | "role-spectrum"
   | "llm-io"
   | "model-landscape"
-  | "failure-modes";
+  | "failure-modes"
+  // prompting & context
+  | "prompt-anatomy"
+  | "context-budget"
+  | "structured-output-loop"
+  | "reasoning-dial";
 
 export interface Flashcard {
   front: string;

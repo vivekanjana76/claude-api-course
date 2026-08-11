@@ -1,8 +1,10 @@
 import type { Module, Lesson } from "./types";
 import { foundations } from "./mod-foundations";
+import { prompting } from "./mod-prompting";
 
 export const modules: Module[] = [
   foundations,
+  prompting,
 ];
 
 export interface LessonRef {
