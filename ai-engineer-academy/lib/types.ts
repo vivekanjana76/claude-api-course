@@ -22,7 +22,8 @@ export type DiagramName =
   | "ai-engineer-stack"
   | "role-spectrum"
   | "llm-io"
-  | "model-landscape";
+  | "model-landscape"
+  | "failure-modes";
 
 export interface Flashcard {
   front: string;
