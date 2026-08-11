@@ -723,6 +723,171 @@ function HybridRerank() {
   );
 }
 
+function RagPipeline() {
+  return (
+    <Frame h={340}>
+      {/* offline */}
+      <rect x={30} y={40} width={740} height={104} rx={13} fill={C.canvas} stroke={C.line} strokeWidth={1.4} strokeDasharray="6 5" />
+      <text x={48} y={62} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.muted}>
+        OFFLINE — ingestion, runs on a schedule
+      </text>
+      {["Parse", "Clean", "Chunk", "Enrich", "Embed"].map((s, i) => {
+        const x = 48 + i * 128;
+        return (
+          <g key={s}>
+            <rect x={x} y={76} width={104} height={44} rx={9} fill={C.card} stroke={C.teal} strokeWidth={1.5} />
+            <text x={x + 52} y={103} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={600} fill={C.teal}>
+              {s}
+            </text>
+            <Arrow x1={x + 106} y1={98} x2={x + 122} y2={98} color={C.line} />
+          </g>
+        );
+      })}
+      <rect x={688} y={70} width={66} height={56} rx={10} fill={C.tealSoft} stroke={C.teal} strokeWidth={2} />
+      <text x={721} y={94} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={700} fill={C.teal}>index</text>
+      <text x={721} y={108} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9} fill={C.muted}>+ metadata</text>
+
+      {/* online */}
+      <rect x={30} y={162} width={740} height={112} rx={13} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.6} />
+      <text x={48} y={184} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>
+        ONLINE — per request
+      </text>
+      {["Rewrite", "Retrieve", "Rerank", "Assemble", "Generate", "Verify"].map((s, i) => {
+        const x = 44 + i * 121;
+        return (
+          <g key={s}>
+            <rect x={x} y={200} width={102} height={44} rx={9} fill={C.card} stroke={C.iris} strokeWidth={1.5} />
+            <text x={x + 51} y={227} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={600} fill={C.iris}>
+              {s}
+            </text>
+            {i < 5 && <Arrow x1={x + 104} y1={222} x2={x + 119} y2={222} color={C.iris} />}
+          </g>
+        );
+      })}
+      {/* index feeds retrieval */}
+      <path d="M721 128 v46 h-460 v22" fill="none" stroke={C.teal} strokeWidth={1.8} strokeDasharray="5 4" className="animate-flow" />
+      <Cap x={400} y={300} text="Most teams build the online row first, then discover every real problem lives in the offline one." />
+    </Frame>
+  );
+}
+
+function AgenticRag() {
+  return (
+    <Frame h={330}>
+      <Node x={40} y={130} w={130} h={56} label="Question" />
+      <Arrow x1={172} y1={158} x2={214} y2={158} color={C.muted} />
+      <rect x={216} y={106} width={190} height={104} rx={13} fill={C.irisSoft} stroke={C.iris} strokeWidth={2.2} />
+      <text x={311} y={140} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.iris}>Model</text>
+      <text x={311} y={162} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>decides: search?</text>
+      <text x={311} y={178} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>reads · grades · retries</text>
+
+      <rect x={452} y={62} width={180} height={48} rx={10} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.6} />
+      <text x={542} y={92} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={600} fill={C.teal}>search(documents)</text>
+      <rect x={452} y={122} width={180} height={48} rx={10} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.6} />
+      <text x={542} y={152} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={600} fill={C.teal}>query(database)</text>
+      <rect x={452} y={182} width={180} height={48} rx={10} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.6} />
+      <text x={542} y={212} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={600} fill={C.teal}>fetch(api)</text>
+
+      <Arrow x1={408} y1={140} x2={448} y2={96} color={C.teal} flow />
+      <Arrow x1={408} y1={158} x2={448} y2={146} color={C.teal} flow />
+      <Arrow x1={408} y1={176} x2={448} y2={206} color={C.teal} flow />
+      {/* results back */}
+      <path d="M636 86 h44 v134 h-44" fill="none" stroke={C.muted} strokeWidth={1.5} strokeDasharray="4 4" />
+      <path d="M680 152 h-262" fill="none" stroke={C.muted} strokeWidth={1.5} strokeDasharray="4 4" />
+
+      <rect x={216} y={238} width={416} height={40} rx={10} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.6} />
+      <text x={424} y={263} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.rose}>
+        hard limits: max calls · token budget · timeout · no repeat queries
+      </text>
+      <Cap x={400} y={310} text="Depth on hard questions, in exchange for predictability. The limits are not optional." />
+    </Frame>
+  );
+}
+
+function GraphRag() {
+  const nodes = [
+    { x: 540, y: 92, l: "Acme Ltd", c: C.iris },
+    { x: 664, y: 148, l: "Sub A", c: C.teal },
+    { x: 600, y: 226, l: "Sanctioned", c: C.rose },
+    { x: 472, y: 190, l: "Contract", c: C.amber },
+  ];
+  return (
+    <Frame h={320}>
+      <text x={214} y={36} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13} fontWeight={700} fill={C.ink}>
+        Vector RAG
+      </text>
+      <text x={586} y={36} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13} fontWeight={700} fill={C.ink}>
+        GraphRAG
+      </text>
+      <line x1={400} y1={52} x2={400} y2={276} stroke={C.line} strokeWidth={1.4} strokeDasharray="5 5" />
+
+      {/* left: passages */}
+      {[0, 1, 2].map((i) => (
+        <g key={i}>
+          <rect x={92} y={72 + i * 56} width={244} height={42} rx={9} fill={C.card} stroke={C.teal} strokeWidth={1.5} />
+          <text x={214} y={98 + i * 56} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>
+            {["passage mentioning Acme", "passage mentioning Sub A", "passage mentioning sanctions"][i]}
+          </text>
+        </g>
+      ))}
+      <text x={214} y={262} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.rose}>
+        no passage states the connection
+      </text>
+
+      {/* right: graph */}
+      <line x1={540} y1={92} x2={664} y2={148} stroke={C.muted} strokeWidth={1.8} />
+      <line x1={664} y1={148} x2={600} y2={226} stroke={C.muted} strokeWidth={1.8} />
+      <line x1={540} y1={92} x2={472} y2={190} stroke={C.muted} strokeWidth={1.8} />
+      {nodes.map((n) => (
+        <g key={n.l}>
+          <circle cx={n.x} cy={n.y} r={30} fill={C.card} stroke={n.c} strokeWidth={2} />
+          <text x={n.x} y={n.y + 4} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontWeight={700} fill={n.c}>
+            {n.l}
+          </text>
+        </g>
+      ))}
+      <text x={604} y={124} fontFamily="var(--font-sans)" fontSize={9} fill={C.muted}>owns</text>
+      <text x={646} y={196} fontFamily="var(--font-sans)" fontSize={9} fill={C.muted}>listed</text>
+      <text x={586} y={262} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.iris}>
+        traverse the edges to find it
+      </text>
+      <Cap x={400} y={302} text="Expensive to build and maintain — adopt only when a real question class is unreachable by similarity." />
+    </Frame>
+  );
+}
+
+function RagTriad() {
+  return (
+    <Frame h={330}>
+      <Node x={40} y={40} w={150} h={54} label="Question" />
+      <Node x={40} y={140} w={150} h={54} label="Context" sub="retrieved" fill={C.tealSoft} stroke={C.teal} />
+      <Node x={40} y={240} w={150} h={54} label="Answer" fill={C.irisSoft} stroke={C.iris} />
+
+      {[
+        { y: 48, t: "Context relevance", d: "Is the retrieved context relevant to the question?", b: "→ blames RETRIEVAL: chunking, embeddings, ranking", c: C.teal },
+        { y: 138, t: "Groundedness", d: "Is every claim in the answer supported by the context?", b: "→ blames GENERATION: it went beyond its sources", c: C.iris },
+        { y: 228, t: "Answer relevance", d: "Does the answer address the question that was asked?", b: "→ blames GENERATION: correct but off-target", c: C.amber },
+      ].map((m) => (
+        <g key={m.t}>
+          <rect x={244} y={m.y} width={512} height={72} rx={12} fill={C.card} stroke={m.c} strokeWidth={1.7} />
+          <text x={264} y={m.y + 25} fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={m.c}>
+            {m.t}
+          </text>
+          <text x={264} y={m.y + 44} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>
+            {m.d}
+          </text>
+          <text x={264} y={m.y + 61} fontFamily="var(--font-sans)" fontSize={10} fontWeight={600} fill={C.muted}>
+            {m.b}
+          </text>
+        </g>
+      ))}
+      <line x1={116} y1={96} x2={116} y2={138} stroke={C.line} strokeWidth={1.6} />
+      <line x1={116} y1={196} x2={116} y2={238} stroke={C.line} strokeWidth={1.6} />
+      <Cap x={400} y={318} text="One blended 'quality' score cannot tell you which of these three broke." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -737,6 +902,10 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "chunking-strategies": ChunkingStrategies,
   "ann-index": AnnIndex,
   "hybrid-rerank": HybridRerank,
+  "rag-pipeline": RagPipeline,
+  "agentic-rag": AgenticRag,
+  "graph-rag": GraphRag,
+  "rag-triad": RagTriad,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
