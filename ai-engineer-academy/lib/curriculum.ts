@@ -3,12 +3,14 @@ import { foundations } from "./mod-foundations";
 import { prompting } from "./mod-prompting";
 import { retrieval } from "./mod-retrieval";
 import { rag } from "./mod-rag";
+import { agents } from "./mod-agents";
 
 export const modules: Module[] = [
   foundations,
   prompting,
   retrieval,
   rag,
+  agents,
 ];
 
 export interface LessonRef {

@@ -38,7 +38,12 @@ export type DiagramName =
   | "rag-pipeline"
   | "agentic-rag"
   | "graph-rag"
-  | "rag-triad";
+  | "rag-triad"
+  // agents
+  | "tool-call-loop"
+  | "agent-loop"
+  | "agent-memory"
+  | "multi-agent-topologies";
 
 export interface Flashcard {
   front: string;
