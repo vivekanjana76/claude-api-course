@@ -888,6 +888,178 @@ function RagTriad() {
   );
 }
 
+function ToolCallLoop() {
+  return (
+    <Frame h={310}>
+      <rect x={40} y={60} width={300} height={180} rx={14} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.8} />
+      <text x={190} y={86} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.iris}>
+        MODEL — produces text only
+      </text>
+      <rect x={64} y={104} width={252} height={44} rx={9} fill={C.card} stroke={C.iris} strokeWidth={1.4} />
+      <text x={190} y={131} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.soft}>
+        &ldquo;call search_orders(since=2026-01-01)&rdquo;
+      </text>
+      <rect x={64} y={166} width={252} height={44} rx={9} fill={C.card} stroke={C.iris} strokeWidth={1.4} />
+      <text x={190} y={193} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.soft}>
+        continues with the result in context
+      </text>
+
+      <rect x={460} y={60} width={300} height={180} rx={14} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.8} />
+      <text x={610} y={86} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.teal}>
+        YOUR CODE — the trust boundary
+      </text>
+      {["1. validate arguments", "2. authorise as the end user", "3. execute with a timeout"].map((s, i) => (
+        <g key={s}>
+          <rect x={484} y={100 + i * 44} width={252} height={36} rx={8} fill={C.card} stroke={C.teal} strokeWidth={1.3} />
+          <text x={610} y={123 + i * 44} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.soft}>
+            {s}
+          </text>
+        </g>
+      ))}
+
+      <Arrow x1={344} y1={126} x2={456} y2={118} color={C.iris} flow />
+      <text x={400} y={110} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontWeight={700} fill={C.iris}>tool_use</text>
+      <Arrow x1={456} y1={190} x2={344} y2={188} color={C.teal} flow />
+      <text x={400} y={210} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontWeight={700} fill={C.teal}>tool_result</text>
+
+      <rect x={40} y={256} width={720} height={34} rx={9} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.4} />
+      <text x={400} y={278} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={600} fill={C.rose}>
+        The model never executes anything. Every security control lives on the right-hand side.
+      </text>
+    </Frame>
+  );
+}
+
+function AgentLoop() {
+  return (
+    <Frame h={330}>
+      <Node x={40} y={140} w={124} h={54} label="Task" />
+      <Arrow x1={166} y1={167} x2={196} y2={167} color={C.muted} />
+      <rect x={198} y={116} width={168} height={102} rx={13} fill={C.irisSoft} stroke={C.iris} strokeWidth={2.2} />
+      <text x={282} y={148} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.iris}>Model</text>
+      <text x={282} y={170} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>reason → choose</text>
+      <text x={282} y={188} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>next action</text>
+
+      <Arrow x1={368} y1={167} x2={404} y2={167} color={C.teal} />
+      <Node x={406} y={140} w={150} h={54} label="Execute tool" fill={C.tealSoft} stroke={C.teal} />
+      <path d="M481 194 v46 h-199 v-20" fill="none" stroke={C.teal} strokeWidth={1.9} strokeDasharray="6 5" className="animate-flow" />
+      <text x={382} y={258} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.teal}>observe, then loop</text>
+
+      <Arrow x1={558} y1={152} x2={596} y2={128} color={C.iris} />
+      <Node x={598} y={100} w={162} h={54} label="Answer" sub="normal exit" accent />
+
+      {/* the four exits */}
+      <text x={648} y={186} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.rose}>
+        forced exits
+      </text>
+      {["step limit", "token budget", "wall-clock timeout", "no progress"].map((e, i) => (
+        <g key={e}>
+          <rect x={572} y={196 + i * 26} width={188} height={22} rx={6} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.2} />
+          <text x={666} y={211 + i * 26} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontWeight={600} fill={C.rose}>
+            {e}
+          </text>
+        </g>
+      ))}
+      <Cap x={330} y={306} text="All four exits, not whichever one you remembered — and label partial results as incomplete." />
+    </Frame>
+  );
+}
+
+function AgentMemory() {
+  const rows = [
+    { t: "Working", life: "one run", store: "the context window", ex: "current sub-goal, last tool result", c: C.iris },
+    { t: "Session", life: "one conversation", store: "history + summary", ex: "what the user asked ten turns ago", c: C.teal },
+    { t: "Long-term", life: "indefinite", store: "database, retrieved", ex: "“prefers metric units”", c: C.amber },
+    { t: "External state", life: "owned by the system", store: "files, records", ex: "the draft document, the open ticket", c: C.rose },
+  ];
+  return (
+    <Frame h={306}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        &ldquo;Memory&rdquo; is four systems wearing one name
+      </text>
+      {["type", "lifetime", "where it lives", "example"].map((h, i) => (
+        <text key={h} x={[70, 232, 396, 570][i]} y={62} fontFamily="var(--font-sans)" fontSize={10} fontWeight={700} fill={C.muted}>
+          {h.toUpperCase()}
+        </text>
+      ))}
+      {rows.map((r, i) => {
+        const y = 74 + i * 50;
+        return (
+          <g key={r.t}>
+            <rect x={54} y={y} width={696} height={42} rx={9} fill={C.card} stroke={r.c} strokeWidth={1.5} />
+            <text x={70} y={y + 26} fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={r.c}>{r.t}</text>
+            <text x={232} y={y + 26} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>{r.life}</text>
+            <text x={396} y={y + 26} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>{r.store}</text>
+            <text x={570} y={y + 26} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.muted}>{r.ex}</text>
+          </g>
+        );
+      })}
+      <Cap x={400} y={296} text="The file system is the underused one: unlimited, inspectable, resumable, a few tokens per reference." />
+    </Frame>
+  );
+}
+
+function MultiAgentTopologies() {
+  return (
+    <Frame h={300}>
+      {/* single */}
+      <text x={110} y={48} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.teal}>Single agent</text>
+      <circle cx={110} cy={110} r={26} fill={C.tealSoft} stroke={C.teal} strokeWidth={2} />
+      {[0, 1, 2].map((i) => (
+        <g key={i}>
+          <line x1={110} y1={136} x2={70 + i * 40} y2={176} stroke={C.line} strokeWidth={1.5} />
+          <rect x={54 + i * 40 - 14} y={176} width={28} height={20} rx={5} fill={C.card} stroke={C.line} strokeWidth={1.2} />
+        </g>
+      ))}
+      <text x={110} y={222} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>right far more often</text>
+      <text x={110} y={236} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>than people expect</text>
+
+      {/* supervisor */}
+      <text x={310} y={48} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>Supervisor</text>
+      <circle cx={310} cy={92} r={24} fill={C.irisSoft} stroke={C.iris} strokeWidth={2.2} />
+      {[0, 1, 2].map((i) => (
+        <g key={i}>
+          <line x1={310} y1={116} x2={254 + i * 56} y2={160} stroke={C.iris} strokeWidth={1.6} />
+          <circle cx={254 + i * 56} cy={176} r={17} fill={C.card} stroke={C.iris} strokeWidth={1.6} />
+        </g>
+      ))}
+      <text x={310} y={222} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontWeight={700} fill={C.iris}>the one that works</text>
+      <text x={310} y={236} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>context isolation + parallelism</text>
+
+      {/* pipeline */}
+      <text x={520} y={48} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.amber}>Pipeline</text>
+      {[0, 1, 2].map((i) => (
+        <g key={i}>
+          <circle cx={462 + i * 58} cy={128} r={20} fill={C.amberSoft} stroke={C.amber} strokeWidth={1.8} />
+          {i < 2 && <Arrow x1={484 + i * 58} y1={128} x2={498 + i * 58} y2={128} color={C.amber} />}
+        </g>
+      ))}
+      <text x={520} y={222} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>this is a workflow —</text>
+      <text x={520} y={236} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>write it as one</text>
+
+      {/* swarm */}
+      <text x={700} y={48} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.rose}>Swarm</text>
+      {[
+        [700, 88], [656, 148], [744, 148], [700, 186],
+      ].map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r={16} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.6} />
+      ))}
+      <g stroke={C.rose} strokeWidth={1.2} opacity={0.7}>
+        <line x1={700} y1={88} x2={656} y2={148} />
+        <line x1={700} y1={88} x2={744} y2={148} />
+        <line x1={656} y1={148} x2={744} y2={148} />
+        <line x1={656} y1={148} x2={700} y2={186} />
+        <line x1={744} y1={148} x2={700} y2={186} />
+        <line x1={700} y1={88} x2={700} y2={186} />
+      </g>
+      <text x={700} y={222} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontWeight={700} fill={C.rose}>rarely converges</text>
+      <text x={700} y={236} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>avoid in production</text>
+
+      <Cap x={400} y={276} text="Split for context isolation, parallelism, or differing permissions — never for job titles." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -906,6 +1078,10 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "agentic-rag": AgenticRag,
   "graph-rag": GraphRag,
   "rag-triad": RagTriad,
+  "tool-call-loop": ToolCallLoop,
+  "agent-loop": AgentLoop,
+  "agent-memory": AgentMemory,
+  "multi-agent-topologies": MultiAgentTopologies,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
