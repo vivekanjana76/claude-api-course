@@ -46,7 +46,12 @@ export type DiagramName =
   | "multi-agent-topologies"
   // mcp & interop
   | "mcp-architecture"
-  | "mcp-primitives";
+  | "mcp-primitives"
+  // adaptation
+  | "adaptation-ladder"
+  | "lora"
+  | "alignment-pipeline"
+  | "distillation";
 
 export interface Flashcard {
   front: string;
