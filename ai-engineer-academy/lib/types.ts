@@ -51,7 +51,12 @@ export type DiagramName =
   | "adaptation-ladder"
   | "lora"
   | "alignment-pipeline"
-  | "distillation";
+  | "distillation"
+  // inference & serving
+  | "inference-latency"
+  | "kv-cache"
+  | "quantization-spectrum"
+  | "serving-stack";
 
 export interface Flashcard {
   front: string;

@@ -1326,6 +1326,162 @@ function Distillation() {
   );
 }
 
+function InferenceLatency() {
+  return (
+    <Frame h={320}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        One request&rsquo;s latency budget
+      </text>
+      {/* timeline */}
+      <rect x={50} y={66} width={110} height={40} rx={8} fill={C.canvas} stroke={C.muted} strokeWidth={1.5} />
+      <text x={105} y={91} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>queue</text>
+
+      <rect x={164} y={66} width={200} height={40} rx={8} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.8} />
+      <text x={264} y={84} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.teal}>PREFILL</text>
+      <text x={264} y={99} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>whole prompt, in parallel</text>
+
+      {Array.from({ length: 12 }).map((_, i) => (
+        <rect key={i} x={370 + i * 32} y={66} width={28} height={40} rx={5} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.4} />
+      ))}
+      <text x={558} y={130} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>
+        DECODE — one token at a time, sequentially
+      </text>
+
+      {/* markers */}
+      <line x1={364} y1={54} x2={364} y2={118} stroke={C.teal} strokeWidth={2} strokeDasharray="4 3" />
+      <text x={364} y={48} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.teal}>
+        ← TTFT
+      </text>
+      <line x1={754} y1={54} x2={754} y2={118} stroke={C.iris} strokeWidth={2} strokeDasharray="4 3" />
+      <text x={700} y={48} fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.iris}>
+        total ↑
+      </text>
+
+      {[
+        { t: "PREFILL", b: "compute-bound (FLOPs)", s: "scales with INPUT length", f: "shorter prompts · prompt caching", c: C.teal, x: 50 },
+        { t: "DECODE", b: "memory-bandwidth-bound", s: "scales with OUTPUT length", f: "smaller model · quantization · speculative decoding", c: C.iris, x: 408 },
+      ].map((p) => (
+        <g key={p.t}>
+          <rect x={p.x} y={158} width={342} height={104} rx={12} fill={C.card} stroke={p.c} strokeWidth={1.7} />
+          <text x={p.x + 18} y={184} fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={p.c}>{p.t}</text>
+          <text x={p.x + 18} y={206} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>{p.b}</text>
+          <text x={p.x + 18} y={226} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>{p.s}</text>
+          <text x={p.x + 18} y={248} fontFamily="var(--font-sans)" fontSize={10} fontWeight={600} fill={C.muted}>fix: {p.f}</text>
+        </g>
+      ))}
+      <Cap x={400} y={300} text="Total ≈ TTFT + (output tokens × TPOT) — which is why output length is the biggest lever you control." />
+    </Frame>
+  );
+}
+
+function KvCache() {
+  return (
+    <Frame h={320}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        What actually fills the GPU
+      </text>
+      {/* memory bar */}
+      <rect x={60} y={58} width={680} height={58} rx={11} fill={C.canvas} stroke={C.line} strokeWidth={1.5} />
+      <rect x={62} y={60} width={150} height={54} rx={10} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.6} />
+      <text x={137} y={84} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.teal}>weights</text>
+      <text x={137} y={101} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>fixed, loaded once</text>
+      {Array.from({ length: 8 }).map((_, i) => (
+        <rect key={i} x={220 + i * 64} y={60} width={58} height={54} rx={9} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.5} />
+      ))}
+      <text x={476} y={140} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>
+        KV cache — one growing block per concurrent sequence
+      </text>
+
+      <rect x={60} y={162} width={330} height={100} rx={12} fill={C.card} stroke={C.amber} strokeWidth={1.7} />
+      <text x={78} y={186} fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.amber}>bytes per token</text>
+      <text x={78} y={208} fontFamily="var(--font-mono)" fontSize={10} fill={C.soft}>2 × layers × kv_heads ×</text>
+      <text x={78} y={224} fontFamily="var(--font-mono)" fontSize={10} fill={C.soft}>head_dim × bytes</text>
+      <text x={78} y={248} fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={C.muted}>≈ 128 KB/token on a typical 8B</text>
+
+      <rect x={410} y={162} width={330} height={100} rx={12} fill={C.card} stroke={C.teal} strokeWidth={1.7} />
+      <text x={428} y={186} fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.teal}>what buys concurrency</text>
+      {["GQA / MQA → fewer kv_heads", "FP8 KV cache → half the bytes", "shorter contexts → linear win"].map((l, i) => (
+        <text key={l} x={428} y={208 + i * 19} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>
+          {l}
+        </text>
+      ))}
+      <Cap x={400} y={300} text="&ldquo;How many users fit on this GPU?&rdquo; is almost always a KV-cache question, not a weights question." />
+    </Frame>
+  );
+}
+
+function QuantizationSpectrum() {
+  const levels = [
+    { l: "FP32", x: 60, mem: 100, q: "reference", c: C.muted },
+    { l: "BF16", x: 200, mem: 50, q: "the baseline", c: C.teal },
+    { l: "FP8", x: 340, mem: 25, q: "near-lossless", c: C.teal },
+    { l: "INT8", x: 480, mem: 25, q: "small loss", c: C.amber },
+    { l: "INT4", x: 620, mem: 12, q: "real trade-off", c: C.rose },
+  ];
+  return (
+    <Frame h={320}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Fewer bits: smaller and faster, until it isn&rsquo;t
+      </text>
+      {levels.map((lv) => (
+        <g key={lv.l}>
+          <rect x={lv.x} y={190 - lv.mem} width={120} height={lv.mem} rx={6} fill={lv.c} opacity={0.25} />
+          <rect x={lv.x} y={190 - lv.mem} width={120} height={lv.mem} rx={6} fill="none" stroke={lv.c} strokeWidth={1.8} />
+          <text x={lv.x + 60} y={210} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={lv.c}>
+            {lv.l}
+          </text>
+          <text x={lv.x + 60} y={228} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>
+            {lv.q}
+          </text>
+        </g>
+      ))}
+      <line x1={50} y1={192} x2={756} y2={192} stroke={C.line} strokeWidth={1.6} />
+      <text x={40} y={120} transform="rotate(-90 40 120)" textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.muted}>
+        memory →
+      </text>
+      <rect x={60} y={250} width={680} height={44} rx={10} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.5} />
+      <text x={400} y={269} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.rose}>
+        Loss concentrates in the tail — hard reasoning, long context, rare languages, code correctness.
+      </text>
+      <text x={400} y={286} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>
+        Average benchmark scores systematically understate it. Evaluate by slice.
+      </text>
+    </Frame>
+  );
+}
+
+function ServingStack() {
+  const layers = [
+    { l: "Client", s: "OpenAI-compatible HTTP, streaming", c: C.muted, sf: C.canvas },
+    { l: "Gateway / router", s: "auth · rate limits · model routing · fallback", c: C.iris, sf: C.irisSoft },
+    { l: "Serving engine", s: "continuous batching · PagedAttention · prefix cache · speculative decoding", c: C.teal, sf: C.tealSoft },
+    { l: "Runtime & kernels", s: "CUDA · FlashAttention · quantized matmul", c: C.amber, sf: C.amberSoft },
+    { l: "GPU", s: "memory capacity → concurrency · bandwidth → decode speed", c: C.rose, sf: C.roseSoft },
+  ];
+  return (
+    <Frame h={330}>
+      {layers.map((ly, i) => {
+        const y = 34 + i * 56;
+        return (
+          <g key={ly.l}>
+            <rect x={110} y={y} width={580} height={46} rx={11} fill={ly.sf} stroke={ly.c} strokeWidth={1.8} />
+            <text x={132} y={y + 21} fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={ly.c}>
+              {ly.l}
+            </text>
+            <text x={132} y={y + 37} fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>
+              {ly.s}
+            </text>
+            {i < layers.length - 1 && (
+              <line x1={400} y1={y + 46} x2={400} y2={y + 56} stroke={C.line} strokeWidth={1.6} />
+            )}
+          </g>
+        );
+      })}
+      <Cap x={400} y={324} text="Default to vLLM on GPUs and Ollama locally; go further only for a need you have measured." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -1354,6 +1510,10 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   lora: Lora,
   "alignment-pipeline": AlignmentPipeline,
   distillation: Distillation,
+  "inference-latency": InferenceLatency,
+  "kv-cache": KvCache,
+  "quantization-spectrum": QuantizationSpectrum,
+  "serving-stack": ServingStack,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
