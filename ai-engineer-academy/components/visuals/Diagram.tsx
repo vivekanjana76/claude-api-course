@@ -1482,6 +1482,125 @@ function ServingStack() {
   );
 }
 
+function EvalPyramid() {
+  const layers = [
+    { l: "Human review", s: "the ground truth everything else calibrates against", w: 200, c: C.rose, sf: C.roseSoft, cost: "expensive · weekly sample" },
+    { l: "LLM judges", s: "groundedness · helpfulness · rubric compliance", w: 340, c: C.iris, sf: C.irisSoft, cost: "moderate · pre-release" },
+    { l: "Reference metrics", s: "exact match · F1 · recall@k · numeric accuracy", w: 480, c: C.teal, sf: C.tealSoft, cost: "cheap · every PR" },
+    { l: "Assertions", s: "parses · schema · citations exist · no PII · under budget", w: 620, c: C.amber, sf: C.amberSoft, cost: "free · every request" },
+  ];
+  return (
+    <Frame h={310}>
+      {layers.map((ly, i) => {
+        const y = 44 + i * 58;
+        const x = 400 - ly.w / 2;
+        return (
+          <g key={ly.l}>
+            <rect x={x} y={y} width={ly.w} height={48} rx={10} fill={ly.sf} stroke={ly.c} strokeWidth={1.8} />
+            <text x={400} y={y + 21} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={ly.c}>
+              {ly.l}
+            </text>
+            <text x={400} y={y + 38} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.soft}>
+              {ly.s}
+            </text>
+            <text x={x + ly.w + 12} y={y + 30} fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>
+              {ly.cost}
+            </text>
+          </g>
+        );
+      })}
+      <Cap x={400} y={296} text="Most teams start at the second layer from the top. Build the free, unambiguous base first." />
+    </Frame>
+  );
+}
+
+function LlmJudge() {
+  return (
+    <Frame h={320}>
+      <Node x={30} y={62} w={150} h={56} label="Output" sub="to be scored" />
+      <Node x={30} y={140} w={150} h={56} label="Sources" sub="+ the question" fill={C.tealSoft} stroke={C.teal} />
+      <Arrow x1={182} y1={92} x2={216} y2={116} color={C.muted} />
+      <Arrow x1={182} y1={168} x2={216} y2={144} color={C.teal} />
+
+      <rect x={218} y={62} width={216} height={134} rx={13} fill={C.irisSoft} stroke={C.iris} strokeWidth={2.1} />
+      <text x={326} y={88} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={C.iris}>
+        Judge
+      </text>
+      {["independent binary criteria", "evidence quote required", "different model family", "neutral wording"].map((l, i) => (
+        <text key={l} x={326} y={110 + i * 20} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>
+          {l}
+        </text>
+      ))}
+
+      <Arrow x1={436} y1={128} x2={470} y2={128} color={C.iris} />
+      <rect x={474} y={62} width={140} height={134} rx={12} fill={C.card} stroke={C.line} strokeWidth={1.5} />
+      {["grounded ✓", "answers_q ✓", "cites_ok ✗", "refusal ✓", "in_policy ✓"].map((l, i) => (
+        <text key={l} x={544} y={90 + i * 24} textAnchor="middle" fontFamily="var(--font-mono)" fontSize={10.5} fill={C.soft}>
+          {l}
+        </text>
+      ))}
+
+      <rect x={634} y={62} width={136} height={134} rx={12} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.8} />
+      <text x={702} y={92} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.rose}>
+        calibration
+      </text>
+      <text x={702} y={116} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>200 human</text>
+      <text x={702} y={132} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>labels</text>
+      <text x={702} y={158} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.rose}>87%</text>
+      <text x={702} y={176} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>agreement</text>
+
+      <text x={400} y={228} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.ink}>
+        the biases you must mitigate
+      </text>
+      {["verbosity", "position", "self-preference", "confident style", "leniency drift"].map((b, i) => (
+        <g key={b}>
+          <rect x={40 + i * 148} y={242} width={136} height={28} rx={7} fill={C.card} stroke={C.amber} strokeWidth={1.4} />
+          <text x={108 + i * 148} y={261} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontWeight={600} fill={C.amber}>
+            {b}
+          </text>
+        </g>
+      ))}
+      <Cap x={400} y={300} text="Report agreement alongside the score, always — an uncalibrated judge is an unlabelled instrument." />
+    </Frame>
+  );
+}
+
+function EvalLoop() {
+  return (
+    <Frame h={320}>
+      <rect x={40} y={54} width={330} height={172} rx={14} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.9} />
+      <text x={205} y={80} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={C.teal}>
+        OFFLINE — gates the release
+      </text>
+      {["golden set, sliced", "assertions + metrics + judges", "cost & latency budgets", "explicit pass bars"].map((l, i) => (
+        <g key={l}>
+          <rect x={64} y={96 + i * 32} width={282} height={26} rx={7} fill={C.card} stroke={C.teal} strokeWidth={1.2} />
+          <text x={205} y={114 + i * 32} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>{l}</text>
+        </g>
+      ))}
+
+      <rect x={430} y={54} width={330} height={172} rx={14} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.9} />
+      <text x={595} y={80} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={C.iris}>
+        ONLINE — measures the truth
+      </text>
+      {["canary → A/B by user", "regeneration & escalation rates", "guardrail metrics", "sampled judging + drift watch"].map((l, i) => (
+        <g key={l}>
+          <rect x={454} y={96 + i * 32} width={282} height={26} rx={7} fill={C.card} stroke={C.iris} strokeWidth={1.2} />
+          <text x={595} y={114 + i * 32} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>{l}</text>
+        </g>
+      ))}
+
+      <Arrow x1={374} y1={110} x2={426} y2={110} color={C.teal} flow />
+      <text x={400} y={100} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fontWeight={700} fill={C.teal}>ship</text>
+      <path d="M595 226 v34 h-390 v-34" fill="none" stroke={C.iris} strokeWidth={2} strokeDasharray="6 5" className="animate-flow" />
+      <text x={400} y={276} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>
+        every production failure becomes a permanent CI case
+      </text>
+      <Cap x={400} y={306} text="That return path is what makes an eval suite compound instead of go stale." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -1514,6 +1633,9 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "kv-cache": KvCache,
   "quantization-spectrum": QuantizationSpectrum,
   "serving-stack": ServingStack,
+  "eval-pyramid": EvalPyramid,
+  "llm-judge": LlmJudge,
+  "eval-loop": EvalLoop,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

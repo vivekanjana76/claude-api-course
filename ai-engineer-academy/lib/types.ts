@@ -56,7 +56,11 @@ export type DiagramName =
   | "inference-latency"
   | "kv-cache"
   | "quantization-spectrum"
-  | "serving-stack";
+  | "serving-stack"
+  // evaluation
+  | "eval-pyramid"
+  | "llm-judge"
+  | "eval-loop";
 
 export interface Flashcard {
   front: string;
