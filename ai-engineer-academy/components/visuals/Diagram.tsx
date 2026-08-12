@@ -1154,6 +1154,178 @@ function McpPrimitives() {
   );
 }
 
+function AdaptationLadder() {
+  const rungs = [
+    { t: "Prompting & context", w: "minutes → days", f: "instructions, format, reasoning approach", c: C.iris },
+    { t: "Retrieval (RAG)", w: "days → weeks", f: "missing, private, or changing knowledge", c: C.teal },
+    { t: "Fine-tuning", w: "weeks", f: "behaviour, tone, narrow accuracy, cost & latency", c: C.amber },
+    { t: "Continued pretraining", w: "months + serious compute", f: "a genuinely novel domain or language", c: C.rose },
+  ];
+  return (
+    <Frame h={320}>
+      <text x={400} y={32} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Descend only when the rung above provably can&rsquo;t get there
+      </text>
+      {rungs.map((r, i) => {
+        const y = 52 + i * 60;
+        const w = 380 + i * 84;
+        return (
+          <g key={r.t}>
+            <rect x={62} y={y} width={w} height={48} rx={11} fill={C.card} stroke={r.c} strokeWidth={1.9} />
+            <text x={82} y={y + 21} fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={r.c}>
+              {r.t}
+            </text>
+            <text x={82} y={y + 38} fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>
+              {r.f}
+            </text>
+            <text x={62 + w + 12} y={y + 30} fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={C.muted}>
+              {r.w}
+            </text>
+          </g>
+        );
+      })}
+      <text x={44} y={168} transform="rotate(-90 44 168)" textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.muted}>
+        effort, cost, lock-in →
+      </text>
+      <Cap x={400} y={306} text="Knowledge problems go up the ladder to retrieval; behaviour problems go down to fine-tuning." />
+    </Frame>
+  );
+}
+
+function Lora() {
+  return (
+    <Frame h={300}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Train the difference, not the weights
+      </text>
+      {/* frozen base */}
+      <rect x={70} y={66} width={190} height={150} rx={13} fill={C.canvas} stroke={C.muted} strokeWidth={2} />
+      <text x={165} y={94} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={C.muted}>
+        W — base weight
+      </text>
+      <text x={165} y={140} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.soft}>4096 × 4096</text>
+      <text x={165} y={160} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fill={C.soft}>16.7M parameters</text>
+      <text x={165} y={192} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.muted}>❄ frozen</text>
+
+      <text x={296} y={148} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={22} fontWeight={700} fill={C.ink}>+</text>
+
+      {/* lora matrices */}
+      <rect x={332} y={90} width={54} height={102} rx={9} fill={C.irisSoft} stroke={C.iris} strokeWidth={2} />
+      <text x={359} y={136} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.iris}>A</text>
+      <text x={359} y={154} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9} fill={C.muted}>4096×8</text>
+      <text x={402} y={148} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={18} fontWeight={700} fill={C.ink}>×</text>
+      <rect x={420} y={122} width={110} height={38} rx={9} fill={C.irisSoft} stroke={C.iris} strokeWidth={2} />
+      <text x={475} y={140} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.iris}>B</text>
+      <text x={475} y={154} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9} fill={C.muted}>8×4096</text>
+
+      <text x={430} y={208} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>
+        65K parameters trained — 0.4%
+      </text>
+
+      <text x={556} y={148} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={20} fontWeight={700} fill={C.ink}>=</text>
+      <rect x={584} y={66} width={176} height={150} rx={13} fill={C.tealSoft} stroke={C.teal} strokeWidth={2} />
+      <text x={672} y={112} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={C.teal}>
+        adapted model
+      </text>
+      <text x={672} y={144} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>adapter ≈ tens of MB</text>
+      <text x={672} y={164} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>swappable per request</text>
+      <text x={672} y={188} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={700} fill={C.teal}>one base, many tenants</text>
+      <Cap x={400} y={266} text="QLoRA does the same over a 4-bit base — large-model fine-tuning on a single GPU." />
+    </Frame>
+  );
+}
+
+function AlignmentPipeline() {
+  const stages = [
+    { t: "Pretraining", d: "trillions of tokens", g: "language, knowledge, reasoning substrate", c: C.muted, s: C.canvas },
+    { t: "SFT", d: "demonstrations", g: "how to follow instructions", c: C.teal, s: C.tealSoft },
+    { t: "Preference optimisation", d: "comparisons", g: "which plausible answer people prefer", c: C.iris, s: C.irisSoft },
+  ];
+  return (
+    <Frame h={310}>
+      {stages.map((st, i) => {
+        const x = 30 + i * 258;
+        return (
+          <g key={st.t}>
+            <rect x={x} y={56} width={228} height={100} rx={13} fill={st.s} stroke={st.c} strokeWidth={1.9} />
+            <text x={x + 114} y={84} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={st.c}>
+              {st.t}
+            </text>
+            <text x={x + 114} y={106} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={C.soft}>
+              {st.d}
+            </text>
+            <text x={x + 114} y={132} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>
+              {st.g}
+            </text>
+            {i < 2 && <Arrow x1={x + 230} y1={106} x2={x + 254} y2={106} color={C.line} />}
+          </g>
+        );
+      })}
+      <text x={400} y={186} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.ink}>
+        three routes through the last stage
+      </text>
+      {[
+        { t: "RLHF / PPO", d: "learned reward model + RL", c: C.amber },
+        { t: "DPO", d: "preference pairs, no RL loop", c: C.iris },
+        { t: "GRPO", d: "group-relative + verifiable rewards", c: C.teal },
+      ].map((m, i) => (
+        <g key={m.t}>
+          <rect x={30 + i * 258} y={200} width={228} height={54} rx={11} fill={C.card} stroke={m.c} strokeWidth={1.6} />
+          <text x={144 + i * 258} y={222} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={m.c}>
+            {m.t}
+          </text>
+          <text x={144 + i * 258} y={240} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>
+            {m.d}
+          </text>
+        </g>
+      ))}
+      <Cap x={400} y={288} text="Sycophancy, verbosity bias, and refusal calibration are all artefacts of this last stage." />
+    </Frame>
+  );
+}
+
+function Distillation() {
+  return (
+    <Frame h={310}>
+      <rect x={40} y={54} width={180} height={82} rx={13} fill={C.irisSoft} stroke={C.iris} strokeWidth={2} />
+      <text x={130} y={84} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.iris}>Teacher</text>
+      <text x={130} y={104} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>frontier model</text>
+      <text x={130} y={121} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>accurate · slow · costly</text>
+
+      <Node x={40} y={168} w={180} h={62} label="Real inputs" sub="from production traffic" fill={C.tealSoft} stroke={C.teal} />
+      <Arrow x1={222} y1={199} x2={252} y2={140} color={C.teal} />
+      <Arrow x1={222} y1={96} x2={252} y2={112} color={C.iris} />
+
+      <rect x={256} y={90} width={168} height={112} rx={12} fill={C.card} stroke={C.amber} strokeWidth={1.8} />
+      <text x={340} y={116} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.amber}>Filter hard</text>
+      {["verify what you can", "drop what you can't", "read 50 at random"].map((l, i) => (
+        <text key={l} x={340} y={140 + i * 20} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>
+          {l}
+        </text>
+      ))}
+
+      <Arrow x1={426} y1={146} x2={456} y2={146} color={C.amber} />
+      <rect x={460} y={104} width={168} height={84} rx={12} fill={C.tealSoft} stroke={C.teal} strokeWidth={2} />
+      <text x={544} y={134} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.teal}>Student</text>
+      <text x={544} y={154} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>small model + LoRA</text>
+      <text x={544} y={171} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontWeight={700} fill={C.teal}>10–50× cheaper</text>
+
+      <Arrow x1={630} y1={146} x2={660} y2={146} color={C.teal} />
+      <rect x={664} y={104} width={106} height={84} rx={12} fill={C.card} stroke={C.iris} strokeWidth={1.7} />
+      <text x={717} y={134} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>Route</text>
+      <text x={717} y={154} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.soft}>student first</text>
+      <text x={717} y={170} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.soft}>escalate on doubt</text>
+      {/* escalation back to teacher */}
+      <path d="M717 104 v-38 h-560 v-10" fill="none" stroke={C.iris} strokeWidth={1.5} strokeDasharray="5 4" />
+
+      <rect x={40} y={244} width={730} height={34} rx={9} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.4} />
+      <text x={405} y={266} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.soft}>
+        The student matches the teacher where you measured — not in general. Check provider terms before distilling.
+      </text>
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -1178,6 +1350,10 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "multi-agent-topologies": MultiAgentTopologies,
   "mcp-architecture": McpArchitecture,
   "mcp-primitives": McpPrimitives,
+  "adaptation-ladder": AdaptationLadder,
+  lora: Lora,
+  "alignment-pipeline": AlignmentPipeline,
+  distillation: Distillation,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

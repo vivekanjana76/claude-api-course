@@ -5,6 +5,7 @@ import { retrieval } from "./mod-retrieval";
 import { rag } from "./mod-rag";
 import { agents } from "./mod-agents";
 import { mcp } from "./mod-mcp";
+import { finetuning } from "./mod-finetuning";
 
 export const modules: Module[] = [
   foundations,
@@ -13,6 +14,7 @@ export const modules: Module[] = [
   rag,
   agents,
   mcp,
+  finetuning,
 ];
 
 export interface LessonRef {
