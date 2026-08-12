@@ -6,6 +6,7 @@ import { rag } from "./mod-rag";
 import { agents } from "./mod-agents";
 import { mcp } from "./mod-mcp";
 import { finetuning } from "./mod-finetuning";
+import { inference } from "./mod-inference";
 
 export const modules: Module[] = [
   foundations,
@@ -15,6 +16,7 @@ export const modules: Module[] = [
   agents,
   mcp,
   finetuning,
+  inference,
 ];
 
 export interface LessonRef {
