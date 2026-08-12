@@ -4,6 +4,7 @@ import { prompting } from "./mod-prompting";
 import { retrieval } from "./mod-retrieval";
 import { rag } from "./mod-rag";
 import { agents } from "./mod-agents";
+import { mcp } from "./mod-mcp";
 
 export const modules: Module[] = [
   foundations,
@@ -11,6 +12,7 @@ export const modules: Module[] = [
   retrieval,
   rag,
   agents,
+  mcp,
 ];
 
 export interface LessonRef {

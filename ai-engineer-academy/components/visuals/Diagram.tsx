@@ -1060,6 +1060,100 @@ function MultiAgentTopologies() {
   );
 }
 
+function McpArchitecture() {
+  const servers = [
+    { l: "GitHub", s: "issues, PRs, code" },
+    { l: "Postgres", s: "read-only queries" },
+    { l: "Internal API", s: "orders, billing" },
+  ];
+  return (
+    <Frame h={330}>
+      {/* host */}
+      <rect x={40} y={48} width={300} height={186} rx={14} fill={C.irisSoft} stroke={C.iris} strokeWidth={2} />
+      <text x={190} y={74} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={C.iris}>
+        HOST — the AI application
+      </text>
+      <rect x={68} y={90} width={244} height={44} rx={10} fill={C.card} stroke={C.iris} strokeWidth={1.5} />
+      <text x={190} y={117} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={600} fill={C.soft}>
+        model + permission decisions
+      </text>
+      {[0, 1, 2].map((i) => (
+        <g key={i}>
+          <rect x={68} y={148 + i * 28} width={244} height={22} rx={6} fill={C.canvas} stroke={C.line} strokeWidth={1.2} />
+          <text x={190} y={163 + i * 28} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>
+            client {i + 1} — one per server
+          </text>
+        </g>
+      ))}
+
+      {/* servers */}
+      {servers.map((sv, i) => (
+        <g key={sv.l}>
+          <rect x={520} y={54 + i * 62} width={240} height={50} rx={11} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.7} />
+          <text x={640} y={76 + i * 62} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.teal}>
+            {sv.l} MCP server
+          </text>
+          <text x={640} y={92 + i * 62} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>
+            {sv.s}
+          </text>
+          <Arrow x1={318} y1={159 + i * 28} x2={514} y2={79 + i * 62} color={C.teal} dashed />
+        </g>
+      ))}
+      <text x={418} y={240} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={700} fill={C.teal}>
+        JSON-RPC over stdio or Streamable HTTP
+      </text>
+      <rect x={40} y={258} width={720} height={36} rx={9} fill={C.card} stroke={C.line} strokeWidth={1.4} strokeDasharray="5 4" />
+      <text x={400} y={281} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fill={C.soft}>
+        N×M integrations become N+M — write the server once, every host can use it.
+      </text>
+    </Frame>
+  );
+}
+
+function McpPrimitives() {
+  const prims = [
+    { t: "Tools", who: "the MODEL decides", ex: "search_orders(since, status)", c: C.iris, s: C.irisSoft },
+    { t: "Resources", who: "the APPLICATION attaches", ex: "orders://recent", c: C.teal, s: C.tealSoft },
+    { t: "Prompts", who: "the USER triggers", ex: "/investigate_order", c: C.amber, s: C.amberSoft },
+  ];
+  return (
+    <Frame h={320}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Three primitives, three controllers
+      </text>
+      {prims.map((p, i) => {
+        const x = 40 + i * 246;
+        return (
+          <g key={p.t}>
+            <rect x={x} y={54} width={228} height={104} rx={13} fill={p.s} stroke={p.c} strokeWidth={1.9} />
+            <text x={x + 114} y={82} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={p.c}>
+              {p.t}
+            </text>
+            <text x={x + 114} y={104} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={C.soft}>
+              {p.who}
+            </text>
+            <text x={x + 114} y={132} textAnchor="middle" fontFamily="var(--font-mono)" fontSize={9.5} fill={C.muted}>
+              {p.ex}
+            </text>
+          </g>
+        );
+      })}
+      <text x={400} y={190} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.rose}>
+        every call must still pass through your checks
+      </text>
+      {["validate arguments", "authenticate the user", "authorise per tool", "rate limit", "bound the result", "log for audit"].map((c, i) => (
+        <g key={c}>
+          <rect x={44 + (i % 3) * 246} y={204 + Math.floor(i / 3) * 40} width={228} height={30} rx={8} fill={C.card} stroke={C.rose} strokeWidth={1.4} />
+          <text x={158 + (i % 3) * 246} y={224 + Math.floor(i / 3) * 40} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={C.rose}>
+            {c}
+          </text>
+        </g>
+      ))}
+      <Cap x={400} y={306} text="MCP standardises how capabilities are exposed. It never decides who may use them." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -1082,6 +1176,8 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "agent-loop": AgentLoop,
   "agent-memory": AgentMemory,
   "multi-agent-topologies": MultiAgentTopologies,
+  "mcp-architecture": McpArchitecture,
+  "mcp-primitives": McpPrimitives,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

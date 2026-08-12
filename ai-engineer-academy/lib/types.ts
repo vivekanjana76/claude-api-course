@@ -43,7 +43,10 @@ export type DiagramName =
   | "tool-call-loop"
   | "agent-loop"
   | "agent-memory"
-  | "multi-agent-topologies";
+  | "multi-agent-topologies"
+  // mcp & interop
+  | "mcp-architecture"
+  | "mcp-primitives";
 
 export interface Flashcard {
   front: string;
