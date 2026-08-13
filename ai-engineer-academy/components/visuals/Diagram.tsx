@@ -1882,6 +1882,92 @@ function DataGovernance() {
   );
 }
 
+function MultimodalIo() {
+  return (
+    <Frame h={310}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Everything becomes tokens
+      </text>
+      {[
+        { l: "Text", s: "subword tokens", c: C.teal, y: 60 },
+        { l: "Image", s: "patches → tokens", c: C.iris, y: 122 },
+        { l: "Audio", s: "frames → tokens", c: C.amber, y: 184 },
+      ].map((m) => (
+        <g key={m.l}>
+          <rect x={40} y={m.y} width={168} height={48} rx={11} fill={C.card} stroke={m.c} strokeWidth={1.8} />
+          <text x={124} y={m.y + 22} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={m.c}>{m.l}</text>
+          <text x={124} y={m.y + 38} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>{m.s}</text>
+          <Arrow x1={210} y1={m.y + 24} x2={252} y2={m.y + 24} color={m.c} />
+        </g>
+      ))}
+      <rect x={256} y={60} width={180} height={172} rx={13} fill={C.irisSoft} stroke={C.iris} strokeWidth={2.1} />
+      <text x={346} y={140} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.iris}>one shared</text>
+      <text x={346} y={160} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.iris}>token stream</text>
+      <Arrow x1={440} y1={146} x2={482} y2={146} color={C.iris} />
+
+      <rect x={486} y={92} width={274} height={108} rx={12} fill={C.card} stroke={C.line} strokeWidth={1.6} />
+      <text x={623} y={118} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.soft}>consequences</text>
+      {["a page can cost thousands of tokens", "resolution is a cost decision", "layout is signal — send the image"].map((l, i) => (
+        <text key={l} x={623} y={142 + i * 20} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>{l}</text>
+      ))}
+      <Cap x={400} y={268} text="Ask for an evidence quote per field, then reconcile the arithmetic — schemas can't catch a misread digit." />
+    </Frame>
+  );
+}
+
+function VoicePipeline() {
+  return (
+    <Frame h={330}>
+      <text x={400} y={32} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        200–300 ms, or it stops feeling like a conversation
+      </text>
+      {/* cascaded */}
+      <text x={54} y={70} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.teal}>CASCADED</text>
+      {[
+        { l: "endpoint", w: 96 },
+        { l: "STT", w: 96 },
+        { l: "LLM", w: 150 },
+        { l: "TTS", w: 110 },
+        { l: "play", w: 84 },
+      ].map((s, i) => {
+        const x = 150 + [0, 104, 208, 366, 484][i];
+        return (
+          <g key={s.l}>
+            <rect x={x} y={54} width={s.w} height={38} rx={8} fill={C.tealSoft} stroke={C.teal} strokeWidth={1.6} />
+            <text x={x + s.w / 2} y={78} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11} fontWeight={600} fill={C.teal}>{s.l}</text>
+          </g>
+        );
+      })}
+      <text x={454} y={110} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>
+        sequential ≈ 800 ms – 2 s · but every stage is inspectable
+      </text>
+
+      {/* overlapped */}
+      <text x={54} y={158} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>OVERLAPPED</text>
+      {[
+        { l: "endpoint", x: 150, w: 96, y: 142 },
+        { l: "STT", x: 210, w: 120, y: 142 },
+        { l: "LLM", x: 300, w: 170, y: 142 },
+        { l: "TTS", x: 430, w: 130, y: 142 },
+        { l: "play", x: 530, w: 110, y: 142 },
+      ].map((s, i) => (
+        <rect key={s.l} x={s.x} y={s.y + i * 6} width={s.w} height={26} rx={6} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.5} opacity={0.9} />
+      ))}
+      <text x={400} y={210} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={700} fill={C.iris}>
+        same components, roughly half the perceived latency
+      </text>
+
+      {/* native */}
+      <text x={54} y={252} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.amber}>NATIVE</text>
+      <rect x={150} y={232} width={490} height={38} rx={9} fill={C.amberSoft} stroke={C.amber} strokeWidth={1.8} />
+      <text x={395} y={256} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={600} fill={C.amber}>
+        speech in → speech out · keeps prosody · harder to inspect
+      </text>
+      <Cap x={400} y={302} text="Barge-in is an architecture requirement: cancellable generation, cancellable playback, always-on input." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -1924,6 +2010,8 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "prompt-injection": PromptInjection,
   "guardrail-layers": GuardrailLayers,
   "data-governance": DataGovernance,
+  "multimodal-io": MultimodalIo,
+  "voice-pipeline": VoicePipeline,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
