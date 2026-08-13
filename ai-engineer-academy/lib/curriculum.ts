@@ -10,6 +10,7 @@ import { inference } from "./mod-inference";
 import { evals } from "./mod-evals";
 import { production } from "./mod-production";
 import { safety } from "./mod-safety";
+import { multimodal } from "./mod-multimodal";
 
 export const modules: Module[] = [
   foundations,
@@ -23,6 +24,7 @@ export const modules: Module[] = [
   evals,
   production,
   safety,
+  multimodal,
 ];
 
 export interface LessonRef {

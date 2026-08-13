@@ -69,7 +69,10 @@ export type DiagramName =
   // safety & governance
   | "prompt-injection"
   | "guardrail-layers"
-  | "data-governance";
+  | "data-governance"
+  // multimodal
+  | "multimodal-io"
+  | "voice-pipeline";
 
 export interface Flashcard {
   front: string;
