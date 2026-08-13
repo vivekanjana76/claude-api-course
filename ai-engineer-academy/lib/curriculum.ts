@@ -8,6 +8,7 @@ import { mcp } from "./mod-mcp";
 import { finetuning } from "./mod-finetuning";
 import { inference } from "./mod-inference";
 import { evals } from "./mod-evals";
+import { production } from "./mod-production";
 
 export const modules: Module[] = [
   foundations,
@@ -19,6 +20,7 @@ export const modules: Module[] = [
   finetuning,
   inference,
   evals,
+  production,
 ];
 
 export interface LessonRef {
