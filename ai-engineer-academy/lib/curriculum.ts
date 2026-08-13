@@ -12,6 +12,7 @@ import { production } from "./mod-production";
 import { safety } from "./mod-safety";
 import { multimodal } from "./mod-multimodal";
 import { systemdesign } from "./mod-systemdesign";
+import { role } from "./mod-role";
 
 export const modules: Module[] = [
   foundations,
@@ -27,6 +28,7 @@ export const modules: Module[] = [
   safety,
   multimodal,
   systemdesign,
+  role,
 ];
 
 export interface LessonRef {

@@ -2080,6 +2080,81 @@ function CostModel() {
   );
 }
 
+function SkillMap() {
+  return (
+    <Frame h={320}>
+      <text x={400} y={32} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        One title, three centres of gravity
+      </text>
+      {[
+        { t: "Product", d: "user-facing features", s: ["prompts · RAG · agents", "evals · product judgment", "iteration with users"], c: C.iris, sf: C.irisSoft },
+        { t: "Platform", d: "what other teams build on", s: ["gateway · serving · tooling", "cost · reliability · scale", "distributed systems"], c: C.teal, sf: C.tealSoft },
+        { t: "Applied", d: "adapting the models", s: ["fine-tuning · distillation", "custom evals · data", "ML fundamentals"], c: C.amber, sf: C.amberSoft },
+      ].map((f, i) => (
+        <g key={f.t}>
+          <rect x={40 + i * 248} y={52} width={224} height={132} rx={13} fill={f.sf} stroke={f.c} strokeWidth={1.9} />
+          <text x={152 + i * 248} y={80} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={f.c}>{f.t}</text>
+          <text x={152 + i * 248} y={100} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>{f.d}</text>
+          {f.s.map((l, j) => (
+            <text key={l} x={152 + i * 248} y={126 + j * 19} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>{l}</text>
+          ))}
+        </g>
+      ))}
+      <text x={400} y={218} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.ink}>
+        what the week actually looks like
+      </text>
+      {[
+        { l: "software engineering", w: 432, c: C.teal },
+        { l: "evaluation & measurement", w: 216, c: C.iris },
+        { l: "prompting & models", w: 72, c: C.amber },
+      ].map((b, i) => {
+        const x = 40 + [0, 436, 656][i];
+        return (
+          <g key={b.l}>
+            <rect x={x} y={232} width={b.w} height={36} rx={8} fill={b.c} opacity={0.2} />
+            <rect x={x} y={232} width={b.w} height={36} rx={8} fill="none" stroke={b.c} strokeWidth={1.6} />
+            <text x={x + b.w / 2} y={254} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={i === 2 ? 8.5 : 10.5} fontWeight={600} fill={b.c}>
+              {i === 2 ? "prompts" : b.l}
+            </text>
+          </g>
+        );
+      })}
+      <Cap x={400} y={300} text="Roughly 60 / 30 / 10 — candidates who expect the inverse are consistently surprised." />
+    </Frame>
+  );
+}
+
+function InterviewLoop() {
+  const stages = [
+    { t: "Recruiter", d: "20–30 min", a: "role fit & motivation", c: C.muted },
+    { t: "Technical screen", d: "45–60 min", a: "have you built something real", c: C.teal },
+    { t: "Take-home / build", d: "2–4 hrs", a: "judgment & evaluation instinct", c: C.amber },
+    { t: "System design", d: "45–60 min", a: "architecture · evals · cost · failure", c: C.iris },
+    { t: "Behavioural", d: "45 min", a: "ownership & ambiguity", c: C.rose },
+  ];
+  return (
+    <Frame h={310}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Five stages, five different assessments
+      </text>
+      {stages.map((s, i) => {
+        const y = 52 + i * 44;
+        return (
+          <g key={s.t}>
+            <rect x={54} y={y} width={200} height={36} rx={9} fill={C.card} stroke={s.c} strokeWidth={1.7} />
+            <text x={72} y={y + 23} fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={s.c}>{s.t}</text>
+            <text x={264} y={y + 23} fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>{s.d}</text>
+            <Arrow x1={332} y1={y + 18} x2={358} y2={y + 18} color={C.line} />
+            <rect x={362} y={y} width={384} height={36} rx={9} fill={C.canvas} stroke={C.line} strokeWidth={1.3} />
+            <text x={380} y={y + 23} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>really assessing: {s.a}</text>
+          </g>
+        );
+      })}
+      <Cap x={400} y={294} text="One project you can discuss in depth for twenty minutes answers most questions in most stages." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -2127,6 +2202,8 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "design-framework": DesignFramework,
   "assistant-reference": AssistantReference,
   "cost-model": CostModel,
+  "skill-map": SkillMap,
+  "interview-loop": InterviewLoop,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
