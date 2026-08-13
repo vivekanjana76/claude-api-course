@@ -72,7 +72,11 @@ export type DiagramName =
   | "data-governance"
   // multimodal
   | "multimodal-io"
-  | "voice-pipeline";
+  | "voice-pipeline"
+  // system design
+  | "design-framework"
+  | "assistant-reference"
+  | "cost-model";
 
 export interface Flashcard {
   front: string;

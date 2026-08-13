@@ -11,6 +11,7 @@ import { evals } from "./mod-evals";
 import { production } from "./mod-production";
 import { safety } from "./mod-safety";
 import { multimodal } from "./mod-multimodal";
+import { systemdesign } from "./mod-systemdesign";
 
 export const modules: Module[] = [
   foundations,
@@ -25,6 +26,7 @@ export const modules: Module[] = [
   production,
   safety,
   multimodal,
+  systemdesign,
 ];
 
 export interface LessonRef {

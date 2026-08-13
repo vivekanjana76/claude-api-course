@@ -1968,6 +1968,118 @@ function VoicePipeline() {
   );
 }
 
+function DesignFramework() {
+  const phases = [
+    { n: "1", t: "Clarify", m: "5 min", d: "users · scale · latency · cost of being wrong", c: C.teal },
+    { n: "2", t: "Define success", m: "4 min", d: "eval set · metrics · slices · pass bar", c: C.iris },
+    { n: "3", t: "High-level design", m: "10 min", d: "the request path, drawn", c: C.teal },
+    { n: "4", t: "Deep dive", m: "12 min", d: "whichever component they steer you to", c: C.teal },
+    { n: "5", t: "Evals & ops", m: "8 min", d: "CI · rollout · failure behaviour · feedback loop", c: C.iris },
+    { n: "6", t: "Trade-offs", m: "6 min", d: "at 10× · and what you deliberately didn't build", c: C.iris },
+  ];
+  return (
+    <Frame h={330}>
+      <text x={400} y={32} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Forty-five minutes, budgeted out loud
+      </text>
+      {phases.map((p, i) => {
+        const y = 46 + i * 45;
+        return (
+          <g key={p.t}>
+            <circle cx={72} cy={y + 19} r={15} fill={p.c} opacity={0.18} />
+            <text x={72} y={y + 24} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={p.c}>{p.n}</text>
+            <rect x={102} y={y} width={600} height={38} rx={10} fill={C.card} stroke={p.c} strokeWidth={1.7} />
+            <text x={120} y={y + 24} fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={p.c}>{p.t}</text>
+            <text x={286} y={y + 24} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>{p.d}</text>
+            <text x={712} y={y + 24} fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={C.muted}>{p.m}</text>
+          </g>
+        );
+      })}
+      <Cap x={400} y={322} text="Phases 2, 5 and 6 are where senior candidates separate themselves — and where most run out of time." />
+    </Frame>
+  );
+}
+
+function AssistantReference() {
+  return (
+    <Frame h={330}>
+      <rect x={30} y={44} width={738} height={78} rx={12} fill={C.canvas} stroke={C.line} strokeWidth={1.4} strokeDasharray="6 5" />
+      <text x={46} y={64} fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.muted}>
+        OFFLINE · incremental, with nightly reconcile for deletions
+      </text>
+      {["connectors", "layout parse", "chunk on headings", "contextual ctx", "ACLs + dates", "embed"].map((s, i) => (
+        <g key={s}>
+          <rect x={46 + i * 120} y={76} width={110} height={34} rx={8} fill={C.card} stroke={C.teal} strokeWidth={1.4} />
+          <text x={101 + i * 120} y={97} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.soft}>{s}</text>
+        </g>
+      ))}
+      <rect x={686} y={68} width={72} height={50} rx={10} fill={C.tealSoft} stroke={C.teal} strokeWidth={2} />
+      <text x={722} y={89} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fontWeight={700} fill={C.teal}>pgvector</text>
+      <text x={722} y={104} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={8.5} fill={C.muted}>1.6M vectors</text>
+
+      <rect x={30} y={140} width={738} height={86} rx={12} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.8} />
+      <text x={46} y={160} fontFamily="var(--font-sans)" fontSize={11} fontWeight={700} fill={C.iris}>
+        ONLINE · per request
+      </text>
+      {["rewrite", "hybrid + ACL", "RRF", "rerank → 6", "floor check", "generate", "verify cites"].map((s, i) => (
+        <g key={s}>
+          <rect x={46 + i * 103} y={174} width={94} height={36} rx={8} fill={C.card} stroke={C.iris} strokeWidth={1.4} />
+          <text x={93 + i * 103} y={196} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9} fontWeight={600} fill={C.iris}>{s}</text>
+        </g>
+      ))}
+      <path d="M722 118 v34 h-560 v18" fill="none" stroke={C.teal} strokeWidth={1.6} strokeDasharray="5 4" />
+
+      <rect x={30} y={244} width={360} height={50} rx={11} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.7} />
+      <text x={210} y={266} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.rose}>
+        the ACL filter is INSIDE the query
+      </text>
+      <text x={210} y={283} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.soft}>
+        post-filtering means the model already saw it
+      </text>
+
+      <rect x={408} y={244} width={360} height={50} rx={11} fill={C.card} stroke={C.amber} strokeWidth={1.7} />
+      <text x={588} y={266} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.amber}>
+        below the relevance floor → decline
+      </text>
+      <text x={588} y={283} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.soft}>
+        never answer from parametric memory
+      </text>
+    </Frame>
+  );
+}
+
+function CostModel() {
+  const calcs = [
+    { t: "Tokens per request", f: "system + tools + history + retrieval + question", n: "≈ 5,450 in · 350 out", c: C.teal },
+    { t: "Cost per request", f: "cached×0.1 + fresh×in + out×(3–5× in)", n: "≈ $0.018", c: C.iris },
+    { t: "Latency", f: "TTFT + output_tokens × TPOT", n: "510 ms → 9.3 s", c: C.amber },
+    { t: "Retrieval sizing", f: "docs × chunks × dims × 4 bytes", n: "1.6M vectors ≈ 6.6 GB", c: C.teal },
+    { t: "GPU concurrency", f: "(mem − weights) × 0.9 ÷ KV per sequence", n: "≈ 55 concurrent", c: C.rose },
+  ];
+  return (
+    <Frame h={320}>
+      <text x={400} y={32} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Five calculations — memorise the shapes, not the prices
+      </text>
+      {calcs.map((c, i) => {
+        const y = 48 + i * 46;
+        return (
+          <g key={c.t}>
+            <rect x={40} y={y} width={720} height={38} rx={9} fill={C.card} stroke={c.c} strokeWidth={1.6} />
+            <text x={58} y={y + 24} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={c.c}>{c.t}</text>
+            <text x={244} y={y + 24} fontFamily="var(--font-mono)" fontSize={9.5} fill={C.soft}>{c.f}</text>
+            <text x={744} y={y + 24} textAnchor="end" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={C.muted}>{c.n}</text>
+          </g>
+        );
+      })}
+      <rect x={40} y={284} width={720} height={30} rx={8} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.5} />
+      <text x={400} y={304} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.iris}>
+        Always end with the decision, not the number.
+      </text>
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -2012,6 +2124,9 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "data-governance": DataGovernance,
   "multimodal-io": MultimodalIo,
   "voice-pipeline": VoicePipeline,
+  "design-framework": DesignFramework,
+  "assistant-reference": AssistantReference,
+  "cost-model": CostModel,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
