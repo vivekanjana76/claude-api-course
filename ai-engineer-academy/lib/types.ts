@@ -65,7 +65,11 @@ export type DiagramName =
   | "production-architecture"
   | "caching-layers"
   | "llm-observability"
-  | "deploy-lifecycle";
+  | "deploy-lifecycle"
+  // safety & governance
+  | "prompt-injection"
+  | "guardrail-layers"
+  | "data-governance";
 
 export interface Flashcard {
   front: string;
