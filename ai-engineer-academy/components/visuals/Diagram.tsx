@@ -1769,6 +1769,119 @@ function DeployLifecycle() {
   );
 }
 
+function PromptInjection() {
+  return (
+    <Frame h={330}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        The lethal trifecta
+      </text>
+      {[
+        { cx: 260, cy: 148, l: "Private data", s: "CRM · docs · mailbox", c: C.teal },
+        { cx: 540, cy: 148, l: "Untrusted content", s: "web · files · email · tools", c: C.amber },
+        { cx: 400, cy: 236, l: "Outward channel", s: "email · webhook · image URL", c: C.rose },
+      ].map((n) => (
+        <g key={n.l}>
+          <circle cx={n.cx} cy={n.cy} r={92} fill={n.c} opacity={0.13} />
+          <circle cx={n.cx} cy={n.cy} r={92} fill="none" stroke={n.c} strokeWidth={2} />
+          <text x={n.cx} y={n.cy - 40} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={n.c}>
+            {n.l}
+          </text>
+          <text x={n.cx} y={n.cy - 22} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>
+            {n.s}
+          </text>
+        </g>
+      ))}
+      <text x={400} y={168} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.rose}>
+        exfiltration
+      </text>
+      <text x={400} y={184} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.soft}>
+        possible here
+      </text>
+
+      <rect x={62} y={286} width={676} height={32} rx={9} fill={C.card} stroke={C.rose} strokeWidth={1.6} />
+      <text x={400} y={307} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.rose}>
+        Remove any one circle and exfiltration stops. Any two are survivable.
+      </text>
+    </Frame>
+  );
+}
+
+function GuardrailLayers() {
+  return (
+    <Frame h={330}>
+      <rect x={40} y={54} width={720} height={62} rx={12} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.8} />
+      <text x={58} y={76} fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.rose}>
+        INPUT — cheapest first, so rejection never costs a model call
+      </text>
+      {["size / rate", "pattern rules", "PII detect", "scope classifier", "injection classifier"].map((l, i) => (
+        <g key={l}>
+          <rect x={58 + i * 141} y={84} width={130} height={24} rx={6} fill={C.card} stroke={C.rose} strokeWidth={1.2} />
+          <text x={123 + i * 141} y={100} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.soft}>{l}</text>
+        </g>
+      ))}
+
+      <rect x={160} y={132} width={480} height={62} rx={12} fill={C.irisSoft} stroke={C.iris} strokeWidth={2.1} />
+      <text x={400} y={158} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12.5} fontWeight={700} fill={C.iris}>
+        MODEL + TOOLS
+      </text>
+      <text x={400} y={178} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>
+        per-tool authorisation · egress allow-list · approval on writes
+      </text>
+
+      <rect x={40} y={210} width={720} height={62} rx={12} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.8} />
+      <text x={58} y={232} fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={C.rose}>
+        OUTPUT — before a single token reaches the user
+      </text>
+      {["schema valid", "citations exist", "PII scan", "policy check", "prompt-leak"].map((l, i) => (
+        <g key={l}>
+          <rect x={58 + i * 141} y={240} width={130} height={24} rx={6} fill={C.card} stroke={C.rose} strokeWidth={1.2} />
+          <text x={123 + i * 141} y={256} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.soft}>{l}</text>
+        </g>
+      ))}
+      <Cap x={400} y={300} text="Each check needs an explicit failure mode: closed, open, redact, human, or fallback." />
+    </Frame>
+  );
+}
+
+function DataGovernance() {
+  const hops = [
+    { l: "provider", q: "region? retention? training?", c: C.iris },
+    { l: "prompt", q: "retrieved docs carry PII too", c: C.teal },
+    { l: "traces", q: "the most-forgotten store", c: C.rose },
+    { l: "index", q: "embeddings are personal data", c: C.amber },
+    { l: "caches", q: "must be tenant-scoped", c: C.teal },
+    { l: "memory", q: "consent + deletion", c: C.iris },
+    { l: "training", q: "a one-way door", c: C.rose },
+  ];
+  return (
+    <Frame h={310}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Follow one piece of user data
+      </text>
+      <Node x={30} y={80} w={104} h={54} label="User data" fill={C.tealSoft} stroke={C.teal} />
+      {hops.map((h, i) => {
+        const x = 152 + (i % 4) * 156;
+        const y = i < 4 ? 80 : 172;
+        return (
+          <g key={h.l}>
+            <rect x={i < 4 ? x : 152 + (i - 4) * 156} y={y} width={140} height={54} rx={10} fill={C.card} stroke={h.c} strokeWidth={1.7} />
+            <text x={(i < 4 ? x : 152 + (i - 4) * 156) + 70} y={y + 24} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={h.c}>
+              {h.l}
+            </text>
+            <text x={(i < 4 ? x : 152 + (i - 4) * 156) + 70} y={y + 42} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9} fill={C.muted}>
+              {h.q}
+            </text>
+          </g>
+        );
+      })}
+      <rect x={40} y={248} width={720} height={38} rx={10} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.6} />
+      <text x={400} y={272} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.rose}>
+        A deletion request touches every box — write that runbook before the 30-day clock starts.
+      </text>
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -1808,6 +1921,9 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "caching-layers": CachingLayers,
   "llm-observability": LlmObservability,
   "deploy-lifecycle": DeployLifecycle,
+  "prompt-injection": PromptInjection,
+  "guardrail-layers": GuardrailLayers,
+  "data-governance": DataGovernance,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {

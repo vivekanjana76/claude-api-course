@@ -9,6 +9,7 @@ import { finetuning } from "./mod-finetuning";
 import { inference } from "./mod-inference";
 import { evals } from "./mod-evals";
 import { production } from "./mod-production";
+import { safety } from "./mod-safety";
 
 export const modules: Module[] = [
   foundations,
@@ -21,6 +22,7 @@ export const modules: Module[] = [
   inference,
   evals,
   production,
+  safety,
 ];
 
 export interface LessonRef {
