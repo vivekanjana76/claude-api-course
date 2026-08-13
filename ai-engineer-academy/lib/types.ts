@@ -76,7 +76,10 @@ export type DiagramName =
   // system design
   | "design-framework"
   | "assistant-reference"
-  | "cost-model";
+  | "cost-model"
+  // the role
+  | "skill-map"
+  | "interview-loop";
 
 export interface Flashcard {
   front: string;
