@@ -60,7 +60,12 @@ export type DiagramName =
   // evaluation
   | "eval-pyramid"
   | "llm-judge"
-  | "eval-loop";
+  | "eval-loop"
+  // production
+  | "production-architecture"
+  | "caching-layers"
+  | "llm-observability"
+  | "deploy-lifecycle";
 
 export interface Flashcard {
   front: string;

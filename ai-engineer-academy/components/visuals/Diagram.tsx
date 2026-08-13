@@ -1601,6 +1601,174 @@ function EvalLoop() {
   );
 }
 
+function ProductionArchitecture() {
+  return (
+    <Frame h={330}>
+      <Node x={30} y={126} w={130} h={58} label="Your apps" sub="services · jobs" />
+      <Arrow x1={162} y1={155} x2={198} y2={155} color={C.muted} />
+
+      <rect x={200} y={54} width={250} height={210} rx={14} fill={C.irisSoft} stroke={C.iris} strokeWidth={2.2} />
+      <text x={325} y={80} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={13} fontWeight={700} fill={C.iris}>
+        AI GATEWAY
+      </text>
+      {["routing by request class", "cache: exact · prefix · semantic", "retries · circuit breaker", "per-tenant token quotas", "tracing · cost attribution"].map((l, i) => (
+        <g key={l}>
+          <rect x={218} y={94 + i * 33} width={214} height={26} rx={7} fill={C.card} stroke={C.iris} strokeWidth={1.2} />
+          <text x={325} y={112 + i * 33} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10} fill={C.soft}>
+            {l}
+          </text>
+        </g>
+      ))}
+
+      {[
+        { l: "Frontier", s: "hard 5%", c: C.iris, y: 58 },
+        { l: "Mid tier", s: "the majority", c: C.teal, y: 122 },
+        { l: "Small / self-hosted", s: "classify · extract", c: C.amber, y: 186 },
+      ].map((m) => (
+        <g key={m.l}>
+          <rect x={500} y={m.y} width={180} height={52} rx={11} fill={C.card} stroke={m.c} strokeWidth={1.7} />
+          <text x={590} y={m.y + 24} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={m.c}>
+            {m.l}
+          </text>
+          <text x={590} y={m.y + 40} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9.5} fill={C.muted}>
+            {m.s}
+          </text>
+          <Arrow x1={452} y1={155} x2={496} y2={m.y + 26} color={m.c} dashed />
+        </g>
+      ))}
+
+      <rect x={700} y={58} width={70} height={180} rx={11} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.6} />
+      <text x={735} y={140} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={700} fill={C.rose} transform="rotate(-90 735 140)">
+        fallback provider
+      </text>
+      <Cap x={400} y={300} text="One choke point for policy, cost, and reliability — and one schema for every trace." />
+    </Frame>
+  );
+}
+
+function CachingLayers() {
+  const caches = [
+    { l: "Exact response", h: "identical prompt", s: "the whole call", w: "personalised or stale answers", c: C.iris },
+    { l: "Prompt / prefix", h: "stable prefix matches", s: "most input cost + TTFT", w: "any varying token before it", c: C.teal },
+    { l: "Semantic", h: "similar enough question", s: "the whole call", w: "false hits — a quality risk", c: C.amber },
+    { l: "Retrieval", h: "same query", s: "embedding + vector search", w: "staleness after reindexing", c: C.rose },
+  ];
+  return (
+    <Frame h={310}>
+      {["cache", "hits when", "saves", "watch for"].map((h, i) => (
+        <text key={h} x={[64, 250, 430, 596][i]} y={46} fontFamily="var(--font-sans)" fontSize={10} fontWeight={700} fill={C.muted}>
+          {h.toUpperCase()}
+        </text>
+      ))}
+      {caches.map((c, i) => {
+        const y = 58 + i * 54;
+        return (
+          <g key={c.l}>
+            <rect x={48} y={y} width={704} height={46} rx={10} fill={C.card} stroke={c.c} strokeWidth={1.6} />
+            <text x={64} y={y + 28} fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={c.c}>{c.l}</text>
+            <text x={250} y={y + 28} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>{c.h}</text>
+            <text x={430} y={y + 28} fontFamily="var(--font-sans)" fontSize={10.5} fill={C.soft}>{c.s}</text>
+            <text x={596} y={y + 28} fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>{c.w}</text>
+          </g>
+        );
+      })}
+      <rect x={48} y={280} width={704} height={0} />
+      <Cap x={400} y={294} text="Prefix caching is free quality-wise. Semantic caching is a quality decision wearing a cost-saving costume." />
+    </Frame>
+  );
+}
+
+function LlmObservability() {
+  const stages = [
+    { l: "guardrail in", c: C.rose },
+    { l: "retrieve", c: C.teal },
+    { l: "rerank", c: C.teal },
+    { l: "model call", c: C.iris },
+    { l: "tool call", c: C.amber },
+    { l: "validate", c: C.rose },
+  ];
+  return (
+    <Frame h={310}>
+      <text x={400} y={34} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        One trace, every stage
+      </text>
+      <rect x={40} y={50} width={720} height={30} rx={8} fill={C.irisSoft} stroke={C.iris} strokeWidth={1.7} />
+      <text x={56} y={70} fontFamily="var(--font-mono)" fontSize={10.5} fontWeight={700} fill={C.iris}>
+        trace 8f3c… · tenant acme · feature support_chat · prompt v7 · model pinned
+      </text>
+      {stages.map((s, i) => {
+        const w = [92, 128, 96, 190, 106, 94][i];
+        const x = 40 + [0, 96, 228, 328, 522, 632][i];
+        return (
+          <g key={s.l}>
+            <rect x={x} y={92} width={w} height={40} rx={8} fill={C.card} stroke={s.c} strokeWidth={1.6} />
+            <text x={x + w / 2} y={117} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={10.5} fontWeight={600} fill={s.c}>
+              {s.l}
+            </text>
+          </g>
+        );
+      })}
+      <text x={40} y={150} fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>0 ms</text>
+      <text x={760} y={150} textAnchor="end" fontFamily="var(--font-sans)" fontSize={10} fill={C.muted}>2,840 ms</text>
+
+      {[
+        { t: "recorded per span", i: ["rendered prompt (or hash + parts)", "retrieved chunk ids + scores", "tool args and results"], c: C.teal },
+        { t: "recorded per call", i: ["input / cached / output / thinking tokens", "cost, latency, TTFT", "stop reason, outcome"], c: C.iris },
+        { t: "alert on these", i: ["retrieval score distribution drop", "decline / regeneration spike", "cache hit rate collapse"], c: C.rose },
+      ].map((b, i) => (
+        <g key={b.t}>
+          <rect x={40 + i * 244} y={170} width={228} height={94} rx={11} fill={C.card} stroke={b.c} strokeWidth={1.6} />
+          <text x={58 + i * 244} y={192} fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={b.c}>{b.t}</text>
+          {b.i.map((l, j) => (
+            <text key={l} x={58 + i * 244} y={212 + j * 17} fontFamily="var(--font-sans)" fontSize={9.5} fill={C.soft}>
+              {l}
+            </text>
+          ))}
+        </g>
+      ))}
+      <Cap x={400} y={294} text="A confidently wrong answer returns 200 OK — error rate alone will tell you nothing." />
+    </Frame>
+  );
+}
+
+function DeployLifecycle() {
+  const gates = [
+    { l: "PR", s: "diff + eval delta per slice", c: C.muted },
+    { l: "CI", s: "assertions + metrics", c: C.teal },
+    { l: "Release evals", s: "judged, all slices, pass bars", c: C.teal },
+    { l: "Canary 1–5%", s: "guardrail metrics for a day", c: C.amber },
+    { l: "Rollout", s: "5% → 25% → 100%", c: C.iris },
+  ];
+  return (
+    <Frame h={300}>
+      {gates.map((g, i) => {
+        const x = 26 + i * 152;
+        return (
+          <g key={g.l}>
+            <rect x={x} y={70} width={136} height={62} rx={11} fill={C.card} stroke={g.c} strokeWidth={1.8} />
+            <text x={x + 68} y={96} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={12} fontWeight={700} fill={g.c}>
+              {g.l}
+            </text>
+            <text x={x + 68} y={116} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={9} fill={C.muted}>
+              {g.s}
+            </text>
+            {i < gates.length - 1 && <Arrow x1={x + 138} y1={101} x2={x + 150} y2={101} color={C.line} />}
+          </g>
+        );
+      })}
+      <text x={400} y={44} textAnchor="middle" fontFamily="var(--font-display)" fontSize={13.5} fontWeight={700} fill={C.ink}>
+        Prompts, models, tools and retrieval config all go through the same gates
+      </text>
+      <path d="M710 132 v40 h-616 v-30" fill="none" stroke={C.rose} strokeWidth={2} strokeDasharray="6 5" />
+      <rect x={244} y={176} width={312} height={38} rx={10} fill={C.roseSoft} stroke={C.rose} strokeWidth={1.7} />
+      <text x={400} y={200} textAnchor="middle" fontFamily="var(--font-sans)" fontSize={11.5} fontWeight={700} fill={C.rose}>
+        rollback = one config flag, seconds not minutes
+      </text>
+      <Cap x={400} y={252} text="Pin model versions. A floating alias upgrades beneath you at the provider's convenience." />
+    </Frame>
+  );
+}
+
 const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "ai-engineer-stack": AiEngineerStack,
   "role-spectrum": RoleSpectrum,
@@ -1636,6 +1804,10 @@ const REGISTRY: Record<DiagramName, () => JSX.Element> = {
   "eval-pyramid": EvalPyramid,
   "llm-judge": LlmJudge,
   "eval-loop": EvalLoop,
+  "production-architecture": ProductionArchitecture,
+  "caching-layers": CachingLayers,
+  "llm-observability": LlmObservability,
+  "deploy-lifecycle": DeployLifecycle,
 };
 
 export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
