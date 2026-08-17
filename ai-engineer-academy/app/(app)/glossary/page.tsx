@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { glossary } from "@/lib/glossary";
-import { Search, GraduationCap, X } from "lucide-react";
+import { Search, GraduationCap, X, Flame } from "lucide-react";
 
 const letterOf = (term: string) => {
   const c = term[0].toUpperCase();
@@ -14,6 +14,7 @@ const idOf = (term: string) =>
 
 export default function GlossaryPage() {
   const [query, setQuery] = useState("");
+  const [hotOnly, setHotOnly] = useState(false);
   const [flash, setFlash] = useState<string | null>(null);
   const flashTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
@@ -22,17 +23,20 @@ export default function GlossaryPage() {
     [],
   );
 
+  const hotCount = useMemo(() => sorted.filter((t) => t.hot).length, [sorted]);
+
   const q = query.trim().toLowerCase();
+  const pool = hotOnly ? sorted.filter((t) => t.hot) : sorted;
   const filtered = q
-    ? sorted.filter(
+    ? pool.filter(
         (t) =>
           t.term.toLowerCase().includes(q) || t.def.toLowerCase().includes(q),
       )
-    : sorted;
+    : pool;
 
   const letters = useMemo(
-    () => new Set(sorted.map((t) => letterOf(t.term))),
-    [sorted],
+    () => new Set(pool.map((t) => letterOf(t.term))),
+    [pool],
   );
 
   const groups = useMemo(() => {
@@ -47,6 +51,7 @@ export default function GlossaryPage() {
 
   const jumpTo = (term: string) => {
     setQuery("");
+    setHotOnly(false);
     setTimeout(() => {
       const el = document.getElementById(idOf(term));
       if (!el) {
@@ -76,9 +81,24 @@ export default function GlossaryPage() {
         <span className="font-medium text-sm uppercase tracking-wider">Reference</span>
       </div>
       <h1 className="font-display text-4xl font-semibold text-ink mb-3 tracking-tight">Glossary</h1>
-      <p className="text-ink-soft leading-relaxed mb-8">
-        Every term that matters, in one place. {glossary.length} definitions, cross-linked.
+      <p className="text-ink-soft leading-relaxed mb-5">
+        Every term that matters, in one place. {glossary.length} definitions, cross-linked
+        — with the {hotCount} terms currently showing up in AI Engineer job descriptions
+        and interview loops flagged as a <strong className="text-ink">2026 keyword radar</strong>.
       </p>
+
+      <button
+        onClick={() => setHotOnly((v) => !v)}
+        aria-pressed={hotOnly}
+        className={`mb-6 inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+          hotOnly
+            ? "border-iris bg-iris text-canvas-50"
+            : "border-canvas-300 bg-canvas-50 text-ink-soft hover:border-iris/50 hover:text-iris-dark"
+        }`}
+      >
+        <Flame size={14} />
+        {hotOnly ? `Showing ${hotCount} 2026 keywords` : "Show only the 2026 keywords"}
+      </button>
 
       <div className="sticky top-4 z-10 mb-3">
         <div className="relative">
@@ -92,7 +112,7 @@ export default function GlossaryPage() {
           <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
             {q && (
               <span className="text-xs text-ink-faint tabular-nums">
-                {filtered.length} of {glossary.length}
+                {filtered.length} of {pool.length}
               </span>
             )}
             {q && (
@@ -149,7 +169,17 @@ export default function GlossaryPage() {
                       : "border-canvas-300 bg-canvas-50/50"
                   }`}
                 >
-                  <dt className="font-display text-lg font-semibold text-ink mb-1">{t.term}</dt>
+                  <dt className="font-display text-lg font-semibold text-ink mb-1 flex items-center gap-2">
+                    {t.term}
+                    {t.hot && (
+                      <span
+                        title="Currently prominent in AI Engineer job descriptions"
+                        className="inline-flex items-center gap-1 rounded-full bg-iris-50 text-iris-dark px-2 py-0.5 text-[0.65rem] font-medium tracking-wide uppercase"
+                      >
+                        <Flame size={11} /> 2026
+                      </span>
+                    )}
+                  </dt>
                   <dd className="text-ink-soft leading-relaxed text-[0.97rem]">{t.def}</dd>
                   {t.related && t.related.length > 0 && (
                     <div className="mt-3 flex flex-wrap items-center gap-1.5">
@@ -172,12 +202,17 @@ export default function GlossaryPage() {
         ))}
         {filtered.length === 0 && (
           <div className="text-center py-10">
-            <p className="text-ink-muted mb-2">No terms match “{query}”.</p>
+            <p className="text-ink-muted mb-2">
+              No {hotOnly ? "2026 keywords" : "terms"} match “{query}”.
+            </p>
             <button
-              onClick={() => setQuery("")}
+              onClick={() => {
+                setQuery("");
+                setHotOnly(false);
+              }}
               className="text-sm text-iris-dark hover:underline"
             >
-              Clear search
+              Clear search{hotOnly ? " and filter" : ""}
             </button>
           </div>
         )}
