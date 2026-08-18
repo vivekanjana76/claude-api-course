@@ -14,7 +14,7 @@ Welcome to Anthropic's educational courses. This repository currently contains f
 
 ## Interactive Learning Academies
 
-This repository also hosts a set of **self-teaching web apps** — beautiful, visual, beginner-friendly courses built with Next.js 14, TypeScript, and Tailwind. Each has typed lesson content, SVG diagrams, flashcards, quizzes with mastery tracking, a glossary, interview Q&A, and a ⌘K command palette. Run any of them with `npm install && npm run dev`.
+This repository also hosts a growing set of **self-teaching web apps** — beautiful, visual, beginner-friendly courses built with Next.js 14, TypeScript, and Tailwind. Each has typed lesson content, SVG diagrams, flashcards, quizzes with mastery tracking, a glossary, interview Q&A, and a ⌘K command palette. Run any of them with `npm install && npm run dev`.
 
 | Academy | Folder | Covers |
 | --- | --- | --- |
@@ -24,7 +24,10 @@ This repository also hosts a set of **self-teaching web apps** — beautiful, vi
 | 🟢 **DevOps Academy** | [`devops-academy/`](./devops-academy/) | Docker, Kubernetes, CI/CD, Terraform/IaC, GitOps, observability, DevSecOps |
 | 🔴 **Interview Academy** | [`interview-academy/`](./interview-academy/) | AI/ML job-interview prep: foundations, classic ML, deep learning, NLP/LLMs, MLOps, system design, coding, stats, behavioral, responsible AI |
 | 🟧 **AWS Academy** | [`aws-academy/`](./aws-academy/) | Everything an **AWS Cloud Engineer** needs: IAM, EC2, S3, VPC, RDS & DynamoDB, Lambda, ECS/EKS, Terraform & CloudFormation, CI/CD, CloudWatch, security, cost, migration — plus certifications and interview prep |
+| 🟪 **AI Engineer Academy** | [`ai-engineer-academy/`](./ai-engineer-academy/) | Everything an **AI Engineer** needs in 2026: context engineering, embeddings & RAG, agents and tool use, MCP, fine-tuning & alignment, inference and serving, evals, LLMOps, guardrails and AI safety — plus AI system design and a 2026 keyword radar |
 
 Every academy follows a shared **"Jargon, decoded"** convention — inline callouts that translate jargon into plain language so beginners are never lost.
 
 > **Cloud Academy vs AWS Academy:** Cloud Academy teaches cloud *concepts* across AWS and Azure side by side. AWS Academy goes deep on AWS alone, at the depth the Cloud Engineer job actually requires — 13 modules, 51 lessons, 43 diagrams.
+>
+> **Interview Academy vs AI Engineer Academy:** Interview Academy prepares you for *ML and data science* interviews — statistics, classic ML, deep learning theory. AI Engineer Academy is about *building production systems on top of pretrained models* — 14 modules, 55 lessons, 48 diagrams, and an interview module built around that different loop.
