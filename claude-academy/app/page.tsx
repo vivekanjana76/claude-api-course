@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { modules, totalLessons, totalMinutes } from "@/lib/curriculum";
 import { ContinueLearning } from "@/components/ContinueLearning";
+import { Logo } from "@/components/Logo";
 import { interviewQA } from "@/lib/interview";
 import { technicalQA } from "@/lib/intuitive-prep";
 import { glossary } from "@/lib/glossary";
@@ -42,9 +43,7 @@ export default function Home() {
       {/* nav */}
       <header className="max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="h-8 w-8 rounded-lg bg-clay flex items-center justify-center text-cream-50 font-serif font-bold">
-            C
-          </span>
+          <Logo size={32} />
           <span className="font-serif text-lg font-semibold text-ink">Claude Academy</span>
         </div>
         <nav className="hidden sm:flex items-center gap-6 text-sm text-ink-soft">
