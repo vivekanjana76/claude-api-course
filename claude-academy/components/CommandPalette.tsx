@@ -4,9 +4,10 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { allLessons } from "@/lib/curriculum";
 import { glossary } from "@/lib/glossary";
-import { Search, BookOpen, GraduationCap, ArrowRight, CornerDownLeft } from "lucide-react";
+import { patterns } from "@/lib/patterns";
+import { Search, BookOpen, GraduationCap, Workflow, ArrowRight, CornerDownLeft } from "lucide-react";
 
-type Kind = "Lesson" | "Glossary" | "Page";
+type Kind = "Lesson" | "Pattern" | "Glossary" | "Page";
 
 interface SearchItem {
   kind: Kind;
@@ -19,6 +20,7 @@ interface SearchItem {
 
 const PAGES: { title: string; subtitle: string; href: string }[] = [
   { title: "Curriculum", subtitle: "All modules and lessons", href: "/learn" },
+  { title: "Pattern Catalog", subtitle: "The recurring shapes of Claude applications", href: "/patterns" },
   { title: "Interview Q&A", subtitle: "Practice questions and answers", href: "/interview" },
   { title: "Intuitive.ai Prep", subtitle: "Intuition-building exercises", href: "/prep" },
   { title: "Glossary", subtitle: "Key terms and definitions", href: "/glossary" },
@@ -43,6 +45,16 @@ function buildIndex(): SearchItem[] {
       ]
         .join(" ")
         .toLowerCase(),
+    });
+  }
+
+  for (const p of patterns) {
+    items.push({
+      kind: "Pattern",
+      title: p.name,
+      subtitle: p.tagline,
+      href: "/patterns",
+      haystack: `${p.name} ${p.tagline} ${p.when} ${p.watch}`.toLowerCase(),
     });
   }
 
@@ -83,13 +95,14 @@ function score(item: SearchItem, terms: string[]): number | null {
     else if (title.includes(t)) total += 2;
     else total += 1;
   }
-  // Nudge lessons above glossary/pages on otherwise-equal matches.
+  // Nudge lessons above patterns/terms/pages on otherwise-equal matches.
   if (item.kind === "Lesson") total += 0.5;
   return total;
 }
 
 const KIND_ICON: Record<Kind, React.ReactNode> = {
   Lesson: <BookOpen size={16} className="text-clay" />,
+  Pattern: <Workflow size={16} className="text-slateblue" />,
   Glossary: <GraduationCap size={16} className="text-sage" />,
   Page: <ArrowRight size={16} className="text-ochre" />,
 };
@@ -215,7 +228,7 @@ export function CommandPalette() {
               setActive(0);
             }}
             onKeyDown={onInputKey}
-            placeholder="Search lessons, terms, pages…"
+            placeholder="Search lessons, patterns, terms…"
             className="flex-1 bg-transparent py-4 text-[0.95rem] text-ink placeholder:text-ink-muted focus:outline-none"
             aria-label="Search query"
             autoComplete="off"
