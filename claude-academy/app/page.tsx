@@ -48,6 +48,7 @@ export default function Home() {
         </div>
         <nav className="hidden sm:flex items-center gap-6 text-sm text-ink-soft">
           <Link href="/learn" className="hover:text-clay transition-colors">Curriculum</Link>
+          <Link href="/patterns" className="hover:text-clay transition-colors">Patterns</Link>
           <Link href="/interview" className="hover:text-clay transition-colors">Interview Q&amp;A</Link>
           <Link href="/prep" className="hover:text-clay transition-colors">Intuitive.ai Prep</Link>
           <Link href="/glossary" className="hover:text-clay transition-colors">Glossary</Link>

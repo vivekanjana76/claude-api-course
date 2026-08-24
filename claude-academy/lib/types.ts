@@ -64,12 +64,23 @@ export interface Lesson {
   quiz: QuizQuestion[];
 }
 
+export type Accent = "clay" | "sage" | "ochre" | "slateblue";
+
 export interface Module {
   id: string;
   title: string;
   blurb: string;
-  accent: "clay" | "sage" | "ochre" | "slateblue";
+  accent: Accent;
   lessons: Lesson[];
+}
+
+export interface Pattern {
+  name: string;
+  tagline: string;
+  diagram: DiagramName;
+  when: string;
+  watch: string;
+  accent: Accent;
 }
 
 export interface GlossaryTerm {
