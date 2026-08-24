@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { modules, totalLessons } from "@/lib/curriculum";
 import { useProgress } from "@/lib/progress";
+import { Logo } from "./Logo";
 import {
   CheckCircle2,
   Circle,
@@ -37,9 +38,7 @@ export function Sidebar() {
         className="flex items-center gap-2 px-5 py-5 border-b border-cream-300"
         onClick={() => setOpen(false)}
       >
-        <span className="h-7 w-7 rounded-lg bg-clay flex items-center justify-center text-cream-50 font-serif font-bold text-sm">
-          C
-        </span>
+        <Logo size={28} />
         <span className="font-serif text-lg font-semibold text-ink">
           Claude Academy
         </span>
@@ -139,9 +138,7 @@ export function Sidebar() {
           {open ? <X size={20} /> : <Menu size={20} />}
         </button>
         <Link href="/" className="flex items-center gap-2">
-          <span className="h-7 w-7 rounded-lg bg-clay flex items-center justify-center text-cream-50 font-serif font-bold text-sm">
-            C
-          </span>
+          <Logo size={26} />
           <span className="font-serif text-base font-semibold text-ink">
             Claude Academy
           </span>
