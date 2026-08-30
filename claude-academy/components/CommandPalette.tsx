@@ -21,6 +21,7 @@ interface SearchItem {
 const PAGES: { title: string; subtitle: string; href: string }[] = [
   { title: "Curriculum", subtitle: "All modules and lessons", href: "/learn" },
   { title: "Pattern Catalog", subtitle: "The recurring shapes of Claude applications", href: "/patterns" },
+  { title: "Cheatsheets", subtitle: "Messages API, prompting, tool use, and cost control", href: "/cheatsheets" },
   { title: "Interview Q&A", subtitle: "Practice questions and answers", href: "/interview" },
   { title: "Intuitive.ai Prep", subtitle: "Intuition-building exercises", href: "/prep" },
   { title: "Glossary", subtitle: "Key terms and definitions", href: "/glossary" },
