@@ -23,6 +23,7 @@ npm run dev        # http://localhost:3000
 | **46 interview Q&As** | Model answers at the depth an interviewer actually expects |
 | **18 reference architectures** | The patterns you'll be asked to draw on a whiteboard |
 | **43 intuition drills** | Five skills including a *Narrow the failure* troubleshooting round |
+| **90 AWS CLI commands** | On `/cheatsheets` — identity, EC2 & VPC, S3, IAM, Lambda, containers, CloudWatch, CloudFormation & cost — click to copy |
 
 ---
 
@@ -54,6 +55,7 @@ npm run dev        # http://localhost:3000
 | `/learn` | The full lesson index with progress and mastery per module |
 | `/learn/[slug]` | A lesson — prose, diagrams, code, comparison tables, takeaways, flashcards, quiz |
 | `/patterns` | The AWS reference architecture catalog |
+| `/cheatsheets` | Searchable AWS CLI reference with click-to-copy commands |
 | `/interview` | Searchable interview Q&A bank, grouped by topic |
 | `/glossary` | Searchable, cross-linked glossary |
 | `/prep` | Rapid intuition drills across five judgment skills, plus flashcards for acronyms |

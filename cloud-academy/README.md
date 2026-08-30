@@ -7,7 +7,9 @@ architecture (compute, storage, networking, and well-architected design), coveri
 **AWS and Azure side by side** because the concepts are identical and only the names differ.
 
 No runnable infrastructure — it's a learning site: concepts, custom SVG diagrams,
-quizzes, flashcards, a glossary, interview Q&A, and an architecture pattern catalog.
+quizzes, flashcards, a glossary, interview Q&A, an architecture pattern catalog, and
+cheatsheets — 73 click-to-copy commands across the AWS CLI, the Azure CLI, and a
+service-by-service AWS ↔ Azure mapping.
 
 ## Run it
 
@@ -32,6 +34,7 @@ All content is **typed data**, rendered by a small set of components:
 - `lib/glossary.ts` — searchable term definitions, cross-linked and mapped AWS ↔ Azure.
 - `lib/interview.ts` — interview questions with model answers, by topic.
 - `lib/patterns.ts` — the Cloud Architecture Pattern Catalog.
+- `lib/cheatsheets.ts` — the AWS CLI / Azure CLI / cross-cloud mapping reference.
 - `lib/types.ts` — the `Lesson`/`Block`/`Module`/`DiagramName` types.
 - `components/LessonRenderer.tsx` — renders a lesson's blocks (prose, callouts, code,
   diagrams, compare tables, steps).

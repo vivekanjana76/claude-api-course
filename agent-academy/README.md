@@ -19,7 +19,7 @@ flashcards, and a quiz:
 8. **The Agentic Stack** — the layers around a production agent, coding agents & AI-first engineering, agent interoperability (A2A & the protocol layer)
 9. **Frontier Agents** — voice & real-time agents, ambient & proactive agents and the agentic web, and an agentic buzzword decoder (agent washing, swarms, vertical agents, service-as-software)
 
-Plus a searchable **Glossary** (70 cross-linked terms with an A–Z letter rail and jump-to-term "See also" links), an **Interview Q&A** bank, an **Agentic Pattern Catalog**, and a **Cmd/Ctrl-K command palette** that searches lessons, patterns, terms, and pages.
+Plus a searchable **Glossary** (70 cross-linked terms with an A–Z letter rail and jump-to-term "See also" links), an **Interview Q&A** bank, an **Agentic Pattern Catalog**, **Cheatsheets** (63 click-to-copy entries across CrewAI, LangGraph, the raw Anthropic tool loop, and MCP), and a **Cmd/Ctrl-K command palette** that searches lessons, patterns, terms, and pages.
 Progress is surfaced everywhere — sidebar, per-module bars and checkmarks on the curriculum
 page, a "Continue where you left off" card — and lessons have a reading progress bar with
 ←/→ keyboard navigation.

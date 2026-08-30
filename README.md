@@ -14,7 +14,7 @@ Welcome to Anthropic's educational courses. This repository currently contains f
 
 ## Interactive Learning Academies
 
-This repository also hosts a growing set of **self-teaching web apps** — beautiful, visual, beginner-friendly courses built with Next.js 14, TypeScript, and Tailwind. Each has typed lesson content, SVG diagrams, flashcards, quizzes with mastery tracking, a glossary, interview Q&A, and a ⌘K command palette. Run any of them with `npm install && npm run dev`.
+This repository also hosts a growing set of **self-teaching web apps** — beautiful, visual, beginner-friendly courses built with Next.js 14, TypeScript, and Tailwind. Each has typed lesson content, SVG diagrams, flashcards, quizzes with mastery tracking, a glossary, interview Q&A, a pattern catalog, click-to-copy cheatsheets, and a ⌘K command palette. Run any of them with `npm install && npm run dev`.
 
 | Academy | Folder | Covers |
 | --- | --- | --- |
@@ -27,6 +27,18 @@ This repository also hosts a growing set of **self-teaching web apps** — beaut
 | 🟪 **AI Engineer Academy** | [`ai-engineer-academy/`](./ai-engineer-academy/) | Everything an **AI Engineer** needs in 2026: context engineering, embeddings & RAG, agents and tool use, MCP, fine-tuning & alignment, inference and serving, evals, LLMOps, guardrails and AI safety — plus AI system design and a 2026 keyword radar |
 
 Every academy follows a shared **"Jargon, decoded"** convention — inline callouts that translate jargon into plain language so beginners are never lost.
+
+All seven share the same page set, so moving between them costs nothing:
+
+| Route | What it is |
+| --- | --- |
+| `/learn` | The curriculum — every lesson with prose, diagrams, code, takeaways, flashcards, and a quiz |
+| `/patterns` | The pattern catalog — recurring architectures, each with a diagram, *when to use* and *watch out* |
+| `/cheatsheets` | Searchable, click-to-copy commands and API calls for that academy's toolchain |
+| `/prep` | Interview prep — a staged roadmap or rapid intuition drills, depending on the academy |
+| `/interview` | A searchable Q&A bank with model answers, grouped by topic |
+| `/glossary` | Cross-linked definitions with an A–Z rail and "See also" jumps |
+| `⌘K` | Command palette over lessons, patterns, terms, and pages |
 
 > **Cloud Academy vs AWS Academy:** Cloud Academy teaches cloud *concepts* across AWS and Azure side by side. AWS Academy goes deep on AWS alone, at the depth the Cloud Engineer job actually requires — 13 modules, 51 lessons, 43 diagrams.
 >

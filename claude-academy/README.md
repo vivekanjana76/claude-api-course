@@ -10,7 +10,9 @@ Built to *understand concepts* (no setup, no running code) and to *prepare you t
 - **Custom diagrams** for every concept (the agent loop, RAG pipeline, prompt caching, embeddings, context windows, MCP, managed agents, the LLM app stack, and more).
 - **Annotated code snippets** (Python/TS) to read — illustrating each idea.
 - **Flashcards & quizzes** on every lesson to make it stick.
-- **Command palette search** — press <kbd>⌘K</kbd> / <kbd>Ctrl-K</kbd> (or `/`) anywhere to jump to any lesson, glossary term, or page by keyword.
+- **Pattern Catalog** (`/patterns`) — 14 recurring shapes of Claude applications (the request/response contract, model tiering, prompt caching, the tool-use loop, workflow-vs-agent, RAG, MCP, the eval loop, context-as-a-budget), each with a diagram, when to reach for it, and the mistake it invites.
+- **Cheatsheets** (`/cheatsheets`) — 59 searchable, click-to-copy entries across the Messages API, prompting moves, tool use, and cost control.
+- **Command palette search** — press <kbd>⌘K</kbd> / <kbd>Ctrl-K</kbd> (or `/`) anywhere to jump to any lesson, pattern, glossary term, or page by keyword.
 - **Interview Q&A bank** — 31 likely questions with model answers, searchable by topic.
 - **Glossary** — 70 cross-linked definitions with live search, an A–Z letter rail, and "See also" links that jump to (and highlight) the related term.
 - **Progress tracking** saved in your browser (localStorage) — surfaced in the sidebar, on the curriculum page (per-module bars, per-lesson checks), and via a "Continue where you left off" card on the home and curriculum pages.

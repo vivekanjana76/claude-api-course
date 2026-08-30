@@ -23,6 +23,7 @@ npm run build    # 64 routes
 | **57 interview Q&As** | model answers across 13 topics |
 | **22 reference architectures** | the GenAI shapes you get asked to draw on a whiteboard |
 | **44 rapid drills + 12 judgment rules** | on `/prep`, across five skills |
+| **62 click-to-copy entries** | on `/cheatsheets` — the Anthropic SDK, tool use and MCP, embeddings and retrieval, evals and LLMOps |
 
 ## The curriculum
 
@@ -49,6 +50,7 @@ npm run build    # 64 routes
 - `/learn` and `/learn/[slug]` — the curriculum
 - `/prep` — rapid drills, keyword decoder, and the judgment cheat-sheet
 - `/patterns` — the GenAI architecture catalog
+- `/cheatsheets` — the SDK, tool use, retrieval, and eval reference
 - `/interview` — searchable Q&A bank
 - `/glossary` — 188 terms with the 2026 keyword filter
 - `⌘K` anywhere — command palette over lessons, terms, and patterns
