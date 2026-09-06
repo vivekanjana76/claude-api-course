@@ -40,6 +40,17 @@ All seven share the same page set, so moving between them costs nothing:
 | `/glossary` | Cross-linked definitions with an A–Z rail and "See also" jumps |
 | `⌘K` | Command palette over lessons, patterns, terms, and pages |
 
+### Checking content
+
+Lesson content is typed data, so TypeScript guarantees its *shape* — but not that the strings inside refer to things that exist. `scripts/check-content.mjs` covers that gap:
+
+```bash
+node scripts/check-content.mjs              # all seven
+node scripts/check-content.mjs aws-academy  # just one
+```
+
+It fails on a glossary `related` entry naming an undefined term (which renders a "See also" button that dead-ends), a `DiagramName` no lesson references, duplicate lesson slugs or glossary terms, and lessons missing blocks, takeaways, flashcards, or a quiz. CI runs it on every push, then builds only the academies a change actually touches.
+
 > **Cloud Academy vs AWS Academy:** Cloud Academy teaches cloud *concepts* across AWS and Azure side by side. AWS Academy goes deep on AWS alone, at the depth the Cloud Engineer job actually requires — 13 modules, 51 lessons, 43 diagrams.
 >
 > **Interview Academy vs AI Engineer Academy:** Interview Academy prepares you for *ML and data science* interviews — statistics, classic ML, deep learning theory. AI Engineer Academy is about *building production systems on top of pretrained models* — 14 modules, 55 lessons, 48 diagrams, and an interview module built around that different loop.
