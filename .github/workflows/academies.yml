@@ -1,0 +1,92 @@
+name: Academies
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # Cheap and repo-wide: catches dead "See also" links, unreachable diagrams,
+  # duplicate slugs, and incomplete lessons. Runs on every change.
+  content:
+    name: Content integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node scripts/check-content.mjs
+
+  # Which academies did this change actually touch? Building all seven on a
+  # one-line content edit wastes several minutes per push.
+  changed:
+    name: Detect touched academies
+    runs-on: ubuntu-latest
+    outputs:
+      academies: ${{ steps.detect.outputs.academies }}
+      any: ${{ steps.detect.outputs.any }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE="${{ github.event.pull_request.base.sha || github.event.before }}"
+          # First push to a branch, or a shallow/unknown base: check everything.
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ] \
+             || ! git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            FILES=$(git ls-files)
+          else
+            FILES=$(git diff --name-only "$BASE" "${{ github.sha }}")
+          fi
+
+          ALL='claude-academy agent-academy devops-academy interview-academy cloud-academy aws-academy ai-engineer-academy'
+          TOUCHED=()
+          for a in $ALL; do
+            if grep -q "^$a/" <<<"$FILES"; then TOUCHED+=("$a"); fi
+          done
+
+          # A change to the shared workflow or checker re-verifies everything.
+          if grep -qE '^(scripts/|\.github/workflows/)' <<<"$FILES"; then
+            TOUCHED=($ALL)
+          fi
+
+          if [ ${#TOUCHED[@]} -eq 0 ]; then
+            echo "any=false" >> "$GITHUB_OUTPUT"
+            echo "academies=[]" >> "$GITHUB_OUTPUT"
+            echo "No academy touched — skipping builds."
+          else
+            echo "any=true" >> "$GITHUB_OUTPUT"
+            printf -v JSON '"%s",' "${TOUCHED[@]}"
+            echo "academies=[${JSON%,}]" >> "$GITHUB_OUTPUT"
+            echo "Building: ${TOUCHED[*]}"
+          fi
+
+  build:
+    name: Build ${{ matrix.academy }}
+    needs: changed
+    if: needs.changed.outputs.any == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        academy: ${{ fromJSON(needs.changed.outputs.academies) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ${{ matrix.academy }}/package-lock.json
+      - run: npm ci
+        working-directory: ${{ matrix.academy }}
+      - run: npx tsc --noEmit
+        working-directory: ${{ matrix.academy }}
+      - run: npm run build
+        working-directory: ${{ matrix.academy }}
