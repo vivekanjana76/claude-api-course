@@ -109,6 +109,7 @@ export const mlops: Module = {
           "**Reproducibility is harder.** Reproducing a result needs the exact code, data, hyperparameters, and environment together.",
           "**A third 'CI/CD' — CT.** Alongside continuous integration and delivery, ML adds **continuous training**.",
         ]},
+        { type: "diagram", name: "ml-workflow", caption: "The lifecycle is a loop, not a line — monitoring is what closes it." },
         { type: "h2", text: "The pillars of an MLOps setup" },
         { type: "steps", items: [
           { title: "Version everything", text: "Git for code, plus data/model versioning (e.g. DVC) so any result is reproducible from its exact inputs." },
