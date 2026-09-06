@@ -322,6 +322,7 @@ Outputs:
           { label: "Lambda", cells: ["Runtime, scaling, host, OS entirely", "Your code and dependencies, function IAM role, secrets handling"] },
           { label: "S3", cells: ["Durability, physical media, infrastructure", "Bucket policy, Block Public Access, encryption, versioning, who can read it"] },
         ]},
+        { type: "diagram", name: "cloud-service-models", caption: "The service model decides where the line falls — the further right, the less you own." },
         { type: "callout", kind: "key", text: "AWS is responsible for security **OF** the cloud. You are responsible for security **IN** the cloud. Essentially every publicised 'AWS breach' has been a customer-side misconfiguration — an open bucket, a leaked key, an over-broad role." },
         { type: "h2", text: "Compliance: how you prove it" },
         { type: "list", items: [
