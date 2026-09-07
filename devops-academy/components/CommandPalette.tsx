@@ -27,6 +27,7 @@ interface SearchItem {
 
 const PAGES: { title: string; subtitle: string; href: string }[] = [
   { title: "Curriculum", subtitle: "All modules and lessons", href: "/learn" },
+  { title: "Review", subtitle: "Spaced-repetition flashcards across the whole curriculum", href: "/review" },
   { title: "Pattern Catalog", subtitle: "DevOps delivery patterns", href: "/patterns" },
   { title: "Cheatsheets", subtitle: "Git, Docker, kubectl, Terraform, PromQL commands", href: "/cheatsheets" },
   { title: "Interview Prep", subtitle: "A staged roadmap of must-know concepts", href: "/prep" },

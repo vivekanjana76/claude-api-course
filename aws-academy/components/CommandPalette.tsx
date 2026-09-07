@@ -28,6 +28,7 @@ interface SearchItem {
 const PAGES: { title: string; subtitle: string; href: string }[] = [
   { title: "Curriculum", subtitle: "All modules and lessons", href: "/learn" },
   { title: "Intuition Prep", subtitle: "Rapid drills, acronym decoder, cheat-sheet", href: "/prep" },
+  { title: "Review", subtitle: "Spaced-repetition flashcards across the whole curriculum", href: "/review" },
   { title: "Pattern Catalog", subtitle: "Cloud architecture patterns", href: "/patterns" },
   { title: "Cheatsheets", subtitle: "AWS CLI commands for EC2, S3, IAM, Lambda, ECS, CloudWatch", href: "/cheatsheets" },
   { title: "Interview Q&A", subtitle: "Practice questions and answers", href: "/interview" },

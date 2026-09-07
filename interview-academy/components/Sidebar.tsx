@@ -15,6 +15,7 @@ import {
   Workflow,
   Terminal,
   Target,
+  Layers,
   Menu,
   X,
   Search,
@@ -120,6 +121,7 @@ export function Sidebar() {
 
       <div className="border-t border-canvas-300 px-3 py-3 space-y-1">
         <FooterLink href="/learn" label="Curriculum" icon={<BookOpen size={15} />} active={pathname === "/learn"} onClick={() => setOpen(false)} />
+        <FooterLink href="/review" label="Review" icon={<Layers size={15} />} active={pathname === "/review"} onClick={() => setOpen(false)} />
         <FooterLink href="/patterns" label="Pattern Catalog" icon={<Workflow size={15} />} active={pathname === "/patterns"} onClick={() => setOpen(false)} />
         <FooterLink href="/cheatsheets" label="Cheatsheets" icon={<Terminal size={15} />} active={pathname === "/cheatsheets"} onClick={() => setOpen(false)} />
         <FooterLink href="/prep" label="Interview Prep" icon={<Target size={15} />} active={pathname === "/prep"} onClick={() => setOpen(false)} />

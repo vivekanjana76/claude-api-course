@@ -14,6 +14,11 @@
  *
  * All three shipped to main at least once, which is why this exists.
  *
+ * It also checks one thing that spans the apps rather than living inside
+ * one: the seven academies are meant to offer the same set of pages, and a
+ * page added to some of them is a page the others quietly lack. That check
+ * runs only when more than one academy is being checked.
+ *
  * Usage:
  *   node scripts/check-content.mjs              # every academy
  *   node scripts/check-content.mjs aws-academy  # just one
@@ -146,6 +151,53 @@ function checkAcademy(app) {
   return { problems, stats: { lessons: slugs.size, diagrams: declared.size } };
 }
 
+/* ------------------------------------------------------------------ */
+/* Cross-academy: the same routes, each one reachable from the nav     */
+/* ------------------------------------------------------------------ */
+
+/** Top-level routes under `app/(app)/`, ignoring dynamic segments. */
+function routesOf(app) {
+  const dir = join(app, "app", "(app)");
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && !e.name.startsWith("["))
+    .map((e) => e.name)
+    .sort();
+}
+
+function checkParity(apps) {
+  const problems = [];
+  const present = new Map(apps.map((a) => [a, new Set(routesOf(a))]));
+
+  const everyRoute = [...new Set(apps.flatMap((a) => [...present.get(a)]))].sort();
+  for (const route of everyRoute) {
+    const missing = apps.filter((a) => !present.get(a).has(route));
+    // A route only one academy has is a new page mid-rollout; one that most
+    // have and a few lack is the drift worth failing on. Report either way.
+    if (missing.length) {
+      problems.push({
+        kind: "route not in every academy",
+        detail: `/${route} — missing from ${missing.join(", ")}`,
+      });
+    }
+  }
+
+  // Every route needs a way in: a Sidebar link, or /learn's lesson list.
+  for (const app of apps) {
+    const sidebar = read(join(app, "components", "Sidebar.tsx")) ?? "";
+    for (const route of present.get(app)) {
+      if (!sidebar.includes(`href="/${route}"`)) {
+        problems.push({
+          kind: "route has no sidebar link",
+          detail: `${app} /${route}`,
+        });
+      }
+    }
+  }
+
+  return problems;
+}
+
 const requested = process.argv.slice(2);
 const targets = requested.length ? requested : ACADEMIES;
 
@@ -165,6 +217,17 @@ for (const app of targets) {
   failed++;
   console.log(`  FAIL ${label} ${problems.length} problem(s)`);
   for (const p of problems) console.log(`       ${p.kind}: ${p.detail}`);
+}
+
+if (targets.length > 1) {
+  const parity = checkParity(targets.filter((a) => existsSync(a)));
+  if (parity.length) {
+    failed++;
+    console.log(`  FAIL page parity          ${parity.length} problem(s)`);
+    for (const p of parity) console.log(`       ${p.kind}: ${p.detail}`);
+  } else {
+    console.log(`  ok page parity          every academy offers the same routes`);
+  }
 }
 
 if (failed) {
