@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { allLessons } from "./curriculum";
 import type { Accent, Flashcard } from "./types";
+import { recordActivity } from "./activity";
 
 /**
  * Spaced repetition over every flashcard in the curriculum.
@@ -102,6 +103,7 @@ export function gradeCard(id: string, grade: Grade) {
     seen: (prev?.seen ?? 0) + 1,
     lapses: (prev?.lapses ?? 0) + (grade === "again" ? 1 : 0),
   };
+  recordActivity();
   write(states);
 }
 

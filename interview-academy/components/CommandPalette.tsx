@@ -28,6 +28,7 @@ interface SearchItem {
 const PAGES: { title: string; subtitle: string; href: string }[] = [
   { title: "Curriculum", subtitle: "All modules and lessons", href: "/learn" },
   { title: "Review", subtitle: "Spaced-repetition flashcards across the whole curriculum", href: "/review" },
+  { title: "Progress", subtitle: "Completion, quiz mastery, study streak, and backups", href: "/progress" },
   { title: "Pattern Catalog", subtitle: "ML best-practice patterns", href: "/patterns" },
   { title: "Cheatsheets", subtitle: "Metrics, training, and LLM formulas", href: "/cheatsheets" },
   { title: "Interview Prep", subtitle: "A staged roadmap of must-know concepts", href: "/prep" },

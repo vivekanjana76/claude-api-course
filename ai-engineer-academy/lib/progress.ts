@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { recordActivity } from "./activity";
 
 const KEY = "ai-engineer-academy-progress-v1";
 
@@ -29,6 +30,7 @@ export function useProgress() {
     if (!next[slug]) delete next[slug];
     localStorage.setItem(KEY, JSON.stringify(next));
     setDone(next);
+    if (next[slug]) recordActivity();
     window.dispatchEvent(new Event("progress-updated"));
   }, []);
 
@@ -63,6 +65,7 @@ export function recordQuizScore(slug: string, correct: number, total: number) {
   if (!prev || correct / total > prev.correct / prev.total) {
     cur[slug] = { correct, total };
     localStorage.setItem(MASTERY_KEY, JSON.stringify(cur));
+    recordActivity();
     window.dispatchEvent(new Event("mastery-updated"));
   }
 }
