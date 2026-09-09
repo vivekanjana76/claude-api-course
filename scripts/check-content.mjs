@@ -148,6 +148,24 @@ function checkAcademy(app) {
     }
   }
 
+  // ---- localStorage keys belong to the academy that writes them -----------
+  // Three academies once shared `agent-academy-progress-v1` by copy-paste, so
+  // finishing a lesson in one ticked it off in the others. A key is namespaced
+  // by directory name; a deliberate reference to another academy's old key is
+  // marked LEGACY on its own line.
+  for (const f of readdirSync(join(app, "lib")).filter((n) => n.endsWith(".ts"))) {
+    const src = read(join(app, "lib", f));
+    if (!src) continue;
+    for (const line of src.split("\n")) {
+      if (line.includes("LEGACY")) continue;
+      for (const [, key] of line.matchAll(/"([a-z0-9-]+-v\d+)"/g)) {
+        if (!key.startsWith(`${app}-`)) {
+          note("localStorage key belongs to another academy", `"${key}" in lib/${f}`);
+        }
+      }
+    }
+  }
+
   return { problems, stats: { lessons: slugs.size, diagrams: declared.size } };
 }
 
