@@ -2,10 +2,28 @@
 
 import { useCallback, useEffect, useState } from "react";
 
-const KEY = "agent-academy-progress-v1";
+const KEY = "devops-academy-progress-v1";
+
+/**
+ * These three academies shipped writing lesson progress into
+ * `agent-academy-progress-v1`, a key they had inherited by copy-paste and
+ * then shared — completing a lesson in one marked a same-slugged lesson
+ * complete in the others. Each now owns its key, and adopts whatever was
+ * in the shared store the first time it runs so nobody's existing ticks
+ * disappear in the move.
+ */
+const LEGACY_SHARED_KEY = "agent-academy-progress-v1";
+
+function migrate() {
+  if (typeof window === "undefined") return;
+  if (localStorage.getItem(KEY) !== null) return;
+  const shared = localStorage.getItem(LEGACY_SHARED_KEY);
+  if (shared) localStorage.setItem(KEY, shared);
+}
 
 function read(): Record<string, boolean> {
   if (typeof window === "undefined") return {};
+  migrate();
   try {
     return JSON.parse(localStorage.getItem(KEY) || "{}");
   } catch {
