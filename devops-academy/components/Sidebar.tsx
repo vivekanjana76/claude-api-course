@@ -16,6 +16,7 @@ import {
   Terminal,
   Target,
   Layers,
+  Activity,
   Menu,
   X,
   Search,
@@ -47,7 +48,11 @@ export function Sidebar() {
         </span>
       </Link>
 
-      <div className="px-5 py-4 border-b border-canvas-300">
+      <Link
+        href="/progress"
+        onClick={() => setOpen(false)}
+        className="block px-5 py-4 border-b border-canvas-300 transition-colors hover:bg-canvas-200"
+      >
         <div className="flex justify-between text-xs text-ink-muted mb-1.5">
           <span>Your progress</span>
           <span>
@@ -60,7 +65,7 @@ export function Sidebar() {
             style={{ width: `${pct}%` }}
           />
         </div>
-      </div>
+      </Link>
 
       <div className="px-3 pt-3">
         <button
@@ -122,6 +127,7 @@ export function Sidebar() {
       <div className="border-t border-canvas-300 px-3 py-3 space-y-1">
         <FooterLink href="/learn" label="Curriculum" icon={<BookOpen size={15} />} active={pathname === "/learn"} onClick={() => setOpen(false)} />
         <FooterLink href="/review" label="Review" icon={<Layers size={15} />} active={pathname === "/review"} onClick={() => setOpen(false)} />
+        <FooterLink href="/progress" label="Progress" icon={<Activity size={15} />} active={pathname === "/progress"} onClick={() => setOpen(false)} />
         <FooterLink href="/patterns" label="Pattern Catalog" icon={<Workflow size={15} />} active={pathname === "/patterns"} onClick={() => setOpen(false)} />
         <FooterLink href="/cheatsheets" label="Cheatsheets" icon={<Terminal size={15} />} active={pathname === "/cheatsheets"} onClick={() => setOpen(false)} />
         <FooterLink href="/prep" label="Interview Prep" icon={<Target size={15} />} active={pathname === "/prep"} onClick={() => setOpen(false)} />

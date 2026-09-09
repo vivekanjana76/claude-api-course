@@ -28,6 +28,7 @@ interface SearchItem {
 const PAGES: { title: string; subtitle: string; href: string }[] = [
   { title: "Curriculum", subtitle: "All modules and lessons", href: "/learn" },
   { title: "Review", subtitle: "Spaced-repetition flashcards across the whole curriculum", href: "/review" },
+  { title: "Progress", subtitle: "Completion, quiz mastery, study streak, and backups", href: "/progress" },
   { title: "Intuition Prep", subtitle: "Rapid drills, buzzword decoder, cheat-sheet", href: "/prep" },
   { title: "Pattern Catalog", subtitle: "Agentic patterns at a glance", href: "/patterns" },
   { title: "Cheatsheets", subtitle: "CrewAI, LangGraph, the Anthropic tool loop, and MCP", href: "/cheatsheets" },
