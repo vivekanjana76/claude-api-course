@@ -41,6 +41,9 @@ npm run build
 
 - `/` — home
 - `/learn` and `/learn/[slug]` — the curriculum
+- `/review` — spaced-repetition deck over every flashcard in the course
+- `/exam` — a timed mock paper drawn from every quiz question
+- `/progress` — completion, mastery, streak, weak spots, and JSON backup
 - `/prep` — the staged interview roadmap
 - `/patterns` — the delivery pattern catalog
 - `/cheatsheets` — Git, Docker, kubectl, Terraform, PromQL

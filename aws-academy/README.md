@@ -59,6 +59,9 @@ npm run dev        # http://localhost:3000
 | `/interview` | Searchable interview Q&A bank, grouped by topic |
 | `/glossary` | Searchable, cross-linked glossary |
 | `/prep` | Rapid intuition drills across five judgment skills, plus flashcards for acronyms |
+| `/review` | Spaced-repetition deck pooling all 203 flashcards on a five-box Leitner ladder |
+| `/exam` | A timed mock paper drawn at random from all 151 quiz questions, options shuffled |
+| `/progress` | Completion, mastery, review retention, study streak, weak spots, JSON backup |
 
 Press <kbd>⌘K</kbd> / <kbd>Ctrl+K</kbd> anywhere for the command palette.
 
@@ -73,15 +76,20 @@ aws-academy/
     (app)/                   # sidebar + command palette layout
       learn/[slug]/page.tsx  # lesson renderer
       glossary/ interview/ patterns/ prep/
+      review/ exam/ progress/ # practice and standing, over the same content
   components/
     LessonRenderer.tsx       # renders the typed Block[] content model
     visuals/Diagram.tsx      # all 43 SVG diagrams + the DiagramName registry
     Quiz.tsx Flashcards.tsx MasteryRing.tsx CommandPalette.tsx Sidebar.tsx
+    ReviewDeck.tsx ExamRunner.tsx
   lib/
     types.ts                 # Block, Lesson, Module, DiagramName …
     curriculum.ts            # module registry + lesson navigation helpers
     mod-*.ts                 # the 13 modules of typed lesson content
     glossary.ts interview.ts patterns.ts prep.ts progress.ts
+    review.ts                # Leitner scheduler over every flashcard
+    exam.ts                  # question bank, random draw, attempt history
+    activity.ts              # study day-log, streak, export/import
 ```
 
 **Content is typed data, not MDX.** A lesson is a `Lesson` object whose `blocks` array is a discriminated union — `p`, `h2`, `list`, `callout`, `code`, `diagram`, `compare`, `steps`, `quote` — rendered by `LessonRenderer`. That keeps content reviewable in pull requests and makes it impossible to reference a diagram that doesn't exist: `DiagramName` is a union type and the registry in `Diagram.tsx` must be exhaustive.
@@ -94,12 +102,12 @@ aws-academy/
 
 ### Conventions
 
-- **"Jargon, decoded" callouts** — every module decodes its jargon inline in a `note` callout, so a reader coming straight from university is never lost. This convention is shared across all six academies in this repo.
+- **"Jargon, decoded" callouts** — every module decodes its jargon inline in a `note` callout, so a reader coming straight from university is never lost. This convention is shared across all seven academies in this repo.
 - **Honest trade-offs** — lessons name the cost and the downside, not just the happy path. Where AWS's own guidance and common practice differ, the lesson says so.
-- **Progress is local** — stored in `localStorage` under `aws-academy-progress-v1` and `aws-academy-mastery-v1`. No accounts, no backend.
+- **Progress is local** — five `localStorage` keys, all prefixed `aws-academy-`: `progress-v1`, `mastery-v1`, `review-v1`, `exam-v1`, `activity-v1`. No accounts, no backend. `/progress` exports all five as JSON so a second machine or a cleared cache isn't a total loss, and `scripts/check-content.mjs` fails any key that isn't namespaced to this academy.
 
 ---
 
 ## Sibling academies
 
-Part of a set of self-teaching apps in this repository: **Claude Academy**, **Agent Academy**, **Cloud Academy** (AWS *and* Azure side by side), **DevOps Academy**, and **Interview Academy**. AWS Academy is the deep, single-cloud one — where Cloud Academy teaches the concepts across two providers, this teaches AWS at the depth the job actually requires.
+Part of a set of self-teaching apps in this repository: **Claude Academy**, **Agent Academy**, **AI Engineer Academy**, **Cloud Academy** (AWS *and* Azure side by side), **DevOps Academy**, and **Interview Academy**. All seven share the same nine routes. AWS Academy is the deep, single-cloud one — where Cloud Academy teaches the concepts across two providers, this teaches AWS at the depth the job actually requires.

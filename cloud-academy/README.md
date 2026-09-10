@@ -35,13 +35,21 @@ All content is **typed data**, rendered by a small set of components:
 - `lib/interview.ts` — interview questions with model answers, by topic.
 - `lib/patterns.ts` — the Cloud Architecture Pattern Catalog.
 - `lib/cheatsheets.ts` — the AWS CLI / Azure CLI / cross-cloud mapping reference.
+- `lib/review.ts` — the spaced-repetition scheduler behind `/review`, a five-box Leitner
+  ladder over every flashcard in the course.
+- `lib/exam.ts` — the question bank and attempt history behind `/exam`, a timed mock paper
+  drawn at random from every quiz question with the options shuffled.
+- `lib/activity.ts` — the study day-log behind `/progress` (streak, heatmap), plus JSON
+  export and import of everything this academy keeps locally.
 - `lib/types.ts` — the `Lesson`/`Block`/`Module`/`DiagramName` types.
 - `components/LessonRenderer.tsx` — renders a lesson's blocks (prose, callouts, code,
   diagrams, compare tables, steps).
 - `components/visuals/Diagram.tsx` — hand-built SVG diagrams keyed by `DiagramName`.
 - `components/{Flashcards,Quiz,CodeBlock,RichText,Sidebar,CommandPalette,CompleteButton,Logo}.tsx`.
 
-Progress is tracked per-lesson in `localStorage` via `lib/progress.ts`.
+Progress is tracked per-lesson in `localStorage` via `lib/progress.ts`, alongside quiz
+mastery, review scheduling, exam attempts, and the day log — five keys, all namespaced
+`cloud-academy-*`, all exportable from `/progress`.
 
 ## Design
 

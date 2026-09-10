@@ -48,6 +48,9 @@ npm run build    # 64 routes
 
 - `/` — home
 - `/learn` and `/learn/[slug]` — the curriculum
+- `/review` — spaced-repetition deck over every flashcard in the course
+- `/exam` — a timed mock paper drawn from every quiz question
+- `/progress` — completion, mastery, streak, weak spots, and JSON backup
 - `/prep` — rapid drills, keyword decoder, and the judgment cheat-sheet
 - `/patterns` — the GenAI architecture catalog
 - `/cheatsheets` — the SDK, tool use, retrieval, and eval reference

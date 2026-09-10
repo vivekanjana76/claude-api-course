@@ -20,6 +20,13 @@ flashcards, and a quiz:
 9. **Frontier Agents** — voice & real-time agents, ambient & proactive agents and the agentic web, and an agentic buzzword decoder (agent washing, swarms, vertical agents, service-as-software)
 
 Plus a searchable **Glossary** (70 cross-linked terms with an A–Z letter rail and jump-to-term "See also" links), an **Interview Q&A** bank, an **Agentic Pattern Catalog**, **Cheatsheets** (63 click-to-copy entries across CrewAI, LangGraph, the raw Anthropic tool loop, and MCP), and a **Cmd/Ctrl-K command palette** that searches lessons, patterns, terms, and pages.
+
+Three pages turn the content into practice:
+
+- **`/review`** — every flashcard in the course pooled into one spaced-repetition deck on a five-box Leitner ladder (1 / 3 / 7 / 21 days). Study the whole deck or one module; space flips, 1/2/3 grade.
+- **`/exam`** — a timed paper drawn at random from every quiz question, options shuffled and no feedback until you submit, then a per-module breakdown of where the marks went and every miss explained against the lesson it came from.
+- **`/progress`** — completion by module, quiz mastery, review retention, a study streak and 13-week heatmap, the lessons still under 70%, and JSON export/import so a cleared cache isn't a total loss.
+
 Progress is surfaced everywhere — sidebar, per-module bars and checkmarks on the curriculum
 page, a "Continue where you left off" card — and lessons have a reading progress bar with
 ←/→ keyboard navigation.

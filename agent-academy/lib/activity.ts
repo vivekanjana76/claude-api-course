@@ -24,6 +24,7 @@ export const STORAGE_KEYS = [
   "agent-academy-progress-v1",
   "agent-academy-mastery-v1",
   "agent-academy-review-v1",
+  "agent-academy-exam-v1",
   KEY,
 ] as const;
 
@@ -171,7 +172,7 @@ export function importState(raw: string): { applied: number; error?: string } {
     localStorage.setItem(key, JSON.stringify(value));
     applied += 1;
   }
-  for (const evt of ["progress-updated", "mastery-updated", "review-updated", "activity-updated"]) {
+  for (const evt of ["progress-updated", "mastery-updated", "review-updated", "exam-updated", "activity-updated"]) {
     window.dispatchEvent(new Event(evt));
   }
   return { applied };
@@ -181,7 +182,7 @@ export function importState(raw: string): { applied: number; error?: string } {
 export function resetEverything() {
   if (typeof window === "undefined") return;
   for (const key of STORAGE_KEYS) localStorage.removeItem(key);
-  for (const evt of ["progress-updated", "mastery-updated", "review-updated", "activity-updated"]) {
+  for (const evt of ["progress-updated", "mastery-updated", "review-updated", "exam-updated", "activity-updated"]) {
     window.dispatchEvent(new Event(evt));
   }
 }

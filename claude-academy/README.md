@@ -15,7 +15,9 @@ Built to *understand concepts* (no setup, no running code) and to *prepare you t
 - **Command palette search** — press <kbd>⌘K</kbd> / <kbd>Ctrl-K</kbd> (or `/`) anywhere to jump to any lesson, pattern, glossary term, or page by keyword.
 - **Interview Q&A bank** — 31 likely questions with model answers, searchable by topic.
 - **Glossary** — 70 cross-linked definitions with live search, an A–Z letter rail, and "See also" links that jump to (and highlight) the related term.
-- **Progress tracking** saved in your browser (localStorage) — surfaced in the sidebar, on the curriculum page (per-module bars, per-lesson checks), and via a "Continue where you left off" card on the home and curriculum pages.
+- **Review** (`/review`) — every flashcard in the course pooled into one spaced-repetition deck on a five-box Leitner ladder (1 / 3 / 7 / 21 days). Study the whole deck or one module; space flips, 1/2/3 grade.
+- **Mock exam** (`/exam`) — a timed paper drawn at random from every quiz question, options shuffled and no feedback until you submit, then a per-module breakdown of where the marks went and every miss explained.
+- **Progress tracking** saved in your browser (localStorage) — surfaced in the sidebar, on the curriculum page (per-module bars, per-lesson checks), via a "Continue where you left off" card, and in full on `/progress`: completion by module, quiz mastery, review retention, a study streak and 13-week heatmap, the lessons still under 70%, and JSON export/import so a cleared cache isn't a total loss.
 - **Reading UX** — a scroll progress bar on every lesson and ←/→ keyboard navigation between lessons.
 
 ## Run it
