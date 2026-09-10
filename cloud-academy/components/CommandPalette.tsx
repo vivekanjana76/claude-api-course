@@ -29,6 +29,7 @@ const PAGES: { title: string; subtitle: string; href: string }[] = [
   { title: "Curriculum", subtitle: "All modules and lessons", href: "/learn" },
   { title: "Review", subtitle: "Spaced-repetition flashcards across the whole curriculum", href: "/review" },
   { title: "Progress", subtitle: "Completion, quiz mastery, study streak, and backups", href: "/progress" },
+  { title: "Mock Exam", subtitle: "A timed paper drawn from every quiz in the curriculum", href: "/exam" },
   { title: "Intuition Prep", subtitle: "Rapid drills, acronym decoder, cheat-sheet", href: "/prep" },
   { title: "Pattern Catalog", subtitle: "Cloud architecture patterns", href: "/patterns" },
   { title: "Cheatsheets", subtitle: "AWS CLI, Azure CLI, and the AWS ↔ Azure service mapping", href: "/cheatsheets" },

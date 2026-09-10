@@ -30,6 +30,7 @@ const PAGES: { title: string; subtitle: string; href: string }[] = [
   { title: "Intuition Prep", subtitle: "Rapid drills, acronym decoder, cheat-sheet", href: "/prep" },
   { title: "Review", subtitle: "Spaced-repetition flashcards across the whole curriculum", href: "/review" },
   { title: "Progress", subtitle: "Completion, quiz mastery, study streak, and backups", href: "/progress" },
+  { title: "Mock Exam", subtitle: "A timed paper drawn from every quiz in the curriculum", href: "/exam" },
   { title: "Pattern Catalog", subtitle: "Cloud architecture patterns", href: "/patterns" },
   { title: "Cheatsheets", subtitle: "AWS CLI commands for EC2, S3, IAM, Lambda, ECS, CloudWatch", href: "/cheatsheets" },
   { title: "Interview Q&A", subtitle: "Practice questions and answers", href: "/interview" },
