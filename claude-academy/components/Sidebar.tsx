@@ -17,6 +17,7 @@ import {
   Target,
   Layers,
   Activity,
+  ClipboardCheck,
   Menu,
   X,
   Search,
@@ -128,6 +129,7 @@ export function Sidebar() {
         <FooterLink href="/learn" label="Curriculum" icon={<BookOpen size={15} />} active={pathname === "/learn"} onClick={() => setOpen(false)} />
         <FooterLink href="/review" label="Review" icon={<Layers size={15} />} active={pathname === "/review"} onClick={() => setOpen(false)} />
         <FooterLink href="/progress" label="Progress" icon={<Activity size={15} />} active={pathname === "/progress"} onClick={() => setOpen(false)} />
+        <FooterLink href="/exam" label="Mock Exam" icon={<ClipboardCheck size={15} />} active={pathname === "/exam"} onClick={() => setOpen(false)} />
         <FooterLink href="/patterns" label="Pattern Catalog" icon={<Workflow size={15} />} active={pathname === "/patterns"} onClick={() => setOpen(false)} />
         <FooterLink href="/cheatsheets" label="Cheatsheets" icon={<Terminal size={15} />} active={pathname === "/cheatsheets"} onClick={() => setOpen(false)} />
         <FooterLink href="/interview" label="Interview Q&A" icon={<MessagesSquare size={15} />} active={pathname === "/interview"} onClick={() => setOpen(false)} />

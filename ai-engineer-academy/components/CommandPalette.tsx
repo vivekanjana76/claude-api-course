@@ -29,6 +29,7 @@ const PAGES: { title: string; subtitle: string; href: string }[] = [
   { title: "Curriculum", subtitle: "All modules and lessons", href: "/learn" },
   { title: "Review", subtitle: "Spaced-repetition flashcards across the whole curriculum", href: "/review" },
   { title: "Progress", subtitle: "Completion, quiz mastery, study streak, and backups", href: "/progress" },
+  { title: "Mock Exam", subtitle: "A timed paper drawn from every quiz in the curriculum", href: "/exam" },
   { title: "Intuition Prep", subtitle: "Rapid drills, acronym decoder, cheat-sheet", href: "/prep" },
   { title: "Architecture Catalog", subtitle: "The recurring shapes of GenAI systems", href: "/patterns" },
   { title: "Cheatsheets", subtitle: "Anthropic SDK, tool use, MCP, retrieval, and eval commands", href: "/cheatsheets" },
