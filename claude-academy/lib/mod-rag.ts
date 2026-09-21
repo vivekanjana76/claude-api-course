@@ -212,7 +212,7 @@ context = "\\n\\n".join(
 )
 
 resp = client.messages.create(
-    model="claude-sonnet-4-6", max_tokens=1024, system=system,
+    model="claude-sonnet-5", max_tokens=1024, system=system,
     messages=[{"role": "user",
                "content": f"<context>{context}</context>\\n\\nQuestion: {question}"}],
 )`,

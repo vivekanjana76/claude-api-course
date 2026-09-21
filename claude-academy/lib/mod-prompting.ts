@@ -393,7 +393,7 @@ Use null/empty when the transcript doesn't say. Output only JSON.`,
           lang: "python",
           caption: "Caching a large system prompt",
           code: `response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=1024,
     system=[{
         "type": "text",

@@ -60,7 +60,7 @@ export const foundations: Module = {
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=1024,
     messages=[
         {"role": "user", "content": "Explain what an API is in one sentence."}
@@ -134,7 +134,7 @@ print(response.content[0].text)`,
           lang: "python",
           caption: "A multi-turn conversation",
           code: `response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=1024,
     system="You are a concise travel assistant.",
     messages=[
@@ -343,7 +343,7 @@ print(response.content[0].text)`,
         { type: "h3", text: "Use exact model IDs" },
         {
           type: "p",
-          text: "You select a model by its **ID string** (e.g. `claude-opus-4-8`, `claude-sonnet-4-6`, `claude-haiku-4-5`, `claude-fable-5`). Use the exact published ID — a typo or invented date-suffix returns a 404. Aliases like `claude-opus-4-8` point at the latest snapshot.",
+          text: "You select a model by its **ID string** (e.g. `claude-opus-5`, `claude-sonnet-5`, `claude-haiku-4-5`, and `claude-fable-5-1` at the top end). Use the exact published ID — these strings are complete as they stand, and appending a half-remembered date suffix returns a 404. The bare ID tracks the latest snapshot of that model.",
         },
         {
           type: "code",
@@ -357,7 +357,7 @@ label = client.messages.create(
 
 # Strong model for complex reasoning
 plan = client.messages.create(
-    model="claude-opus-4-8", max_tokens=16000,
+    model="claude-opus-5", max_tokens=16000,
     messages=[{"role": "user", "content": "Design a migration plan for ..."}],
 )`,
         },
@@ -444,7 +444,7 @@ plan = client.messages.create(
           lang: "python",
           caption: "Adaptive thinking + effort on a modern model",
           code: `response = client.messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=16000,
     thinking={"type": "adaptive"},          # let Claude decide how much to think
     output_config={"effort": "high"},        # low | medium | high | xhigh | max
@@ -527,7 +527,7 @@ plan = client.messages.create(
           lang: "python",
           caption: "Streaming with the SDK helper",
           code: `with client.messages.stream(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=4000,
     messages=[{"role": "user", "content": "Write a short story about the sea."}],
 ) as stream:
@@ -600,7 +600,7 @@ with open("receipt.png", "rb") as f:
     data = base64.standard_b64encode(f.read()).decode("utf-8")
 
 response = client.messages.create(
-    model="claude-opus-4-8", max_tokens=1024,
+    model="claude-opus-5", max_tokens=1024,
     messages=[{
         "role": "user",
         "content": [
@@ -692,7 +692,7 @@ Format:
 - End with one suggested next step."""
 
 response = client.messages.create(
-    model="claude-sonnet-4-6", max_tokens=1024,
+    model="claude-sonnet-5", max_tokens=1024,
     system=system,
     messages=[{"role": "user", "content": "How do I reset my API key?"}],
 )`,

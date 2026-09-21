@@ -48,7 +48,7 @@ export const advanced: Module = {
           lang: "python",
           caption: "Showing reasoning vs. hiding it",
           code: `resp = client.messages.create(
-    model="claude-opus-4-8", max_tokens=16000,
+    model="claude-opus-5", max_tokens=16000,
     thinking={"type": "adaptive", "display": "summarized"},  # show a readable summary
     output_config={"effort": "high"},
     messages=[{"role": "user", "content": "Diagnose this failing test..."}],
@@ -121,7 +121,7 @@ for block in resp.content:
           lang: "python",
           caption: "Adding web search is one line",
           code: `resp = client.messages.create(
-    model="claude-opus-4-8", max_tokens=2048,
+    model="claude-opus-5", max_tokens=2048,
     tools=[{"type": "web_search_20260209", "name": "web_search"}],
     messages=[{"role": "user",
                "content": "What did Anthropic announce this week?"}],
@@ -199,7 +199,7 @@ for block in resp.content:
           type: "code",
           lang: "python",
           caption: "Handling a refusal cleanly",
-          code: `resp = client.messages.create(model="claude-opus-4-8", max_tokens=1024,
+          code: `resp = client.messages.create(model="claude-opus-5", max_tokens=1024,
                               messages=messages)
 
 if resp.stop_reason == "refusal":
@@ -442,7 +442,7 @@ client = anthropic.Anthropic(max_retries=4, timeout=30.0)
 
 # Per-request overrides are available too:
 msg = client.with_options(max_retries=2).messages.create(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     max_tokens=512,
     messages=[{"role": "user", "content": "Hello"}],
 )`,

@@ -43,7 +43,7 @@ export const glossary: GlossaryTerm[] = [
   { term: "Server tools", def: "Tools Anthropic hosts and executes (web search, web fetch, code execution); results return inline with no execution loop for you." },
   { term: "Refusal", def: "When Claude declines a harmful request: a normal HTTP 200 with stop_reason='refusal'. Handle it as a branch, not an error." },
   { term: "Batch API", def: "Asynchronous bulk processing of requests at ~50% cost for non-latency-sensitive workloads." },
-  { term: "Model ID", def: "The exact string selecting a model (e.g. claude-opus-4-8). Invented or mistyped IDs return a 404." },
+  { term: "Model ID", def: "The exact string selecting a model (e.g. claude-opus-5). Invented or mistyped IDs return a 404." },
   { term: "AI engineer", def: "An engineer who builds products on foundation models they don't train — prompting, RAG, tools/agents, evals, and cost/latency work.", related: ["Evaluation (eval)"] },
   { term: "LLM gateway", def: "A routing layer (LiteLLM, OpenRouter) giving one interface over many model providers: fallbacks, key management, budgets, routing." },
   { term: "Open-weight model", def: "A model whose trained weights are downloadable and runnable anywhere (Llama, Qwen, Mistral, DeepSeek); training data/code usually stay closed." },
