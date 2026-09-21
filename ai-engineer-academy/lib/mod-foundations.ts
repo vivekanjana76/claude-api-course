@@ -94,7 +94,7 @@ import anthropic
 
 client = anthropic.Anthropic()
 count = client.messages.count_tokens(
-    model="claude-sonnet-4-5",
+    model="claude-sonnet-5",
     system="You are a precise financial analyst.",
     messages=[{"role": "user", "content": long_document}],
 )

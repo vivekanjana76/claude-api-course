@@ -310,7 +310,7 @@ class CallRecord:
     v7: 25                          # percent of traffic
     v6: 75
   model:
-    primary: "claude-sonnet-4-5"    # pinned, never an alias
+    primary: "claude-sonnet-5"    # pinned, never an alias
     fallback: "gpt-4.1"             # eval'd, and exercised weekly
   params: { max_tokens: 800, temperature: 0.2 }
   retrieval: { k: 20, rerank_to: 6, min_score: 0.35, index: "kb-2026-08-09" }

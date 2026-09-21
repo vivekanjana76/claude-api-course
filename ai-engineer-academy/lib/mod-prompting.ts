@@ -229,7 +229,7 @@ TOOL = {
 
 def extract(doc: str, attempt: int = 0) -> Invoice:
     resp = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="claude-sonnet-5",
         max_tokens=1024,
         tools=[TOOL],
         tool_choice={"type": "tool", "name": "record_invoice"},  # force it
