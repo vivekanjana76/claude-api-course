@@ -54,7 +54,7 @@ export const cheatsheets: CheatSheet[] = [
           { cmd: "{\"type\": \"image\", \"source\": {\"type\": \"base64\", \"media_type\": …, \"data\": b64}}", desc: "Inline bytes; the base64 string must have no newlines." },
           { cmd: "{\"type\": \"document\", \"source\": {…\"media_type\": \"application/pdf\"…}}", desc: "A PDF. Put the document block before the text block." },
           { cmd: "citations={\"enabled\": True}", desc: "Set on every document block or none; responses then carry cited spans." },
-          { cmd: "client.beta.files.upload(...)", desc: "Files API — upload once, reference by file_id across requests." },
+          { cmd: "client.files.upload(...)", desc: "Files API — upload once, reference by file_id across requests. Out of beta: no beta header, and not client.beta.files." },
         ],
       },
     ],
