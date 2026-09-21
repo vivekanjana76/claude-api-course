@@ -548,7 +548,7 @@ memory.write(user_id, extract_durable_facts(user_msg, reply))  # remember`,
 mcp_servers = [{"name": "github", "url": "https://example.com/mcp"}]
 
 agent = Agent(
-    model="claude-opus-4-8",
+    model="claude-opus-5",
     mcp_servers=mcp_servers,   # tools from the server become callable
     instructions="Use the GitHub tools to triage incoming issues.",
 )`,

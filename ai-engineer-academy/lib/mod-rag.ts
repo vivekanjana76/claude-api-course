@@ -45,7 +45,7 @@ def answer(question: str, passages: list[Passage]) -> Answer:
         for i, p in enumerate(passages, 1)
     )
     resp = client.messages.create(
-        model="claude-sonnet-4-5",
+        model="claude-sonnet-5",
         max_tokens=1024,
         system=SYSTEM,
         messages=[{"role": "user",

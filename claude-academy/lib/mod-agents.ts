@@ -66,7 +66,7 @@ export const agents: Module = {
           type: "code",
           lang: "python",
           caption: "Handling a tool call",
-          code: `resp = client.messages.create(model="claude-opus-4-8", max_tokens=1024,
+          code: `resp = client.messages.create(model="claude-opus-5", max_tokens=1024,
                               tools=tools, messages=messages)
 
 if resp.stop_reason == "tool_use":
@@ -79,7 +79,7 @@ if resp.stop_reason == "tool_use":
         "tool_use_id": block.id,
         "content": result,
     }]})
-    resp = client.messages.create(model="claude-opus-4-8", max_tokens=1024,
+    resp = client.messages.create(model="claude-opus-5", max_tokens=1024,
                                   tools=tools, messages=messages)  # continue`,
         },
         {
@@ -158,7 +158,7 @@ if resp.stop_reason == "tool_use":
           lang: "python",
           caption: "Constraining the response to a schema",
           code: `response = client.messages.create(
-    model="claude-opus-4-8", max_tokens=1024,
+    model="claude-opus-5", max_tokens=1024,
     messages=[{"role": "user",
                "content": "Extract: Jane Doe, jane@co.com, Enterprise plan."}],
     output_config={"format": {
@@ -253,7 +253,7 @@ if resp.stop_reason == "tool_use":
           lang: "python",
           caption: "Forcing a specific tool",
           code: `response = client.messages.create(
-    model="claude-opus-4-8", max_tokens=1024,
+    model="claude-opus-5", max_tokens=1024,
     tools=[extract_contact_tool],
     tool_choice={"type": "tool", "name": "extract_contact"},  # must use this tool
     messages=[{"role": "user", "content": raw_text}],
@@ -324,7 +324,7 @@ if resp.stop_reason == "tool_use":
 
 while True:
     resp = client.messages.create(
-        model="claude-opus-4-8", max_tokens=4000,
+        model="claude-opus-5", max_tokens=4000,
         tools=tools, messages=messages,
     )
     messages.append({"role": "assistant", "content": resp.content})
@@ -542,7 +542,7 @@ while True:
           lang: "python",
           caption: "Connecting to a remote MCP server",
           code: `client.beta.messages.create(
-    model="claude-opus-4-8", max_tokens=1024,
+    model="claude-opus-5", max_tokens=1024,
     betas=["mcp-client-2025-11-20"],
     mcp_servers=[{"type": "url", "name": "github",
                   "url": "https://example.com/mcp"}],
